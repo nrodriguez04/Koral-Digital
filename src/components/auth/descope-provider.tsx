@@ -15,7 +15,11 @@ export function DescopeProvider({
 }) {
   if (!projectId) return <>{children}</>;
   return (
-    <AuthProvider projectId={projectId} baseUrl={baseUrl} sessionTokenViaCookie={{ sameSite: 'Lax', secure: true }}>
+    <AuthProvider
+      projectId={projectId}
+      baseUrl={baseUrl}
+      sessionTokenViaCookie={{ sameSite: 'Lax', secure: true }}
+    >
       {children}
     </AuthProvider>
   );

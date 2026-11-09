@@ -12,7 +12,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/app', '/portal', '/api/', '/sign-in', '/invite/', '/setup', '/no-access', '/dev-login', '/demo'],
+        disallow: [
+          '/app',
+          '/portal',
+          '/api/',
+          '/sign-in',
+          '/invite/',
+          '/setup',
+          '/no-access',
+          '/dev-login',
+          '/demo',
+        ],
       },
     ],
     sitemap: `${base}/sitemap.xml`,

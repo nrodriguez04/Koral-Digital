@@ -43,19 +43,20 @@ export default async function InitiativePage() {
       <section className="container-page grid gap-12 py-16 sm:py-20 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <SectionHeading eyebrow="Why reefs" title="Small builders, enormous impact" />
-          <p className="mt-5 text-lg leading-relaxed text-ink/75">
-            Coral reefs are some of the most productive ecosystems on Earth, and some of the most threatened. Here is
-            what reputable scientific sources say about why they matter — each statement links to its source.
+          <p className="text-ink/75 mt-5 text-lg leading-relaxed">
+            Coral reefs are some of the most productive ecosystems on Earth, and some of the most threatened.
+            Here is what reputable scientific sources say about why they matter — each statement links to its
+            source.
           </p>
           <ul className="mt-8 space-y-4">
             {reefFacts.map((f) => (
               <li key={f.statement} className="card p-5">
-                <p className="leading-relaxed text-ink/85">{f.statement}</p>
+                <p className="text-ink/85 leading-relaxed">{f.statement}</p>
                 <a
                   href={f.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-ocean-700 hover:underline"
+                  className="text-ocean-700 mt-3 inline-flex items-center gap-1 text-xs font-semibold hover:underline"
                 >
                   Source: {f.sourceName} <ExternalLink className="size-3" aria-hidden="true" />
                 </a>
@@ -64,19 +65,20 @@ export default async function InitiativePage() {
           </ul>
         </div>
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 rounded-[var(--radius-card)] bg-white p-8 text-center ring-1 ring-ink/8">
+          <div className="ring-ink/8 sticky top-28 rounded-[var(--radius-card)] bg-white p-8 text-center ring-1">
             <Image
-              src="/brand/koral-mark-transparent.png"
+              src="/brand/koral-mark-trim.png"
               alt="Koral Digital mark: coral branches held in cupped hands"
               width={220}
               height={220}
               className="mx-auto"
             />
             <p className="mt-4 font-semibold tracking-[0.2em]">KORAL DIGITAL</p>
-            <p className="mt-1 text-sm text-ocean-600">{s.tagline}</p>
-            <p className="mt-5 text-sm leading-relaxed text-ink/65">
-              Our mark shows coral held in cupped hands: something fragile and foundational, cared for deliberately.
-              It is how we try to treat our clients&apos; businesses — and how we hope to treat the reefs.
+            <p className="text-ocean-600 mt-1 text-sm">{s.tagline}</p>
+            <p className="text-ink/65 mt-5 text-sm leading-relaxed">
+              Our mark shows coral held in cupped hands: something fragile and foundational, cared for
+              deliberately. It is how we try to treat our clients&apos; businesses — and how we hope to treat
+              the reefs.
             </p>
           </div>
         </aside>
@@ -85,7 +87,7 @@ export default async function InitiativePage() {
       <section className="ocean-gradient text-white">
         <div className="container-page py-16 sm:py-20">
           <div className="flex items-center gap-3">
-            <Waves className="size-6 text-ocean-300" aria-hidden="true" />
+            <Waves className="text-ocean-300 size-6" aria-hidden="true" />
             <p className="eyebrow text-ocean-300">Our commitments</p>
           </div>
           <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -94,7 +96,9 @@ export default async function InitiativePage() {
           <ol className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {initiativeCommitments.map((c, i) => (
               <li key={c.title} className="rounded-2xl bg-white/[0.06] p-6 ring-1 ring-white/10">
-                <span className="text-sm font-semibold text-ocean-300 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-ocean-300 text-sm font-semibold tabular-nums">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 <h3 className="mt-2 text-lg font-semibold">{c.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/75">{c.body}</p>
               </li>
@@ -105,11 +109,12 @@ export default async function InitiativePage() {
 
       <section className="container-page py-16 sm:py-20">
         <SectionHeading eyebrow="Progress log" title="Verified contributions" />
-        <div className="mt-8 card p-8 text-center">
+        <div className="card mt-8 p-8 text-center">
           <p className="font-semibold">No contributions have been made yet.</p>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-ink/65">
-            When Koral Digital makes its first contribution, the recipient organization, date and verified amount will be
-            listed here. We will not publish estimates, pledges or projected impact in place of real figures.
+          <p className="text-ink/65 mx-auto mt-2 max-w-xl text-sm leading-relaxed">
+            When Koral Digital makes its first contribution, the recipient organization, date and verified
+            amount will be listed here. We will not publish estimates, pledges or projected impact in place of
+            real figures.
           </p>
         </div>
       </section>

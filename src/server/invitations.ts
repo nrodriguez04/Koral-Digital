@@ -21,7 +21,13 @@ export type CreatedInvitation = {
 
 export async function createInvitation(
   inviter: Actor,
-  input: { email: string; orgId: string | null; memberRole?: MemberRole; staffRole?: StaffRole; name?: string | null },
+  input: {
+    email: string;
+    orgId: string | null;
+    memberRole?: MemberRole;
+    staffRole?: StaffRole;
+    name?: string | null;
+  },
 ): Promise<CreatedInvitation> {
   const db = getDb();
   const email = input.email.trim().toLowerCase();
@@ -63,7 +69,11 @@ export async function createInvitation(
     entityType: 'invitation',
     entityId: row!.id,
     orgId: input.orgId,
-    metadata: { memberRole: input.memberRole ?? null, staffRole: input.staffRole ?? null, delivery: descope.ok ? 'descope_email' : 'manual_link' },
+    metadata: {
+      memberRole: input.memberRole ?? null,
+      staffRole: input.staffRole ?? null,
+      delivery: descope.ok ? 'descope_email' : 'manual_link',
+    },
   });
 
   return {
@@ -79,7 +89,9 @@ export async function findInvitationByToken(token: string) {
   const db = getDb();
   const inv = await db.query.invitations.findFirst({ where: eq(invitations.tokenHash, sha256(token)) });
   if (!inv) return null;
-  const org = inv.orgId ? await db.query.organizations.findFirst({ where: eq(organizations.id, inv.orgId) }) : null;
+  const org = inv.orgId
+    ? await db.query.organizations.findFirst({ where: eq(organizations.id, inv.orgId) })
+    : null;
   const usable = inv.status === 'pending' && inv.expiresAt > new Date();
   return { inv, org, usable };
 }
@@ -94,12 +106,16 @@ export type AcceptResult = { ok: true; redirectTo: string } | { ok: false; error
  */
 export async function acceptInvitationByToken(actor: Actor, token: string): Promise<AcceptResult> {
   const found = await findInvitationByToken(token);
-  if (!found || !found.usable) return { ok: false, error: 'This invitation is invalid, expired or already used.' };
+  if (!found || !found.usable)
+    return { ok: false, error: 'This invitation is invalid, expired or already used.' };
   const { inv, org } = found;
   const user = actor.user;
   const emailKnown = Boolean(user.email && user.emailVerified);
   if (emailKnown && user.email !== inv.email) {
-    return { ok: false, error: `This invitation was sent to a different email address. Sign in as ${maskEmail(inv.email)}.` };
+    return {
+      ok: false,
+      error: `This invitation was sent to a different email address. Sign in as ${maskEmail(inv.email)}.`,
+    };
   }
   if (inv.staffRole && !emailKnown && actor.authMethod !== 'dev-mock') {
     return {
@@ -109,10 +125,17 @@ export async function acceptInvitationByToken(actor: Actor, token: string): Prom
     };
   }
   if (inv.descopeUserId && user.descopeUserId && inv.descopeUserId !== user.descopeUserId) {
-    return { ok: false, error: `This invitation belongs to a different account. Sign in as ${maskEmail(inv.email)}.` };
+    return {
+      ok: false,
+      error: `This invitation belongs to a different account. Sign in as ${maskEmail(inv.email)}.`,
+    };
   }
   await acceptInvitationForUser(inv, user, 'token_link');
-  if (!user.email) await getDb().update(users).set({ email: inv.email }).where(and(eq(users.id, user.id)));
+  if (!user.email)
+    await getDb()
+      .update(users)
+      .set({ email: inv.email })
+      .where(and(eq(users.id, user.id)));
   return { ok: true, redirectTo: org ? `/portal/${org.slug}` : '/app' };
 }
 
@@ -126,5 +149,11 @@ export async function pendingInvitationsForOrg(orgId: string) {
   return getDb()
     .select()
     .from(invitations)
-    .where(and(eq(invitations.orgId, orgId), eq(invitations.status, 'pending'), gt(invitations.expiresAt, new Date())));
+    .where(
+      and(
+        eq(invitations.orgId, orgId),
+        eq(invitations.status, 'pending'),
+        gt(invitations.expiresAt, new Date()),
+      ),
+    );
 }

@@ -45,7 +45,7 @@ export function Field({
   const message = Array.isArray(error) ? error[0] : error;
   return (
     <div className={cn('space-y-1.5', className)}>
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
+      <label htmlFor={htmlFor} className="text-ink block text-sm font-medium">
         {label}
         {required ? (
           <span className="text-ocean-600" aria-hidden="true">
@@ -53,11 +53,11 @@ export function Field({
             *
           </span>
         ) : (
-          <span className="font-normal text-ink/50"> (optional)</span>
+          <span className="text-ink/50 font-normal"> (optional)</span>
         )}
       </label>
       {children}
-      {hint && !message ? <p className="text-xs text-ink/55">{hint}</p> : null}
+      {hint && !message ? <p className="text-ink/55 text-xs">{hint}</p> : null}
       {message ? (
         <p id={`${htmlFor}-error`} className="text-xs font-medium text-red-600" role="alert">
           {message}
@@ -69,10 +69,10 @@ export function Field({
 
 export function Checkbox({ label, className, ...props }: ComponentProps<'input'> & { label: ReactNode }) {
   return (
-    <label className={cn('flex cursor-pointer items-start gap-3 text-sm text-ink/80', className)}>
+    <label className={cn('text-ink/80 flex cursor-pointer items-start gap-3 text-sm', className)}>
       <input
         type="checkbox"
-        className="mt-0.5 size-4 shrink-0 rounded border-ink/30 text-ocean-600 accent-ocean-600 focus-visible:outline-2 focus-visible:outline-ocean-500"
+        className="border-ink/30 text-ocean-600 accent-ocean-600 focus-visible:outline-ocean-500 mt-0.5 size-4 shrink-0 rounded focus-visible:outline-2"
         {...props}
       />
       <span>{label}</span>

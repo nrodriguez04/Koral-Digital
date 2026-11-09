@@ -12,7 +12,9 @@ export const SITE_SETTINGS_KEY = 'site';
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   if (!isDatabaseConfigured()) return defaultSiteSettings;
   try {
-    const row = await getDb().query.siteSettings.findFirst({ where: eq(siteSettings.key, SITE_SETTINGS_KEY) });
+    const row = await getDb().query.siteSettings.findFirst({
+      where: eq(siteSettings.key, SITE_SETTINGS_KEY),
+    });
     if (!row) return defaultSiteSettings;
     const parsed = siteSettingsSchema.safeParse(row.value);
     if (!parsed.success) {

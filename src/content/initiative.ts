@@ -41,7 +41,7 @@ export const reefFacts: SourcedFact[] = [
   },
   {
     statement:
-      'From 2023 into 2025, bleaching-level heat stress affected about 84 percent of the world\'s coral reef area, the most extensive of any global bleaching event on record, with mass bleaching documented in at least 83 countries and territories, according to NOAA Coral Reef Watch.',
+      "From 2023 into 2025, bleaching-level heat stress affected about 84 percent of the world's coral reef area, the most extensive of any global bleaching event on record, with mass bleaching documented in at least 83 countries and territories, according to NOAA Coral Reef Watch.",
     sourceName: 'NOAA Coral Reef Watch',
     sourceUrl: 'https://coralreefwatch.noaa.gov/satellite/research/coral_bleaching_report.php',
   },

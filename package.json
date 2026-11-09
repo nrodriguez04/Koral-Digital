@@ -21,8 +21,10 @@
     "admin:grant": "tsx scripts/grant-role.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test --trace off",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "test:e2e": "node scripts/e2e.mjs",
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "vercel-build": "tsx scripts/migrate.ts && tsx scripts/bootstrap.ts && next build",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
     "@descope/nextjs-sdk": "^0.16.28",

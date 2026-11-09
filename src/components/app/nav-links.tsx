@@ -39,7 +39,13 @@ const icons = {
   card: CreditCard,
 };
 
-export type NavItem = { href: string; label: string; icon: keyof typeof icons; exact?: boolean; count?: number };
+export type NavItem = {
+  href: string;
+  label: string;
+  icon: keyof typeof icons;
+  exact?: boolean;
+  count?: number;
+};
 
 export function NavLinks({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
@@ -47,7 +53,9 @@ export function NavLinks({ items }: { items: NavItem[] }) {
     <nav aria-label="Main" className="space-y-0.5">
       {items.map((it) => {
         const Icon = icons[it.icon];
-        const active = it.exact ? pathname === it.href : pathname === it.href || pathname.startsWith(`${it.href}/`);
+        const active = it.exact
+          ? pathname === it.href
+          : pathname === it.href || pathname.startsWith(`${it.href}/`);
         return (
           <Link
             key={it.href}
@@ -61,7 +69,7 @@ export function NavLinks({ items }: { items: NavItem[] }) {
             <Icon className="size-4 shrink-0" aria-hidden="true" />
             <span className="flex-1">{it.label}</span>
             {it.count ? (
-              <span className="rounded-full bg-ocean-500 px-1.5 py-0.5 text-[10px] font-semibold text-white tabular-nums">
+              <span className="bg-ocean-500 rounded-full px-1.5 py-0.5 text-[10px] font-semibold text-white tabular-nums">
                 {it.count}
               </span>
             ) : null}

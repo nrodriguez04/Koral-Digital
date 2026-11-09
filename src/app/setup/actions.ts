@@ -15,7 +15,10 @@ import { clientIp } from '@/lib/request';
  * One-time bootstrap: the first signed-in person holding SETUP_TOKEN becomes
  * superadmin — only while NO staff user exists. Afterwards this is inert.
  */
-export async function claimSuperadmin(_prev: { error?: string }, formData: FormData): Promise<{ error?: string }> {
+export async function claimSuperadmin(
+  _prev: { error?: string },
+  formData: FormData,
+): Promise<{ error?: string }> {
   const configured = env().SETUP_TOKEN;
   if (!configured) return { error: 'SETUP_TOKEN is not configured on this deployment.' };
   const actor = await requireActor();
@@ -28,10 +31,14 @@ export async function claimSuperadmin(_prev: { error?: string }, formData: FormD
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext('koral:setup'))`);
     const existing = await tx.select({ id: users.id }).from(users).where(isNotNull(users.staffRole)).limit(1);
     if (existing.length) return false;
-    await tx.update(users).set({ staffRole: 'superadmin' }).where(sql`${users.id} = ${actor.user.id}`);
+    await tx
+      .update(users)
+      .set({ staffRole: 'superadmin' })
+      .where(sql`${users.id} = ${actor.user.id}`);
     return true;
   });
-  if (!claimed) return { error: 'Setup has already been completed. Ask an existing administrator for access.' };
+  if (!claimed)
+    return { error: 'Setup has already been completed. Ask an existing administrator for access.' };
   await recordAudit({
     actor: auditActor(actor),
     action: 'staff.bootstrap_superadmin',

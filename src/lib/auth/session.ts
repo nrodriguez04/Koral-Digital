@@ -3,7 +3,15 @@ import { and, eq, gt, isNotNull, or } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 import { getDb, isDatabaseConfigured } from '@/db';
-import { invitations, memberships, organizations, users, type MemberRole, type StaffRole, type User } from '@/db/schema';
+import {
+  invitations,
+  memberships,
+  organizations,
+  users,
+  type MemberRole,
+  type StaffRole,
+  type User,
+} from '@/db/schema';
 import { isDevAuthMockEnabled } from '@/lib/env';
 import { log } from '@/lib/logger';
 import { DEV_SESSION_COOKIE, verifyDevSession } from './dev-session';
@@ -146,7 +154,12 @@ export const getActor = cache(async (): Promise<Actor | null> => {
   try {
     const user = await resolveDescopeUser(ds.userId, ds.claims);
     if (!user.isActive) return null;
-    return { user, staffRole: user.staffRole, memberships: await loadMemberships(user.id), authMethod: 'descope' };
+    return {
+      user,
+      staffRole: user.staffRole,
+      memberships: await loadMemberships(user.id),
+      authMethod: 'descope',
+    };
   } catch (err) {
     log.error('auth.resolve_user_failed', { err });
     return null;

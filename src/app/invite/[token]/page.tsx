@@ -18,10 +18,13 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
     return (
       <AuthShell title="This invitation link is not valid">
         <Alert tone="warning">
-          The link may have expired, been replaced by a newer invitation, or already been used. Ask your Koral Digital
-          contact to send a fresh invitation.
+          The link may have expired, been replaced by a newer invitation, or already been used. Ask your Koral
+          Digital contact to send a fresh invitation.
         </Alert>
-        <Link href="/sign-in" className="mt-6 inline-block text-sm font-semibold text-ocean-700 hover:underline">
+        <Link
+          href="/sign-in"
+          className="text-ocean-700 mt-6 inline-block text-sm font-semibold hover:underline"
+        >
           Go to sign in
         </Link>
       </AuthShell>
@@ -44,13 +47,17 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
     >
       {actor ? (
         <>
-          <p className="mb-4 text-sm text-ink/65">
+          <p className="text-ink/65 mb-4 text-sm">
             Signed in as <strong>{actor.user.email ?? 'your account'}</strong>.
           </p>
           <AcceptForm token={token} />
         </>
       ) : (
-        <ButtonLink href={`/sign-in?next=${encodeURIComponent(`/invite/${token}`)}`} size="lg" className="w-full">
+        <ButtonLink
+          href={`/sign-in?next=${encodeURIComponent(`/invite/${token}`)}`}
+          size="lg"
+          className="w-full"
+        >
           Sign in to accept
         </ButtonLink>
       )}

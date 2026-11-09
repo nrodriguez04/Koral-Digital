@@ -20,7 +20,9 @@ async function main() {
   const email = arg('email')?.toLowerCase();
   const descopeUserId = arg('descope-user-id');
   if (!role || (!email && !descopeUserId)) {
-    console.error('Usage: --role <superadmin|admin|sales|delivery|none> (--email <email> | --descope-user-id <id>)');
+    console.error(
+      'Usage: --role <superadmin|admin|sales|delivery|none> (--email <email> | --descope-user-id <id>)',
+    );
     process.exit(1);
   }
   if (role !== 'none' && !staffRoleEnum.enumValues.includes(role)) {
@@ -40,7 +42,10 @@ async function main() {
       process.exit(1);
     }
     const u = matches[0]!;
-    await db.update(users).set({ staffRole: role === 'none' ? null : role }).where(eq(users.id, u.id));
+    await db
+      .update(users)
+      .set({ staffRole: role === 'none' ? null : role })
+      .where(eq(users.id, u.id));
     await db.insert(auditEvents).values({
       actorLabel: 'cli:admin:grant',
       action: 'staff.role_changed',

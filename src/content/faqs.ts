@@ -36,6 +36,6 @@ export const generalFaqs: Faq[] = [
   },
   {
     q: 'Can you guarantee more leads or higher search rankings?',
-    a: 'No, and you should be cautious of anyone who does. Results depend on your market, your team and many factors outside anyone\'s control. What we commit to is clear scope, careful implementation and honest measurement, so you can see what changed and decide what to improve next.',
+    a: "No, and you should be cautious of anyone who does. Results depend on your market, your team and many factors outside anyone's control. What we commit to is clear scope, careful implementation and honest measurement, so you can see what changed and decide what to improve next.",
   },
 ];

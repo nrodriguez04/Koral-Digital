@@ -55,7 +55,10 @@ export async function pageRequireStaff(permission?: StaffPermission, next = '/ap
   return actor as StaffActor;
 }
 
-export async function pageRequireOrgMember(orgSlug: string, permission?: ClientPermission): Promise<OrgContext> {
+export async function pageRequireOrgMember(
+  orgSlug: string,
+  permission?: ClientPermission,
+): Promise<OrgContext> {
   const actor = await getActor();
   if (!actor) redirect(`/sign-in?next=${encodeURIComponent(`/portal/${orgSlug}`)}`);
   try {
@@ -78,7 +81,8 @@ export async function runAction<T>(fn: () => Promise<ActionResult<T>>): Promise<
   try {
     return await fn();
   } catch (err) {
-    if (err instanceof UnauthenticatedError) return { ok: false, error: 'Your session has expired. Please sign in again.' };
+    if (err instanceof UnauthenticatedError)
+      return { ok: false, error: 'Your session has expired. Please sign in again.' };
     if (err instanceof ForbiddenError) return { ok: false, error: err.message };
     if (err instanceof NotFoundError) return { ok: false, error: 'Not found.' };
     // Let Next.js redirect/notFound signals propagate.

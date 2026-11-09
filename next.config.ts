@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: '5mb' },
   },
+  // End-to-end runs use an isolated, freshly-created build directory (see scripts/e2e.mjs).
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },

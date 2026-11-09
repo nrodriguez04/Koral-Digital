@@ -21,7 +21,12 @@ export async function saveArticle(_p: ActionResult<unknown>, fd: FormData): Prom
         reviewed: z.string().optional(),
       })
       .safeParse(Object.fromEntries(fd));
-    if (!parsed.success) return { ok: false, error: 'Please check the article.', fieldErrors: parsed.error.flatten().fieldErrors };
+    if (!parsed.success)
+      return {
+        ok: false,
+        error: 'Please check the article.',
+        fieldErrors: parsed.error.flatten().fieldErrors,
+      };
     const d = parsed.data;
     const db = getDb();
     const a = await db.query.articles.findFirst({ where: eq(articles.id, d.articleId) });
@@ -42,7 +47,13 @@ export async function saveArticle(_p: ActionResult<unknown>, fd: FormData): Prom
         reviewedById: d.status === 'published' ? actor.user.id : a.reviewedById,
       })
       .where(eq(articles.id, a.id));
-    await recordAudit({ actor: auditActor(actor), action: 'article.saved', entityType: 'article', entityId: a.id, metadata: { from: a.status, to: d.status } });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'article.saved',
+      entityType: 'article',
+      entityId: a.id,
+      metadata: { from: a.status, to: d.status },
+    });
     revalidatePath('/insights');
     revalidatePath(`/insights/${a.slug}`);
     revalidatePath('/sitemap.xml');

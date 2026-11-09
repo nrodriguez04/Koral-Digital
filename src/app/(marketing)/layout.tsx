@@ -15,9 +15,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
       <Suspense fallback={null}>
         <Tracker />
       </Suspense>
-      {plausible ? (
-        <script defer data-domain={plausible} src="https://plausible.io/js/script.js" />
-      ) : null}
+      {plausible ? <script defer data-domain={plausible} src="https://plausible.io/js/script.js" /> : null}
     </>
   );
 }

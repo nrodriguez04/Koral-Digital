@@ -25,7 +25,6 @@ import { parseBusinessDate } from '@/lib/dates';
 import { DISCOVERY_QUESTIONS } from '@/lib/discovery';
 import { domainFromEmail, normalizeCompanyName, slugify } from '@/lib/utils';
 
-
 const uuid = z.string().uuid();
 const opt = (max: number) =>
   z
@@ -36,7 +35,11 @@ const opt = (max: number) =>
     .transform((v) => v || null);
 
 function fail(error: z.ZodError): ActionResult<never> {
-  return { ok: false, error: 'Please check the form.', fieldErrors: error.flatten().fieldErrors as Record<string, string[]> };
+  return {
+    ok: false,
+    error: 'Please check the form.',
+    fieldErrors: error.flatten().fieldErrors as Record<string, string[]>,
+  };
 }
 
 /* ---------------- Create a lead manually ---------------- */
@@ -44,7 +47,14 @@ function fail(error: z.ZodError): ActionResult<never> {
 const createSchema = z.object({
   companyName: z.string().trim().min(2).max(160),
   contactName: z.string().trim().min(2).max(120),
-  email: z.string().trim().toLowerCase().email().max(200).optional().or(z.literal('').transform(() => undefined)),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email()
+    .max(200)
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
   phone: opt(40),
   industry: opt(80),
   source: z.enum(leadSourceEnum.enumValues),
@@ -63,21 +73,41 @@ export async function createLead(_p: ActionResult<unknown>, fd: FormData): Promi
       const domain = d.email ? domainFromEmail(d.email) : null;
       const normalizedName = normalizeCompanyName(d.companyName) || d.companyName.toLowerCase();
       let company =
-        (domain ? await tx.query.companies.findFirst({ where: and(eq(companies.domain, domain), isNull(companies.deletedAt)) }) : undefined) ??
-        (await tx.query.companies.findFirst({ where: and(eq(companies.normalizedName, normalizedName), isNull(companies.deletedAt)) }));
+        (domain
+          ? await tx.query.companies.findFirst({
+              where: and(eq(companies.domain, domain), isNull(companies.deletedAt)),
+            })
+          : undefined) ??
+        (await tx.query.companies.findFirst({
+          where: and(eq(companies.normalizedName, normalizedName), isNull(companies.deletedAt)),
+        }));
       if (!company) {
         [company] = await tx
           .insert(companies)
-          .values({ name: d.companyName, normalizedName, domain, website: domain ? `https://${domain}` : null, industry: d.industry })
+          .values({
+            name: d.companyName,
+            normalizedName,
+            domain,
+            website: domain ? `https://${domain}` : null,
+            industry: d.industry,
+          })
           .returning();
       }
       let contact = d.email
-        ? await tx.query.contacts.findFirst({ where: and(eq(contacts.email, d.email), isNull(contacts.deletedAt)) })
+        ? await tx.query.contacts.findFirst({
+            where: and(eq(contacts.email, d.email), isNull(contacts.deletedAt)),
+          })
         : undefined;
       if (!contact) {
         [contact] = await tx
           .insert(contacts)
-          .values({ companyId: company!.id, fullName: d.contactName, email: d.email ?? null, phone: d.phone, isPrimary: true })
+          .values({
+            companyId: company!.id,
+            fullName: d.contactName,
+            email: d.email ?? null,
+            phone: d.phone,
+            isPrimary: true,
+          })
           .returning();
       }
       const [lead] = await tx
@@ -102,7 +132,12 @@ export async function createLead(_p: ActionResult<unknown>, fd: FormData): Promi
       });
       return lead!.id;
     });
-    await recordAudit({ actor: auditActor(actor), action: 'lead.created', entityType: 'lead', entityId: leadId });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'lead.created',
+      entityType: 'lead',
+      entityId: leadId,
+    });
     revalidatePath('/app/leads');
     redirect(`/app/leads/${leadId}`);
   });
@@ -110,7 +145,10 @@ export async function createLead(_p: ActionResult<unknown>, fd: FormData): Promi
 
 /* ---------------- Stage changes ---------------- */
 
-export async function updateLeadStage(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function updateLeadStage(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('leads:write');
     const parsed = z
@@ -119,7 +157,9 @@ export async function updateLeadStage(_p: ActionResult<unknown>, fd: FormData): 
     if (!parsed.success) return fail(parsed.error);
     const { leadId, stage, lostReason } = parsed.data;
     const db = getDb();
-    const lead = await db.query.leads.findFirst({ where: and(eq(leads.id, leadId), isNull(leads.deletedAt)) });
+    const lead = await db.query.leads.findFirst({
+      where: and(eq(leads.id, leadId), isNull(leads.deletedAt)),
+    });
     if (!lead) return { ok: false, error: 'Lead not found.' };
     if (lead.stage === stage) return { ok: true, message: 'No change.' };
     if (stage === 'lost' && !lostReason) return { ok: false, error: 'Please record why the lead was lost.' };
@@ -154,7 +194,10 @@ export async function updateLeadStage(_p: ActionResult<unknown>, fd: FormData): 
 
 /* ---------------- Details: owner, next action, value ---------------- */
 
-export async function updateLeadDetails(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function updateLeadDetails(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('leads:write');
     const parsed = z
@@ -164,7 +207,11 @@ export async function updateLeadDetails(_p: ActionResult<unknown>, fd: FormData)
         ownerId: z.union([uuid, z.literal('')]),
         nextAction: opt(200),
         nextActionDueAt: opt(20),
-        estimatedValue: z.string().trim().regex(/^\d{0,7}(\.\d{0,2})?$/, 'Enter a dollar amount').optional(),
+        estimatedValue: z
+          .string()
+          .trim()
+          .regex(/^\d{0,7}(\.\d{0,2})?$/, 'Enter a dollar amount')
+          .optional(),
         industry: opt(80),
         source: z.enum(leadSourceEnum.enumValues),
       })
@@ -173,7 +220,9 @@ export async function updateLeadDetails(_p: ActionResult<unknown>, fd: FormData)
     const d = parsed.data;
     const db = getDb();
     if (d.ownerId) {
-      const owner = await db.query.users.findFirst({ where: and(eq(users.id, d.ownerId), sql`${users.staffRole} is not null`) });
+      const owner = await db.query.users.findFirst({
+        where: and(eq(users.id, d.ownerId), sql`${users.staffRole} is not null`),
+      });
       if (!owner) return { ok: false, error: 'Owner must be a Koral staff member.' };
     }
     const updated = await db
@@ -208,11 +257,17 @@ export async function addActivity(_p: ActionResult<unknown>, fd: FormData): Prom
   return runAction(async () => {
     const actor = await requireStaff('leads:write');
     const parsed = z
-      .object({ leadId: uuid, type: z.enum(['note', 'call', 'email', 'meeting']), body: z.string().trim().min(1).max(8000) })
+      .object({
+        leadId: uuid,
+        type: z.enum(['note', 'call', 'email', 'meeting']),
+        body: z.string().trim().min(1).max(8000),
+      })
       .safeParse(Object.fromEntries(fd));
     if (!parsed.success) return fail(parsed.error);
     const db = getDb();
-    const lead = await db.query.leads.findFirst({ where: and(eq(leads.id, parsed.data.leadId), isNull(leads.deletedAt)) });
+    const lead = await db.query.leads.findFirst({
+      where: and(eq(leads.id, parsed.data.leadId), isNull(leads.deletedAt)),
+    });
     if (!lead) return { ok: false, error: 'Lead not found.' };
     await db.insert(leadActivities).values({ ...parsed.data, actorId: actor.user.id });
     if (lead.stage === 'new' && parsed.data.type !== 'note') {
@@ -237,7 +292,9 @@ export async function saveDiscovery(_p: ActionResult<unknown>, fd: FormData): Pr
     const actor = await requireStaff('leads:write');
     const leadId = uuid.parse(fd.get('leadId'));
     const db = getDb();
-    const lead = await db.query.leads.findFirst({ where: and(eq(leads.id, leadId), isNull(leads.deletedAt)) });
+    const lead = await db.query.leads.findFirst({
+      where: and(eq(leads.id, leadId), isNull(leads.deletedAt)),
+    });
     if (!lead) return { ok: false, error: 'Lead not found.' };
     let saved = 0;
     for (const q of DISCOVERY_QUESTIONS) {
@@ -253,7 +310,13 @@ export async function saveDiscovery(_p: ActionResult<unknown>, fd: FormData): Pr
         });
       if (answer) saved++;
     }
-    await recordAudit({ actor: auditActor(actor), action: 'lead.discovery_saved', entityType: 'lead', entityId: leadId, metadata: { answered: saved } });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'lead.discovery_saved',
+      entityType: 'lead',
+      entityId: leadId,
+      metadata: { answered: saved },
+    });
     revalidatePath(`/app/leads/${leadId}`);
     return { ok: true, message: `Discovery saved (${saved}/${DISCOVERY_QUESTIONS.length} answered).` };
   });
@@ -261,7 +324,10 @@ export async function saveDiscovery(_p: ActionResult<unknown>, fd: FormData): Pr
 
 /* ---------------- Meetings (consultation bookings) ---------------- */
 
-export async function scheduleMeeting(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function scheduleMeeting(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('leads:write');
     const parsed = z
@@ -297,11 +363,18 @@ export async function scheduleMeeting(_p: ActionResult<unknown>, fd: FormData): 
   });
 }
 
-export async function updateMeetingStatus(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function updateMeetingStatus(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     await requireStaff('leads:write');
     const parsed = z
-      .object({ meetingId: uuid, status: z.enum(['scheduled', 'completed', 'cancelled', 'no_show']), notes: opt(4000) })
+      .object({
+        meetingId: uuid,
+        status: z.enum(['scheduled', 'completed', 'cancelled', 'no_show']),
+        notes: opt(4000),
+      })
       .safeParse(Object.fromEntries(fd));
     if (!parsed.success) return fail(parsed.error);
     const [m] = await getDb()
@@ -347,7 +420,10 @@ export async function addLeadTask(_p: ActionResult<unknown>, fd: FormData): Prom
 
 /* ---------------- Convert to client ---------------- */
 
-export async function convertLeadToClient(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function convertLeadToClient(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('clients:convert');
     const parsed = z
@@ -355,14 +431,17 @@ export async function convertLeadToClient(_p: ActionResult<unknown>, fd: FormDat
       .safeParse(Object.fromEntries(fd));
     if (!parsed.success) return fail(parsed.error);
     const db = getDb();
-    const lead = await db.query.leads.findFirst({ where: and(eq(leads.id, parsed.data.leadId), isNull(leads.deletedAt)) });
+    const lead = await db.query.leads.findFirst({
+      where: and(eq(leads.id, parsed.data.leadId), isNull(leads.deletedAt)),
+    });
     if (!lead) return { ok: false, error: 'Lead not found.' };
     if (lead.convertedOrgId) redirect(`/app/clients/${lead.convertedOrgId}`);
 
     const orgId = await db.transaction(async (tx) => {
       const baseSlug = slugify(parsed.data.orgName) || 'client';
       let slug = baseSlug;
-      for (let i = 2; await tx.query.organizations.findFirst({ where: eq(organizations.slug, slug) }); i++) slug = `${baseSlug}-${i}`;
+      for (let i = 2; await tx.query.organizations.findFirst({ where: eq(organizations.slug, slug) }); i++)
+        slug = `${baseSlug}-${i}`;
       const [org] = await tx
         .insert(organizations)
         .values({
@@ -413,10 +492,13 @@ export async function archiveLead(_p: ActionResult<unknown>, fd: FormData): Prom
     const actor = await requireStaff('settings:write');
     const leadId = uuid.parse(fd.get('leadId'));
     await getDb().update(leads).set({ deletedAt: new Date() }).where(eq(leads.id, leadId));
-    await recordAudit({ actor: auditActor(actor), action: 'lead.archived', entityType: 'lead', entityId: leadId });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'lead.archived',
+      entityType: 'lead',
+      entityId: leadId,
+    });
     revalidatePath('/app/leads');
     redirect('/app/leads');
   });
 }
-
-

@@ -28,7 +28,9 @@ export function presignUrl(i: PresignInput): string {
   const basePath = ep.pathname.replace(/\/$/, '');
   const encodedKey = i.key.split('/').map(rfc3986).join('/');
   const host = i.forcePathStyle ? ep.host : `${i.bucket}.${ep.host}`;
-  const canonicalUri = i.forcePathStyle ? `${basePath}/${rfc3986(i.bucket)}/${encodedKey}` : `${basePath}/${encodedKey}`;
+  const canonicalUri = i.forcePathStyle
+    ? `${basePath}/${rfc3986(i.bucket)}/${encodedKey}`
+    : `${basePath}/${encodedKey}`;
   const now = i.now ?? new Date();
   const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
   const date = amzDate.slice(0, 8);
@@ -45,7 +47,14 @@ export function presignUrl(i: PresignInput): string {
     .sort()
     .map((k) => `${rfc3986(k)}=${rfc3986(params[k]!)}`)
     .join('&');
-  const canonicalRequest = [i.method, canonicalUri, canonicalQuery, `host:${host}\n`, 'host', 'UNSIGNED-PAYLOAD'].join('\n');
+  const canonicalRequest = [
+    i.method,
+    canonicalUri,
+    canonicalQuery,
+    `host:${host}\n`,
+    'host',
+    'UNSIGNED-PAYLOAD',
+  ].join('\n');
   const stringToSign = ['AWS4-HMAC-SHA256', amzDate, scope, sha256hex(canonicalRequest)].join('\n');
   const kDate = hmac(`AWS4${i.secretAccessKey}`, date);
   const kRegion = hmac(kDate, i.region);

@@ -4,7 +4,8 @@ import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
   title: 'Example Lead-to-Booked workflow (synthetic demo)',
-  description: 'A step-by-step, synthetic demonstration of how a Lead-to-Booked workflow handles a new inquiry.',
+  description:
+    'A step-by-step, synthetic demonstration of how a Lead-to-Booked workflow handles a new inquiry.',
   path: '/demo',
   noindex: true,
 });

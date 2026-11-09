@@ -1,7 +1,15 @@
 import type { ReactNode } from 'react';
 import { Logo } from '@/components/marketing/logo';
 
-export function AuthShell({ title, intro, children }: { title: string; intro?: ReactNode; children: ReactNode }) {
+export function AuthShell({
+  title,
+  intro,
+  children,
+}: {
+  title: string;
+  intro?: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       <div className="ocean-gradient wave-lines hidden flex-col justify-between p-12 text-white lg:flex">
@@ -22,7 +30,7 @@ export function AuthShell({ title, intro, children }: { title: string; intro?: R
             <Logo />
           </div>
           <h1 className="mt-8 text-2xl font-semibold tracking-tight lg:mt-0">{title}</h1>
-          {intro ? <div className="mt-2 text-sm leading-relaxed text-ink/65">{intro}</div> : null}
+          {intro ? <div className="text-ink/65 mt-2 text-sm leading-relaxed">{intro}</div> : null}
           <div className="mt-8">{children}</div>
         </div>
       </div>

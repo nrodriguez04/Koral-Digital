@@ -19,7 +19,7 @@ export const industries: IndustryContent[] = [
       'Lead response, CRM integrations and estimate follow-up for roofing contractors handling storm surges, insurance claims, inspections and retail jobs.',
     headline: 'Lead response and CRM operations for roofing contractors',
     intro:
-      'Roofing lead flow is uneven by nature: quiet for weeks, then a hailstorm crosses North Texas and the phones, web forms and door-knock sheets fill up at once. Insurance work then moves on the carrier\'s and adjuster\'s schedule, not yours. We help roofers keep every inspection request, claim and estimate moving in the CRM they already use, whether that is JobNimbus, AccuLynx, Roofr or something else.',
+      "Roofing lead flow is uneven by nature: quiet for weeks, then a hailstorm crosses North Texas and the phones, web forms and door-knock sheets fill up at once. Insurance work then moves on the carrier's and adjuster's schedule, not yours. We help roofers keep every inspection request, claim and estimate moving in the CRM they already use, whether that is JobNimbus, AccuLynx, Roofr or something else.",
     challenges: [
       {
         title: 'Storm surges overwhelm intake',
@@ -53,7 +53,7 @@ export const industries: IndustryContent[] = [
       },
       {
         title: 'Inspection and adjuster scheduling handoffs',
-        body: 'Inspections and adjuster meetings land on the right rep\'s calendar with the property details attached, plus a task to update the file afterward.',
+        body: "Inspections and adjuster meetings land on the right rep's calendar with the property details attached, plus a task to update the file afterward.",
       },
       {
         title: 'Human-approved follow-up',
@@ -117,7 +117,7 @@ export const industries: IndustryContent[] = [
     faqs: [
       {
         q: 'Which roofing CRMs do you work with?',
-        a: 'We commonly work with roofing platforms such as JobNimbus, AccuLynx and Roofr, as well as general CRMs like HubSpot and HighLevel. We are vendor-neutral and not a certified partner of any of them. What can be automated depends on each platform\'s API access and your subscription plan, which we confirm before quoting.',
+        a: "We commonly work with roofing platforms such as JobNimbus, AccuLynx and Roofr, as well as general CRMs like HubSpot and HighLevel. We are vendor-neutral and not a certified partner of any of them. What can be automated depends on each platform's API access and your subscription plan, which we confirm before quoting.",
       },
       {
         q: 'Can you set up separate pipelines for insurance and retail roofing jobs?',
@@ -143,7 +143,7 @@ export const industries: IndustryContent[] = [
       'CRM, follow-up and handoff workflows for remodelers and builders with long sales cycles, design consultations, financing questions and change orders.',
     headline: 'Systems for remodelers and builders with long sales cycles',
     intro:
-      'A kitchen, addition or whole-home remodel can take months to go from first call to signed contract, with design consultations, revisions, selections and financing conversations along the way. Then the harder part begins: keeping scope, change orders and the client\'s expectations aligned once the job is in production. We help remodelers and construction companies keep long-cycle prospects engaged and hand off cleanly from sales to production, using the tools already in place.',
+      "A kitchen, addition or whole-home remodel can take months to go from first call to signed contract, with design consultations, revisions, selections and financing conversations along the way. Then the harder part begins: keeping scope, change orders and the client's expectations aligned once the job is in production. We help remodelers and construction companies keep long-cycle prospects engaged and hand off cleanly from sales to production, using the tools already in place.",
     challenges: [
       {
         title: 'Long consideration cycles go cold',
@@ -151,7 +151,7 @@ export const industries: IndustryContent[] = [
       },
       {
         title: 'Design consultations booked without qualification',
-        body: 'A design consultation takes hours of a senior person\'s time. When budget range, timeline and scope are not clarified at intake, those hours go to projects that were never a fit.',
+        body: "A design consultation takes hours of a senior person's time. When budget range, timeline and scope are not clarified at intake, those hours go to projects that were never a fit.",
       },
       {
         title: 'Financing questions stall decisions',
@@ -159,7 +159,7 @@ export const industries: IndustryContent[] = [
       },
       {
         title: 'Sales-to-production handoff loses details',
-        body: 'Selections, allowances, scope notes and promises made during the sale live in a salesperson\'s head or inbox. Production starts without them, and the client hears different answers from different people.',
+        body: "Selections, allowances, scope notes and promises made during the sale live in a salesperson's head or inbox. Production starts without them, and the client hears different answers from different people.",
       },
       {
         title: 'Change orders handled informally',
@@ -185,7 +185,7 @@ export const industries: IndustryContent[] = [
       },
       {
         title: 'Change order workflow',
-        body: 'A consistent path for documenting, pricing, approving and recording change orders, with a person setting every price and the customer\'s signed approval stored with the job.',
+        body: "A consistent path for documenting, pricing, approving and recording change orders, with a person setting every price and the customer's signed approval stored with the job.",
       },
     ],
     metrics: [
@@ -247,7 +247,7 @@ export const industries: IndustryContent[] = [
       },
       {
         q: 'Do you help with change order management?',
-        a: 'We help set up a consistent process in the tools you already use: documenting the change, pricing it, getting the customer\'s approval and recording it with the job. A person on your team sets every price and approves every change. The software only keeps steps from being skipped.',
+        a: "We help set up a consistent process in the tools you already use: documenting the change, pricing it, getting the customer's approval and recording it with the job. A person on your team sets every price and approves every change. The software only keeps steps from being skipped.",
       },
       {
         q: 'Do you work with general contractors and commercial builders?',
@@ -269,7 +269,7 @@ export const industries: IndustryContent[] = [
     challenges: [
       {
         title: 'Work orders arrive from everywhere',
-        body: 'Requests come in through property management portals, emails, calls to the office and texts to a technician\'s personal phone. Every property manager uses a different format, and some requests never make it into the dispatch system.',
+        body: "Requests come in through property management portals, emails, calls to the office and texts to a technician's personal phone. Every property manager uses a different format, and some requests never make it into the dispatch system.",
       },
       {
         title: 'Dispatch depends on one person',
@@ -281,7 +281,7 @@ export const industries: IndustryContent[] = [
       },
       {
         title: 'Documentation does not match the invoice',
-        body: 'Clients want photos, notes and approvals tied to each work order. When those live in a technician\'s camera roll, invoices go out late or get disputed.',
+        body: "Clients want photos, notes and approvals tied to each work order. When those live in a technician's camera roll, invoices go out late or get disputed.",
       },
       {
         title: 'Recurring and preventive work slips',
@@ -323,7 +323,7 @@ export const industries: IndustryContent[] = [
       {
         name: 'SLA adherence',
         definition:
-          'Work orders acknowledged and completed within the windows agreed with that client, divided by all of that client\'s work orders in the period, based on recorded timestamps.',
+          "Work orders acknowledged and completed within the windows agreed with that client, divided by all of that client's work orders in the period, based on recorded timestamps.",
       },
       {
         name: 'First-visit completion rate',
@@ -372,7 +372,7 @@ export const industries: IndustryContent[] = [
       },
       {
         q: 'Which field-service tools do you work with?',
-        a: 'We commonly work with tools like Jobber, Housecall Pro and ServiceTitan, and can connect them to calendars, phone systems and QuickBooks where the vendors allow it. We are vendor-neutral and not a certified partner of any platform, and integration options depend on each vendor\'s API access and your plan.',
+        a: "We commonly work with tools like Jobber, Housecall Pro and ServiceTitan, and can connect them to calendars, phone systems and QuickBooks where the vendors allow it. We are vendor-neutral and not a certified partner of any platform, and integration options depend on each vendor's API access and your plan.",
       },
     ],
     services: ['automation-integrations', 'managed-optimization', 'crm-implementation', 'lead-to-booked'],
@@ -386,7 +386,7 @@ export const industries: IndustryContent[] = [
       'Emergency intake, on-call escalation, TPA and carrier documentation, and mitigation-to-rebuild handoffs for water, fire and mold restoration companies.',
     headline: 'Emergency intake and job workflows for restoration companies',
     intro:
-      'Restoration work starts with a phone call at the worst moment of someone\'s week, often at night or on a weekend, and the company that answers and responds quickly is often the one that gets the job. After that, the job depends on documentation: photos, moisture readings, drying logs and estimates that satisfy the carrier or third-party administrator. We help water, fire and mold restoration companies make emergency intake dependable around the clock and move jobs cleanly from mitigation to rebuild.',
+      "Restoration work starts with a phone call at the worst moment of someone's week, often at night or on a weekend, and the company that answers and responds quickly is often the one that gets the job. After that, the job depends on documentation: photos, moisture readings, drying logs and estimates that satisfy the carrier or third-party administrator. We help water, fire and mold restoration companies make emergency intake dependable around the clock and move jobs cleanly from mitigation to rebuild.",
     challenges: [
       {
         title: 'Missed after-hours emergency calls',
@@ -440,7 +440,7 @@ export const industries: IndustryContent[] = [
       {
         name: 'Time to on-site arrival',
         definition:
-          'Time from first contact to the technician\'s recorded arrival at the property, for emergency mitigation jobs.',
+          "Time from first contact to the technician's recorded arrival at the property, for emergency mitigation jobs.",
       },
       {
         name: 'Escalation rate',
@@ -477,7 +477,7 @@ export const industries: IndustryContent[] = [
     ],
     exampleScenario: {
       title: 'Example: a 2 a.m. water loss call through to rebuild',
-      body: 'A homeowner in Frisco calls at 2 a.m. about a burst supply line. The call rings through to the on-call technician; if it is missed, the technician and the operations manager both get an alert with the caller\'s number and voicemail, and a callback task is created. If nobody acknowledges it within the window the company set, the alert escalates to the backup technician. The technician calls back, and intake captures the loss source, affected rooms, carrier and claim number before the job is created in the job management system. On site, the job cannot advance to drying until initial photos, moisture readings and the signed work authorization are attached. When mitigation is complete, a rebuild opportunity is created with the scope notes and photos, and an estimator gets a dated task to contact the owner about reconstruction.',
+      body: "A homeowner in Frisco calls at 2 a.m. about a burst supply line. The call rings through to the on-call technician; if it is missed, the technician and the operations manager both get an alert with the caller's number and voicemail, and a callback task is created. If nobody acknowledges it within the window the company set, the alert escalates to the backup technician. The technician calls back, and intake captures the loss source, affected rooms, carrier and claim number before the job is created in the job management system. On site, the job cannot advance to drying until initial photos, moisture readings and the signed work authorization are attached. When mitigation is complete, a rebuild opportunity is created with the scope notes and photos, and an estimator gets a dated task to contact the owner about reconstruction.",
     },
     faqs: [
       {

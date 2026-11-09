@@ -21,7 +21,10 @@ export function renderMarkdown(src: string): ReactNode[] {
     const h = /^(#{2,3})\s+(.*)$/.exec(line);
     if (h) {
       const text = h[2]!.trim();
-      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const id = text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
       out.push(
         h[1] === '##' ? (
           <h2 key={key++} id={id}>
@@ -50,7 +53,8 @@ export function renderMarkdown(src: string): ReactNode[] {
     }
     if (/^\d+\.\s+/.test(line)) {
       const items: string[] = [];
-      while (i < lines.length && /^\d+\.\s+/.test(lines[i]!)) items.push(lines[i++]!.replace(/^\d+\.\s+/, ''));
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i]!))
+        items.push(lines[i++]!.replace(/^\d+\.\s+/, ''));
       out.push(
         <ol key={key++}>
           {items.map((it, j) => (
@@ -67,11 +71,7 @@ export function renderMarkdown(src: string): ReactNode[] {
       continue;
     }
     const para: string[] = [];
-    while (
-      i < lines.length &&
-      lines[i]!.trim() &&
-      !/^(#{2,3}\s|[-*]\s|\d+\.\s|>\s?)/.test(lines[i]!)
-    ) {
+    while (i < lines.length && lines[i]!.trim() && !/^(#{2,3}\s|[-*]\s|\d+\.\s|>\s?)/.test(lines[i]!)) {
       para.push(lines[i++]!.trim());
     }
     out.push(<p key={key++}>{inline(para.join(' '))}</p>);

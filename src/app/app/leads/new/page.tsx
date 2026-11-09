@@ -13,7 +13,10 @@ export default async function NewLeadPage() {
   await pageRequireStaff('leads:write', '/app/leads/new');
   return (
     <>
-      <PageHeader title="New lead" description="Add a referral, event conversation or outbound prospect. Contacts and companies are de-duplicated automatically." />
+      <PageHeader
+        title="New lead"
+        description="Add a referral, event conversation or outbound prospect. Contacts and companies are de-duplicated automatically."
+      />
       <Card className="max-w-3xl p-6">
         <ActionForm action={createLead} submitLabel="Create lead">
           <div className="grid gap-4 sm:grid-cols-2">

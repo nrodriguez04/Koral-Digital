@@ -5,7 +5,13 @@ import { ArrowRight } from 'lucide-react';
 import { industries } from '@/content/industries';
 import { services } from '@/content/services';
 import { ContentIcon } from '@/components/marketing/icon';
-import { CtaBand, FaqList, IllustrativeLabel, PageHero, SectionHeading } from '@/components/marketing/sections';
+import {
+  CtaBand,
+  FaqList,
+  IllustrativeLabel,
+  PageHero,
+  SectionHeading,
+} from '@/components/marketing/sections';
 import { ButtonLink } from '@/components/ui/button';
 import { siteUrl } from '@/lib/env';
 import { breadcrumbJsonLd, faqJsonLd, JsonLd, pageMetadata } from '@/lib/seo';
@@ -20,7 +26,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const ind = industries.find((i) => i.slug === slug);
   if (!ind) return {};
-  return pageMetadata({ title: ind.metaTitle, description: ind.metaDescription, path: `/industries/${ind.slug}` });
+  return pageMetadata({
+    title: ind.metaTitle,
+    description: ind.metaDescription,
+    path: `/industries/${ind.slug}`,
+  });
 }
 
 export default async function IndustryPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -32,7 +42,9 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
     { name: 'Industries', path: '/industries' },
     { name: ind.name, path: `/industries/${ind.slug}` },
   ];
-  const recommended = ind.services.map((x) => services.find((s) => s.slug === x)).filter(Boolean) as typeof services;
+  const recommended = ind.services
+    .map((x) => services.find((s) => s.slug === x))
+    .filter(Boolean) as typeof services;
   return (
     <>
       <JsonLd data={breadcrumbJsonLd(siteUrl(), crumbs)} />
@@ -50,18 +62,21 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
       </PageHero>
 
       <section className="container-page py-16 sm:py-20">
-        <SectionHeading eyebrow="Where leads leak" title={`Common gaps in ${ind.name.toLowerCase()} businesses`} />
+        <SectionHeading
+          eyebrow="Where leads leak"
+          title={`Common gaps in ${ind.name.toLowerCase()} businesses`}
+        />
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {ind.challenges.map((c) => (
             <div key={c.title} className="card p-6">
               <h3 className="font-semibold">{c.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink/70">{c.body}</p>
+              <p className="text-ink/70 mt-2 text-sm leading-relaxed">{c.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-ink/8 bg-white">
+      <section className="border-ink/8 border-y bg-white">
         <div className="container-page grid gap-12 py-16 sm:py-20 lg:grid-cols-2">
           <div>
             <SectionHeading eyebrow="Our approach" title="What we typically put in place" />
@@ -69,24 +84,24 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
               {ind.approach.map((a) => (
                 <li key={a.title}>
                   <h3 className="font-semibold">{a.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-ink/70">{a.body}</p>
+                  <p className="text-ink/70 mt-1 text-sm leading-relaxed">{a.body}</p>
                 </li>
               ))}
             </ul>
           </div>
           <div>
             <SectionHeading eyebrow="Measure what matters" title="Metrics worth tracking" />
-            <dl className="mt-8 divide-y divide-ink/8 rounded-2xl bg-ivory ring-1 ring-ink/8">
+            <dl className="divide-ink/8 bg-ivory ring-ink/8 mt-8 divide-y rounded-2xl ring-1">
               {ind.metrics.map((m) => (
                 <div key={m.name} className="p-5">
                   <dt className="font-semibold">{m.name}</dt>
-                  <dd className="mt-1 text-sm leading-relaxed text-ink/70">{m.definition}</dd>
+                  <dd className="text-ink/70 mt-1 text-sm leading-relaxed">{m.definition}</dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-4 text-sm text-ink/60">
-              Software we often see in this trade: {ind.commonTools.join(', ')}. We work vendor-neutrally with what you
-              already use.
+            <p className="text-ink/60 mt-4 text-sm">
+              Software we often see in this trade: {ind.commonTools.join(', ')}. We work vendor-neutrally with
+              what you already use.
             </p>
           </div>
         </div>
@@ -105,10 +120,14 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
           <SectionHeading eyebrow="Recommended" title="Services that fit" />
           <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {recommended.map((r) => (
-              <Link key={r.slug} href={`/services/${r.slug}`} className="card p-5 transition hover:border-ocean-500/40">
-                <ContentIcon name={r.icon} className="size-5 text-ocean-600" />
+              <Link
+                key={r.slug}
+                href={`/services/${r.slug}`}
+                className="card hover:border-ocean-500/40 p-5 transition"
+              >
+                <ContentIcon name={r.icon} className="text-ocean-600 size-5" />
                 <p className="mt-3 font-semibold">{r.name}</p>
-                <p className="mt-1 line-clamp-3 text-sm text-ink/60">{r.summary}</p>
+                <p className="text-ink/60 mt-1 line-clamp-3 text-sm">{r.summary}</p>
               </Link>
             ))}
           </div>

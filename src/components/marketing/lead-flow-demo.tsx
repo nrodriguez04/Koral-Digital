@@ -1,7 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Bell, CalendarCheck2, CheckCircle2, Copy, Inbox, LineChart, PenLine, RotateCcw } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bell,
+  CalendarCheck2,
+  CheckCircle2,
+  Copy,
+  Inbox,
+  LineChart,
+  PenLine,
+  RotateCcw,
+} from 'lucide-react';
 import { Button, ButtonLink } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -46,7 +57,10 @@ const steps = [
     time: 'Tue 6:44 PM',
     body: 'A draft reply is prepared from an approved template. The rep edits one line and taps send. Nothing goes to the homeowner without a human approving it, and texts only go to people who asked to be texted.',
     panel: [
-      ['Draft', '“Hi — thanks for reaching out about your roof. I can come by Thursday morning or Friday afternoon for a free inspection. Which works better?”'],
+      [
+        'Draft',
+        '“Hi — thanks for reaching out about your roof. I can come by Thursday morning or Friday afternoon for a free inspection. Which works better?”',
+      ],
       ['Status', 'Approved and sent by rep at 6:51 PM'],
       ['Consent', 'Homeowner requested text contact on the form'],
     ],
@@ -90,13 +104,18 @@ export function LeadFlowDemo() {
               aria-current={idx === i ? 'step' : undefined}
               className={cn(
                 'flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm transition',
-                idx === i ? 'bg-ocean-900 text-white' : 'bg-white text-ink ring-1 ring-ink/8 hover:bg-ocean-50',
+                idx === i
+                  ? 'bg-ocean-900 text-white'
+                  : 'text-ink ring-ink/8 hover:bg-ocean-50 bg-white ring-1',
               )}
             >
               {idx < i ? (
-                <CheckCircle2 className="size-5 shrink-0 text-ocean-400" aria-hidden="true" />
+                <CheckCircle2 className="text-ocean-400 size-5 shrink-0" aria-hidden="true" />
               ) : (
-                <s.icon className={cn('size-5 shrink-0', idx === i ? 'text-ocean-300' : 'text-ocean-600')} aria-hidden="true" />
+                <s.icon
+                  className={cn('size-5 shrink-0', idx === i ? 'text-ocean-300' : 'text-ocean-600')}
+                  aria-hidden="true"
+                />
               )}
               <span className="font-medium">{s.title}</span>
             </button>
@@ -105,17 +124,17 @@ export function LeadFlowDemo() {
       </ol>
       <div className="lg:col-span-8">
         <div className="card overflow-hidden" aria-live="polite">
-          <div className="flex items-center justify-between border-b border-ink/8 bg-amber-50 px-5 py-2 text-xs font-semibold text-amber-900">
+          <div className="border-ink/8 flex items-center justify-between border-b bg-amber-50 px-5 py-2 text-xs font-semibold text-amber-900">
             <span>SYNTHETIC DEMO DATA — not a real customer or client result</span>
             <span>
               Step {i + 1} of {steps.length}
             </span>
           </div>
           <div className="p-6 sm:p-8">
-            <p className="text-sm text-ink/55">{step.time}</p>
+            <p className="text-ink/55 text-sm">{step.time}</p>
             <h2 className="mt-1 text-2xl font-semibold tracking-tight">{step.title}</h2>
-            <p className="mt-3 leading-relaxed text-ink/75">{step.body}</p>
-            <dl className="mt-6 divide-y divide-ink/8 rounded-2xl bg-ivory ring-1 ring-ink/8">
+            <p className="text-ink/75 mt-3 leading-relaxed">{step.body}</p>
+            <dl className="divide-ink/8 bg-ivory ring-ink/8 mt-6 divide-y rounded-2xl ring-1">
               {step.panel.map(([k, v]) => (
                 <div key={k} className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-3">
                   <dt className="text-ink/55">{k}</dt>
@@ -132,7 +151,11 @@ export function LeadFlowDemo() {
                   <Button variant="ghost" onClick={() => setI(0)}>
                     <RotateCcw className="size-4" aria-hidden="true" /> Start over
                   </Button>
-                  <ButtonLink href="/contact?service=lead-to-booked" data-track="cta_click" data-track-label="demo_complete">
+                  <ButtonLink
+                    href="/contact?service=lead-to-booked"
+                    data-track="cta_click"
+                    data-track-label="demo_complete"
+                  >
                     Talk about your workflow <ArrowRight className="size-4" aria-hidden="true" />
                   </ButtonLink>
                 </div>

@@ -24,7 +24,11 @@ const industryMap: Record<string, (typeof INDUSTRIES)[number]> = {
   restoration: 'Restoration',
 };
 
-export default async function ContactPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const sp = await searchParams;
   const s = await getSiteSettings();
   const service = services.find((x) => x.slug === sp.service)?.slug;
@@ -50,21 +54,21 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         <aside className="space-y-5 lg:col-span-4">
           <div className="card p-6">
             <h2 className="font-semibold">What to expect</h2>
-            <ul className="mt-4 space-y-4 text-sm text-ink/70">
+            <ul className="text-ink/70 mt-4 space-y-4 text-sm">
               <li className="flex gap-3">
-                <Clock className="mt-0.5 size-4 shrink-0 text-ocean-600" aria-hidden="true" />
-                A personal reply within one business day.
+                <Clock className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />A personal reply
+                within one business day.
               </li>
               <li className="flex gap-3">
-                <CalendarCheck2 className="mt-0.5 size-4 shrink-0 text-ocean-600" aria-hidden="true" />
-                A free 30-minute consultation by video or, in North DFW, in person.
+                <CalendarCheck2 className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />A free
+                30-minute consultation by video or, in North DFW, in person.
               </li>
               <li className="flex gap-3">
-                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-ocean-600" aria-hidden="true" />
+                <ShieldCheck className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                 No CRM? No problem. Many businesses we talk to run on spreadsheets and phones.
               </li>
               <li className="flex gap-3">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-ocean-600" aria-hidden="true" />
+                <MapPin className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                 Based in {s.city}, {s.region}. Serving {s.serviceAreas.slice(0, 5).join(', ')} and beyond.
               </li>
             </ul>
@@ -72,10 +76,10 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
           {bookingUrl ? (
             <div className="card p-6">
               <h2 className="font-semibold">Prefer to book directly?</h2>
-              <p className="mt-2 text-sm text-ink/65">Pick a time that suits you on our booking calendar.</p>
+              <p className="text-ink/65 mt-2 text-sm">Pick a time that suits you on our booking calendar.</p>
               <a
                 href="/book"
-                className="mt-4 inline-flex text-sm font-semibold text-ocean-700 hover:text-ocean-600"
+                className="text-ocean-700 hover:text-ocean-600 mt-4 inline-flex text-sm font-semibold"
                 data-track="booking_click"
                 data-track-label="contact_sidebar"
               >
@@ -86,7 +90,10 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
           {s.contactEmailVerified ? (
             <div className="card p-6">
               <h2 className="font-semibold">Email</h2>
-              <a href={`mailto:${s.contactEmail}`} className="mt-2 block text-sm text-ocean-700 hover:underline">
+              <a
+                href={`mailto:${s.contactEmail}`}
+                className="text-ocean-700 mt-2 block text-sm hover:underline"
+              >
                 {s.contactEmail}
               </a>
             </div>

@@ -45,7 +45,9 @@ function DevSignOut({ className, inverse }: { className?: string; inverse?: bool
 const btn = (inverse?: boolean) =>
   cn(
     'inline-flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition',
-    inverse ? 'text-white/75 hover:bg-white/10 hover:text-white' : 'text-ink/70 hover:bg-ink/5 hover:text-ink',
+    inverse
+      ? 'text-white/75 hover:bg-white/10 hover:text-white'
+      : 'text-ink/70 hover:bg-ink/5 hover:text-ink',
   );
 
 export function SignOutButton({

@@ -40,12 +40,14 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader title="Conversation" description="Internal notes are never visible to the client." />
-          <ol className="divide-y divide-ink/6">
+          <ol className="divide-ink/6 divide-y">
             {messages.map((m) => (
               <li key={m.id} className={`px-5 py-4 ${m.internalNote ? 'bg-amber-50/60' : ''}`}>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-ink/55">
-                  <span className="font-semibold text-ink">{m.authorName ?? m.authorEmail ?? 'Unknown'}</span>
-                  <Badge tone={m.authorIsStaff ? 'navy' : 'ocean'}>{m.authorIsStaff ? 'Koral' : 'Client'}</Badge>
+                <div className="text-ink/55 flex flex-wrap items-center gap-2 text-xs">
+                  <span className="text-ink font-semibold">{m.authorName ?? m.authorEmail ?? 'Unknown'}</span>
+                  <Badge tone={m.authorIsStaff ? 'navy' : 'ocean'}>
+                    {m.authorIsStaff ? 'Koral' : 'Client'}
+                  </Badge>
                   {m.internalNote ? <Badge tone="amber">Internal note</Badge> : null}
                   <span>{formatDate(m.createdAt, true)}</span>
                 </div>
@@ -54,7 +56,7 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
             ))}
           </ol>
           {canWrite ? (
-            <div className="border-t border-ink/8 p-5">
+            <div className="border-ink/8 border-t p-5">
               <ActionForm action={staffReply} submitLabel="Send" resetOnSuccess>
                 <input type="hidden" name="ticketId" value={ticket.id} />
                 <Textarea name="body" required placeholder="Write a reply…" aria-label="Reply" />

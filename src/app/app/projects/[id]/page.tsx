@@ -38,25 +38,41 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader title="Milestones" description="Client-visible milestones and their status appear in the client portal." />
-            <ol className="divide-y divide-ink/6">
+            <CardHeader
+              title="Milestones"
+              description="Client-visible milestones and their status appear in the client portal."
+            />
+            <ol className="divide-ink/6 divide-y">
               {d.milestones.map((m, i) => (
                 <li key={m.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ink/5 text-xs font-semibold tabular-nums">{i + 1}</span>
+                  <span className="bg-ink/5 flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums">
+                    {i + 1}
+                  </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">
                       {m.title} {!m.clientVisible ? <Badge>Internal</Badge> : null}
                     </p>
-                    <p className="text-xs text-ink/55">
+                    <p className="text-ink/55 text-xs">
                       {m.description ? `${m.description} · ` : ''}Due {formatDate(m.dueDate)}
                       {m.completedAt ? ` · done ${formatDate(m.completedAt)}` : ''}
                     </p>
                   </div>
                   {canWrite ? (
-                    <ActionForm action={setMilestoneStatus} inline submitLabel="Set" submitSize="sm" submitVariant="outline">
+                    <ActionForm
+                      action={setMilestoneStatus}
+                      inline
+                      submitLabel="Set"
+                      submitSize="sm"
+                      submitVariant="outline"
+                    >
                       <input type="hidden" name="projectId" value={p.id} />
                       <input type="hidden" name="milestoneId" value={m.id} />
-                      <Select name="status" defaultValue={m.status} className="h-8 w-auto text-xs" aria-label={`Status of ${m.title}`}>
+                      <Select
+                        name="status"
+                        defaultValue={m.status}
+                        className="h-8 w-auto text-xs"
+                        aria-label={`Status of ${m.title}`}
+                      >
                         {milestoneStatusEnum.enumValues.map((s) => (
                           <option key={s} value={s}>
                             {titleCase(s)}
@@ -69,13 +85,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   )}
                 </li>
               ))}
-              {d.milestones.length === 0 ? <li className="px-5 py-4 text-sm text-ink/50">No milestones yet.</li> : null}
+              {d.milestones.length === 0 ? (
+                <li className="text-ink/50 px-5 py-4 text-sm">No milestones yet.</li>
+              ) : null}
             </ol>
             {canWrite ? (
-              <div className="border-t border-ink/8 p-5">
-                <ActionForm action={addMilestone} submitLabel="Add milestone" resetOnSuccess inline submitSize="sm">
+              <div className="border-ink/8 border-t p-5">
+                <ActionForm
+                  action={addMilestone}
+                  submitLabel="Add milestone"
+                  resetOnSuccess
+                  inline
+                  submitSize="sm"
+                >
                   <input type="hidden" name="projectId" value={p.id} />
-                  <Input name="title" placeholder="Milestone title" required className="min-w-56 flex-1" aria-label="Milestone title" />
+                  <Input
+                    name="title"
+                    placeholder="Milestone title"
+                    required
+                    className="min-w-56 flex-1"
+                    aria-label="Milestone title"
+                  />
                   <Input name="dueDate" type="date" className="w-40" aria-label="Due date" />
                   <Checkbox name="clientVisible" defaultChecked label="Client-visible" className="pb-2.5" />
                 </ActionForm>
@@ -84,10 +114,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </Card>
 
           <Card>
-            <CardHeader title="Tasks & client checklist" description="Client-visible tasks show up as the client’s onboarding checklist (e.g. access requests)." />
+            <CardHeader
+              title="Tasks & client checklist"
+              description="Client-visible tasks show up as the client’s onboarding checklist (e.g. access requests)."
+            />
             <TaskList tasks={d.tasks} editable={staffCan(actor.staffRole, 'tasks:write')} />
             {staffCan(actor.staffRole, 'tasks:write') ? (
-              <div className="border-t border-ink/8 p-5">
+              <div className="border-ink/8 border-t p-5">
                 <ActionForm action={createTask} submitLabel="Add task" resetOnSuccess submitSize="sm">
                   <input type="hidden" name="projectId" value={p.id} />
                   <input type="hidden" name="orgId" value={org.id} />
@@ -104,29 +137,36 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <Card>
             <CardHeader title="Project updates" />
             {d.updates.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.updates.map((u) => (
                   <li key={u.id} className="px-5 py-4">
-                    <div className="flex items-center gap-2 text-xs text-ink/55">
-                      <Badge tone={u.clientVisible ? 'ocean' : 'neutral'}>{u.clientVisible ? 'Client-visible' : 'Internal'}</Badge>
+                    <div className="text-ink/55 flex items-center gap-2 text-xs">
+                      <Badge tone={u.clientVisible ? 'ocean' : 'neutral'}>
+                        {u.clientVisible ? 'Client-visible' : 'Internal'}
+                      </Badge>
                       {formatDate(u.createdAt, true)}
                     </div>
                     <p className="mt-1 font-semibold">{u.title}</p>
-                    <p className="mt-1 text-sm whitespace-pre-line text-ink/75">{u.body}</p>
+                    <p className="text-ink/75 mt-1 text-sm whitespace-pre-line">{u.body}</p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No updates yet.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No updates yet.</p>
             )}
             {canWrite ? (
-              <div className="border-t border-ink/8 p-5">
+              <div className="border-ink/8 border-t p-5">
                 <ActionForm action={postClientUpdate} submitLabel="Post update" resetOnSuccess>
                   <input type="hidden" name="orgId" value={org.id} />
                   <input type="hidden" name="projectId" value={p.id} />
                   <input type="hidden" name="kind" value="update" />
                   <Input name="title" placeholder="Update title" required aria-label="Update title" />
-                  <Textarea name="body" placeholder="What changed, what's next, anything you need from the client" required aria-label="Update body" />
+                  <Textarea
+                    name="body"
+                    placeholder="What changed, what's next, anything you need from the client"
+                    required
+                    aria-label="Update body"
+                  />
                   <Checkbox name="clientVisible" label="Publish to the client portal" />
                 </ActionForm>
               </div>
@@ -157,13 +197,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   </Field>
                   <div className="grid grid-cols-2 gap-3">
                     <Field label="Start" htmlFor="startDate">
-                      <Input id="startDate" name="startDate" type="date" defaultValue={toBusinessInput(p.startDate, false)} />
+                      <Input
+                        id="startDate"
+                        name="startDate"
+                        type="date"
+                        defaultValue={toBusinessInput(p.startDate, false)}
+                      />
                     </Field>
                     <Field label="Target" htmlFor="targetDate">
-                      <Input id="targetDate" name="targetDate" type="date" defaultValue={toBusinessInput(p.targetDate, false)} />
+                      <Input
+                        id="targetDate"
+                        name="targetDate"
+                        type="date"
+                        defaultValue={toBusinessInput(p.targetDate, false)}
+                      />
                     </Field>
                   </div>
-                  <Checkbox name="clientVisible" defaultChecked={p.clientVisible} label="Visible in the client portal" />
+                  <Checkbox
+                    name="clientVisible"
+                    defaultChecked={p.clientVisible}
+                    label="Visible in the client portal"
+                  />
                 </fieldset>
               </ActionForm>
             </div>
@@ -171,17 +225,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <Card>
             <CardHeader title="Project files" description="Upload from the client’s Files tab." />
             {d.files.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.files.map((f) => (
                   <li key={f.id} className="px-5 py-2.5 text-sm">
-                    <a href={`/api/files/${f.id}`} className="flex items-center gap-2 hover:text-ocean-700">
-                      <Download className="size-4 text-ink/40" aria-hidden="true" /> {f.name}
+                    <a href={`/api/files/${f.id}`} className="hover:text-ocean-700 flex items-center gap-2">
+                      <Download className="text-ink/40 size-4" aria-hidden="true" /> {f.name}
                     </a>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No files linked.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No files linked.</p>
             )}
           </Card>
         </div>

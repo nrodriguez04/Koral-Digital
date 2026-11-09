@@ -20,11 +20,23 @@ export function SectionHeading({
   return (
     <div className={cn('max-w-3xl', align === 'center' && 'mx-auto text-center')}>
       {eyebrow ? <p className={cn('eyebrow', inverse && 'text-ocean-300')}>{eyebrow}</p> : null}
-      <h2 className={cn('mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl', inverse ? 'text-white' : 'text-ink')}>
+      <h2
+        className={cn(
+          'mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl',
+          inverse ? 'text-white' : 'text-ink',
+        )}
+      >
         {title}
       </h2>
       {intro ? (
-        <p className={cn('mt-4 text-lg leading-relaxed text-pretty', inverse ? 'text-white/75' : 'text-ink/70')}>{intro}</p>
+        <p
+          className={cn(
+            'mt-4 text-lg leading-relaxed text-pretty',
+            inverse ? 'text-white/75' : 'text-ink/70',
+          )}
+        >
+          {intro}
+        </p>
       ) : null}
     </div>
   );
@@ -70,7 +82,9 @@ export function PageHero({
         <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem] lg:leading-[1.08]">
           {title}
         </h1>
-        {intro ? <p className="mt-5 max-w-2xl text-lg leading-relaxed text-pretty text-white/80">{intro}</p> : null}
+        {intro ? (
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-pretty text-white/80">{intro}</p>
+        ) : null}
         {children ? <div className="mt-8">{children}</div> : null}
       </div>
     </section>
@@ -93,7 +107,13 @@ export function CtaBand({
           <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{title}</h2>
           <p className="mt-4 text-lg leading-relaxed text-white/80">{body}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/contact" variant="inverse" size="lg" data-track="cta_click" data-track-label={label}>
+            <ButtonLink
+              href="/contact"
+              variant="inverse"
+              size="lg"
+              data-track="cta_click"
+              data-track-label={label}
+            >
               Book a free consultation <ArrowRight className="size-4" aria-hidden="true" />
             </ButtonLink>
             <ButtonLink
@@ -113,19 +133,19 @@ export function CtaBand({
 
 export function FaqList({ faqs }: { faqs: { q: string; a: string }[] }) {
   return (
-    <div className="divide-y divide-ink/10 rounded-[var(--radius-card)] border border-ink/10 bg-white">
+    <div className="divide-ink/10 border-ink/10 divide-y rounded-[var(--radius-card)] border bg-white">
       {faqs.map((f) => (
         <details key={f.q} className="group px-5 py-4 sm:px-6 [&_summary::-webkit-details-marker]:hidden">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-left font-semibold text-ink">
+          <summary className="text-ink flex cursor-pointer list-none items-start justify-between gap-4 text-left font-semibold">
             <h3 className="text-base">{f.q}</h3>
             <span
               aria-hidden="true"
-              className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-ocean-50 text-ocean-700 transition group-open:rotate-45"
+              className="bg-ocean-50 text-ocean-700 mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full transition group-open:rotate-45"
             >
               +
             </span>
           </summary>
-          <p className="mt-3 leading-relaxed text-ink/70">{f.a}</p>
+          <p className="text-ink/70 mt-3 leading-relaxed">{f.a}</p>
         </details>
       ))}
     </div>
@@ -134,13 +154,20 @@ export function FaqList({ faqs }: { faqs: { q: string; a: string }[] }) {
 
 export function TextLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center gap-1 font-semibold text-ocean-700 hover:text-ocean-600">
+    <Link
+      href={href}
+      className="text-ocean-700 hover:text-ocean-600 inline-flex items-center gap-1 font-semibold"
+    >
       {children} <ArrowRight className="size-4" aria-hidden="true" />
     </Link>
   );
 }
 
-export function IllustrativeLabel({ children = 'Illustrative example — not a client result' }: { children?: ReactNode }) {
+export function IllustrativeLabel({
+  children = 'Illustrative example — not a client result',
+}: {
+  children?: ReactNode;
+}) {
   return (
     <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-900">
       {children}

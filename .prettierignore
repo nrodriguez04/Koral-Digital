@@ -4,3 +4,4 @@ drizzle
 package-lock.json
 public
 docs/CLAUDE_BUILD_PROMPT.md
+.next-e2e

@@ -22,7 +22,12 @@ export function redact(value: unknown, depth = 0): unknown {
 
 function write(level: Level, event: string, data?: Record<string, unknown>) {
   if (level === 'debug' && process.env.NODE_ENV === 'production') return;
-  const line = JSON.stringify({ ts: new Date().toISOString(), level, event, ...(redact(data ?? {}) as object) });
+  const line = JSON.stringify({
+    ts: new Date().toISOString(),
+    level,
+    event,
+    ...(redact(data ?? {}) as object),
+  });
   if (level === 'error') console.error(line);
   else if (level === 'warn') console.warn(line);
   else console.log(line);

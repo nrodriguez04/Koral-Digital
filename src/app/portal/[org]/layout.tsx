@@ -9,9 +9,18 @@ import { env } from '@/lib/env';
 import { titleCase } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = { title: { default: 'Client portal', template: '%s · Koral client portal' }, robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: { default: 'Client portal', template: '%s · Koral client portal' },
+  robots: { index: false, follow: false },
+};
 
-export default async function PortalLayout({ children, params }: { children: ReactNode; params: Promise<{ org: string }> }) {
+export default async function PortalLayout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: Promise<{ org: string }>;
+}) {
   const { org: orgSlug } = await params;
   const { actor, org, role } = await pageRequireOrgMember(orgSlug);
   const base = `/portal/${org.slug}`;
@@ -20,7 +29,9 @@ export default async function PortalLayout({ children, params }: { children: Rea
     { href: `${base}/support`, label: 'Support', icon: 'lifebuoy' },
     { href: `${base}/documents`, label: 'Documents', icon: 'folder' },
     { href: `${base}/billing`, label: 'Proposals & billing', icon: 'card' },
-    ...(memberCan(role, 'team:manage') ? [{ href: `${base}/team`, label: 'Team', icon: 'users' as const }] : []),
+    ...(memberCan(role, 'team:manage')
+      ? [{ href: `${base}/team`, label: 'Team', icon: 'users' as const }]
+      : []),
   ];
   const e = env();
   return (
@@ -31,7 +42,11 @@ export default async function PortalLayout({ children, params }: { children: Rea
         subtitle="Koral Digital client portal"
         homeHref={base}
         authMethod={actor.authMethod}
-        user={{ name: actor.user.name, email: actor.user.email, role: titleCase(role).replace('Client ', '') }}
+        user={{
+          name: actor.user.name,
+          email: actor.user.email,
+          role: titleCase(role).replace('Client ', ''),
+        }}
         banner={
           org.isDemo || actor.authMethod === 'dev-mock' ? (
             <div className="bg-amber-100 px-4 py-1.5 text-center text-xs font-medium text-amber-900">

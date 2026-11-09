@@ -12,7 +12,11 @@ export async function getProposalWithItems(id: string) {
   const proposal = await db.query.proposals.findFirst({ where: eq(proposals.id, id) });
   if (!proposal) return null;
   const [items, lead, org] = await Promise.all([
-    db.select().from(proposalItems).where(eq(proposalItems.proposalId, id)).orderBy(asc(proposalItems.sortOrder), asc(proposalItems.id)),
+    db
+      .select()
+      .from(proposalItems)
+      .where(eq(proposalItems.proposalId, id))
+      .orderBy(asc(proposalItems.sortOrder), asc(proposalItems.id)),
     proposal.leadId ? db.query.leads.findFirst({ where: eq(leads.id, proposal.leadId) }) : null,
     proposal.orgId ? db.query.organizations.findFirst({ where: eq(organizations.id, proposal.orgId) }) : null,
   ]);
@@ -20,7 +24,15 @@ export async function getProposalWithItems(id: string) {
     lead?.companyId ? db.query.companies.findFirst({ where: eq(companies.id, lead.companyId) }) : null,
     lead?.contactId ? db.query.contacts.findFirst({ where: eq(contacts.id, lead.contactId) }) : null,
   ]);
-  return { proposal, items, lead, org, company, contact, totals: proposalTotals(items, proposal.depositPercent) };
+  return {
+    proposal,
+    items,
+    lead,
+    org,
+    company,
+    contact,
+    totals: proposalTotals(items, proposal.depositPercent),
+  };
 }
 
 export async function listProposals() {

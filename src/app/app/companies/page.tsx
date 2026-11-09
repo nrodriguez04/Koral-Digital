@@ -25,15 +25,29 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
       leads: sql<number>`(select count(*)::int from ${leads} where ${leads.companyId} = ${companies.id} and ${leads.deletedAt} is null)`,
     })
     .from(companies)
-    .where(and(isNull(companies.deletedAt), q ? ilike(companies.name, `%${q.replace(/[%_\\]/g, (c) => `\\${c}`)}%`) : undefined))
+    .where(
+      and(
+        isNull(companies.deletedAt),
+        q ? ilike(companies.name, `%${q.replace(/[%_\\]/g, (c) => `\\${c}`)}%`) : undefined,
+      ),
+    )
     .orderBy(desc(companies.createdAt))
     .limit(200);
   return (
     <>
-      <PageHeader title="Companies" description="Business profiles, de-duplicated by website domain and normalized name." />
+      <PageHeader
+        title="Companies"
+        description="Business profiles, de-duplicated by website domain and normalized name."
+      />
       <Card>
-        <form className="border-b border-ink/8 p-4" role="search">
-          <input name="q" defaultValue={q} placeholder="Search companies…" aria-label="Search companies" className="h-10 w-full max-w-sm rounded-lg border border-ink/15 px-3 text-sm" />
+        <form className="border-ink/8 border-b p-4" role="search">
+          <input
+            name="q"
+            defaultValue={q}
+            placeholder="Search companies…"
+            aria-label="Search companies"
+            className="border-ink/15 h-10 w-full max-w-sm rounded-lg border px-3 text-sm"
+          />
         </form>
         {rows.length === 0 ? (
           <EmptyState icon={<Building2 className="size-6" />} title="No companies yet" />
@@ -53,8 +67,11 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
               {rows.map((c) => (
                 <tr key={c.id}>
                   <Td>
-                    <Link href={`/app/companies/${c.id}`} className="font-semibold hover:text-ocean-700">{c.name}</Link> {c.isDemo ? <Badge tone="red">Synthetic</Badge> : null}
-                    <div className="text-xs text-ink/50">{c.domain ?? 'No business domain'}</div>
+                    <Link href={`/app/companies/${c.id}`} className="hover:text-ocean-700 font-semibold">
+                      {c.name}
+                    </Link>{' '}
+                    {c.isDemo ? <Badge tone="red">Synthetic</Badge> : null}
+                    <div className="text-ink/50 text-xs">{c.domain ?? 'No business domain'}</div>
                   </Td>
                   <Td>{c.industry ?? '—'}</Td>
                   <Td>{c.currentCrm ?? '—'}</Td>

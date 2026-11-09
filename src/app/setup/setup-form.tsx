@@ -10,7 +10,12 @@ export function SetupForm() {
   return (
     <form action={action} className="space-y-4">
       {state.error ? <Alert tone="error">{state.error}</Alert> : null}
-      <Field label="Setup token" htmlFor="token" required hint="The SETUP_TOKEN value from your deployment environment.">
+      <Field
+        label="Setup token"
+        htmlFor="token"
+        required
+        hint="The SETUP_TOKEN value from your deployment environment."
+      >
         <Input id="token" name="token" type="password" autoComplete="off" required />
       </Field>
       <SubmitButton className="w-full" size="lg" pendingText="Verifying…">

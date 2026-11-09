@@ -18,14 +18,19 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
         title="Support requests"
         description="Requests and questions from client portals."
         actions={
-          <Link href={view === 'all' ? '/app/tickets' : '/app/tickets?view=all'} className="text-sm font-semibold text-ocean-700 hover:underline">
+          <Link
+            href={view === 'all' ? '/app/tickets' : '/app/tickets?view=all'}
+            className="text-ocean-700 text-sm font-semibold hover:underline"
+          >
             {view === 'all' ? 'Show active only' : 'Show all'}
           </Link>
         }
       />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState icon={<LifeBuoy className="size-6" />} title="No support requests">Clients can open requests from their portal.</EmptyState>
+          <EmptyState icon={<LifeBuoy className="size-6" />} title="No support requests">
+            Clients can open requests from their portal.
+          </EmptyState>
         ) : (
           <Table>
             <thead>
@@ -41,7 +46,7 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
               {rows.map((t) => (
                 <tr key={t.id}>
                   <Td>
-                    <Link href={`/app/tickets/${t.id}`} className="font-semibold hover:text-ocean-700">
+                    <Link href={`/app/tickets/${t.id}`} className="hover:text-ocean-700 font-semibold">
                       {t.subject}
                     </Link>
                   </Td>

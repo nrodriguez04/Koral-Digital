@@ -21,7 +21,7 @@ export function MobileSidebar({ children }: { children: ReactNode }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex size-9 items-center justify-center rounded-lg hover:bg-ink/5"
+        className="hover:bg-ink/5 inline-flex size-9 items-center justify-center rounded-lg"
         aria-label="Open navigation"
       >
         <Menu className="size-5" aria-hidden="true" />
@@ -29,7 +29,7 @@ export function MobileSidebar({ children }: { children: ReactNode }) {
       <dialog
         ref={ref}
         onClose={() => setOpen(false)}
-        className="m-0 h-dvh max-h-dvh w-72 max-w-[85vw] bg-ocean-950 p-0 backdrop:bg-ink/50"
+        className="bg-ocean-950 backdrop:bg-ink/50 m-0 h-dvh max-h-dvh w-72 max-w-[85vw] p-0"
         aria-label="Navigation"
       >
         <button

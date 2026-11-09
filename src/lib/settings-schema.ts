@@ -35,7 +35,9 @@ export const siteSettingsSchema = z.object({
       note: z
         .string()
         .max(300)
-        .default('Indicative founding-client pricing. Final scope and price are confirmed in a written proposal.'),
+        .default(
+          'Indicative founding-client pricing. Final scope and price are confirmed in a written proposal.',
+        ),
     })
     .default({
       show: true,
@@ -60,7 +62,10 @@ export const siteSettingsSchema = z.object({
     }),
   seo: z
     .object({
-      defaultTitle: z.string().max(70).default('Koral Digital | Lead response & CRM automation for contractors'),
+      defaultTitle: z
+        .string()
+        .max(70)
+        .default('Koral Digital | Lead response & CRM automation for contractors'),
       defaultDescription: z
         .string()
         .max(170)

@@ -9,7 +9,12 @@ import { recordAudit } from '@/lib/audit';
 import { auditActor, requireStaff, runAction, type ActionResult } from '@/lib/auth/guards';
 import { normalizeCompanyName } from '@/lib/utils';
 
-const list = (v: string | undefined) => (v ?? '').split(',').map((s) => s.trim()).filter(Boolean).slice(0, 30);
+const list = (v: string | undefined) =>
+  (v ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 30);
 
 export async function updateCompany(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
   return runAction(async () => {
@@ -29,7 +34,8 @@ export async function updateCompany(_p: ActionResult<unknown>, fd: FormData): Pr
         notes: z.string().trim().max(8000).optional(),
       })
       .safeParse(Object.fromEntries(fd));
-    if (!parsed.success) return { ok: false, error: 'Please check the form.', fieldErrors: parsed.error.flatten().fieldErrors };
+    if (!parsed.success)
+      return { ok: false, error: 'Please check the form.', fieldErrors: parsed.error.flatten().fieldErrors };
     const d = parsed.data;
     let domain: string | null = null;
     if (d.website) {
@@ -41,8 +47,11 @@ export async function updateCompany(_p: ActionResult<unknown>, fd: FormData): Pr
     }
     const db = getDb();
     if (domain) {
-      const clash = await db.query.companies.findFirst({ where: and(eq(companies.domain, domain), isNull(companies.deletedAt)) });
-      if (clash && clash.id !== d.companyId) return { ok: false, error: `Another company already uses ${domain}.` };
+      const clash = await db.query.companies.findFirst({
+        where: and(eq(companies.domain, domain), isNull(companies.deletedAt)),
+      });
+      if (clash && clash.id !== d.companyId)
+        return { ok: false, error: `Another company already uses ${domain}.` };
     }
     await db
       .update(companies)
@@ -61,7 +70,12 @@ export async function updateCompany(_p: ActionResult<unknown>, fd: FormData): Pr
         notes: d.notes || null,
       })
       .where(eq(companies.id, d.companyId));
-    await recordAudit({ actor: auditActor(actor), action: 'company.updated', entityType: 'company', entityId: d.companyId });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'company.updated',
+      entityType: 'company',
+      entityId: d.companyId,
+    });
     revalidatePath(`/app/companies/${d.companyId}`);
     return { ok: true, message: 'Company saved.' };
   });
@@ -79,14 +93,27 @@ export async function addContact(_p: ActionResult<unknown>, fd: FormData): Promi
         title: z.string().trim().max(120).optional(),
       })
       .safeParse(Object.fromEntries(fd));
-    if (!parsed.success) return { ok: false, error: 'Please check the contact.', fieldErrors: parsed.error.flatten().fieldErrors };
+    if (!parsed.success)
+      return {
+        ok: false,
+        error: 'Please check the contact.',
+        fieldErrors: parsed.error.flatten().fieldErrors,
+      };
     const d = parsed.data;
     const db = getDb();
     if (d.email) {
-      const dup = await db.query.contacts.findFirst({ where: and(eq(contacts.email, d.email), isNull(contacts.deletedAt)) });
+      const dup = await db.query.contacts.findFirst({
+        where: and(eq(contacts.email, d.email), isNull(contacts.deletedAt)),
+      });
       if (dup) return { ok: false, error: `A contact with ${d.email} already exists.` };
     }
-    await db.insert(contacts).values({ companyId: d.companyId, fullName: d.fullName, email: d.email || null, phone: d.phone || null, title: d.title || null });
+    await db.insert(contacts).values({
+      companyId: d.companyId,
+      fullName: d.fullName,
+      email: d.email || null,
+      phone: d.phone || null,
+      title: d.title || null,
+    });
     revalidatePath(`/app/companies/${d.companyId}`);
     return { ok: true, message: 'Contact added.' };
   });

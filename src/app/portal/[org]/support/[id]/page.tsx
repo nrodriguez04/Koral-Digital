@@ -21,13 +21,17 @@ export default async function PortalTicket({ params }: { params: Promise<{ org: 
   if (!thread) notFound();
   return (
     <>
-      <PageHeader eyebrow={<Link href={`/portal/${org.slug}/support`}>← Support</Link>} title={thread.ticket.subject} actions={<StatusBadge status={thread.ticket.status} />} />
+      <PageHeader
+        eyebrow={<Link href={`/portal/${org.slug}/support`}>← Support</Link>}
+        title={thread.ticket.subject}
+        actions={<StatusBadge status={thread.ticket.status} />}
+      />
       <Card className="max-w-3xl">
-        <ol className="divide-y divide-ink/6">
+        <ol className="divide-ink/6 divide-y">
           {thread.messages.map((m) => (
             <li key={m.id} className="px-5 py-4">
-              <div className="flex items-center gap-2 text-xs text-ink/55">
-                <span className="font-semibold text-ink">{m.authorName ?? m.authorEmail}</span>
+              <div className="text-ink/55 flex items-center gap-2 text-xs">
+                <span className="text-ink font-semibold">{m.authorName ?? m.authorEmail}</span>
                 {m.authorIsStaff ? <Badge tone="navy">Koral Digital</Badge> : null}
                 <span>{formatDate(m.createdAt, true)}</span>
               </div>
@@ -36,7 +40,7 @@ export default async function PortalTicket({ params }: { params: Promise<{ org: 
           ))}
         </ol>
         {memberCan(role, 'tickets:create') ? (
-          <div className="border-t border-ink/8 p-5">
+          <div className="border-ink/8 border-t p-5">
             <ActionForm action={portalReplyTicket} submitLabel="Send reply" resetOnSuccess>
               <input type="hidden" name="org" value={org.slug} />
               <input type="hidden" name="ticketId" value={thread.ticket.id} />

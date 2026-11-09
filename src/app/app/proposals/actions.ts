@@ -23,14 +23,20 @@ const money = z
 async function editableProposal(id: string) {
   const p = await getDb().query.proposals.findFirst({ where: eq(proposals.id, id) });
   if (!p) return { error: 'Proposal not found.' as const };
-  if (p.status !== 'draft') return { error: 'Only draft proposals can be edited. Duplicate it to make changes.' as const };
+  if (p.status !== 'draft')
+    return { error: 'Only draft proposals can be edited. Duplicate it to make changes.' as const };
   return { p };
 }
 
-export async function createProposal(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function createProposal(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('proposals:write');
-    const parsed = z.object({ leadId: uuid, template: z.enum(['pilot', 'blank']) }).safeParse(Object.fromEntries(fd));
+    const parsed = z
+      .object({ leadId: uuid, template: z.enum(['pilot', 'blank']) })
+      .safeParse(Object.fromEntries(fd));
     if (!parsed.success) return { ok: false, error: 'Invalid request.' };
     const db = getDb();
     const lead = await db.query.leads.findFirst({ where: eq(leads.id, parsed.data.leadId) });
@@ -56,7 +62,9 @@ export async function createProposal(_p: ActionResult<unknown>, fd: FormData): P
           timeline: isPilot ? '14 days from the date all required access is in place.' : '',
           depositPercent: 50,
           retainerMonthlyCents: isPilot ? s.pricing.supportFrom * 100 : null,
-          retainerDescription: isPilot ? 'Optional managed support: monitoring, fixes and monthly optimization review.' : null,
+          retainerDescription: isPilot
+            ? 'Optional managed support: monitoring, fixes and monthly optimization review.'
+            : null,
           validUntil: new Date(Date.now() + 30 * 86_400_000),
           createdById: actor.user.id,
           isDemo: lead.isDemo,
@@ -71,15 +79,29 @@ export async function createProposal(_p: ActionResult<unknown>, fd: FormData): P
           sortOrder: 0,
         });
       }
-      await tx.insert(leadActivities).values({ leadId: lead.id, actorId: actor.user.id, type: 'system', body: `Draft proposal ${number} created.` });
+      await tx.insert(leadActivities).values({
+        leadId: lead.id,
+        actorId: actor.user.id,
+        type: 'system',
+        body: `Draft proposal ${number} created.`,
+      });
       return p!.id;
     });
-    await recordAudit({ actor: auditActor(actor), action: 'proposal.created', entityType: 'proposal', entityId: id, metadata: { leadId: lead.id } });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'proposal.created',
+      entityType: 'proposal',
+      entityId: id,
+      metadata: { leadId: lead.id },
+    });
     redirect(`/app/proposals/${id}`);
   });
 }
 
-export async function updateProposal(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function updateProposal(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('proposals:write');
     const parsed = z
@@ -97,7 +119,12 @@ export async function updateProposal(_p: ActionResult<unknown>, fd: FormData): P
         validUntil: z.string().optional(),
       })
       .safeParse(Object.fromEntries(fd));
-    if (!parsed.success) return { ok: false, error: 'Please check the proposal fields.', fieldErrors: parsed.error.flatten().fieldErrors };
+    if (!parsed.success)
+      return {
+        ok: false,
+        error: 'Please check the proposal fields.',
+        fieldErrors: parsed.error.flatten().fieldErrors,
+      };
     const d = parsed.data;
     const check = await editableProposal(d.proposalId);
     if ('error' in check) return { ok: false, error: check.error! };
@@ -116,19 +143,37 @@ export async function updateProposal(_p: ActionResult<unknown>, fd: FormData): P
         validUntil: parseBusinessDate(d.validUntil),
       })
       .where(eq(proposals.id, d.proposalId));
-    await recordAudit({ actor: auditActor(actor), action: 'proposal.updated', entityType: 'proposal', entityId: d.proposalId });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'proposal.updated',
+      entityType: 'proposal',
+      entityId: d.proposalId,
+    });
     revalidatePath(`/app/proposals/${d.proposalId}`);
     return { ok: true, message: 'Proposal saved.' };
   });
 }
 
-export async function addProposalItem(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function addProposalItem(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     await requireStaff('proposals:write');
     const parsed = z
-      .object({ proposalId: uuid, description: z.string().trim().min(2).max(300), quantity: z.coerce.number().int().min(1).max(1000), unitPrice: money })
+      .object({
+        proposalId: uuid,
+        description: z.string().trim().min(2).max(300),
+        quantity: z.coerce.number().int().min(1).max(1000),
+        unitPrice: money,
+      })
       .safeParse(Object.fromEntries(fd));
-    if (!parsed.success) return { ok: false, error: 'Please check the line item.', fieldErrors: parsed.error.flatten().fieldErrors };
+    if (!parsed.success)
+      return {
+        ok: false,
+        error: 'Please check the line item.',
+        fieldErrors: parsed.error.flatten().fieldErrors,
+      };
     const check = await editableProposal(parsed.data.proposalId);
     if ('error' in check) return { ok: false, error: check.error! };
     const db = getDb();
@@ -145,7 +190,10 @@ export async function addProposalItem(_p: ActionResult<unknown>, fd: FormData): 
   });
 }
 
-export async function removeProposalItem(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function removeProposalItem(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     await requireStaff('proposals:write');
     const parsed = z.object({ proposalId: uuid, itemId: uuid }).safeParse(Object.fromEntries(fd));
@@ -154,13 +202,18 @@ export async function removeProposalItem(_p: ActionResult<unknown>, fd: FormData
     if ('error' in check) return { ok: false, error: check.error! };
     await getDb()
       .delete(proposalItems)
-      .where(and(eq(proposalItems.id, parsed.data.itemId), eq(proposalItems.proposalId, parsed.data.proposalId)));
+      .where(
+        and(eq(proposalItems.id, parsed.data.itemId), eq(proposalItems.proposalId, parsed.data.proposalId)),
+      );
     revalidatePath(`/app/proposals/${parsed.data.proposalId}`);
     return { ok: true };
   });
 }
 
-export async function setProposalStatus(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function setProposalStatus(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('proposals:write');
     const parsed = z
@@ -188,7 +241,10 @@ export async function setProposalStatus(_p: ActionResult<unknown>, fd: FormData)
         status,
         sentAt: status === 'sent' ? new Date() : p.sentAt,
         acceptedAt: status === 'accepted' ? new Date() : status === 'draft' ? null : p.acceptedAt,
-        acceptedByName: status === 'accepted' ? `${parsed.data.acceptedByName} (recorded by Koral staff)` : p.acceptedByName,
+        acceptedByName:
+          status === 'accepted'
+            ? `${parsed.data.acceptedByName} (recorded by Koral staff)`
+            : p.acceptedByName,
       })
       .where(eq(proposals.id, proposalId));
     if (p.leadId) {
@@ -196,7 +252,9 @@ export async function setProposalStatus(_p: ActionResult<unknown>, fd: FormData)
         await db
           .update(leads)
           .set({ stage: 'proposal' })
-          .where(and(eq(leads.id, p.leadId), inArray(leads.stage, ['new', 'contacted', 'qualified', 'discovery'])));
+          .where(
+            and(eq(leads.id, p.leadId), inArray(leads.stage, ['new', 'contacted', 'qualified', 'discovery'])),
+          );
       }
       await db.insert(leadActivities).values({
         leadId: p.leadId,
@@ -220,7 +278,10 @@ export async function setProposalStatus(_p: ActionResult<unknown>, fd: FormData)
   });
 }
 
-export async function duplicateProposal(_p: ActionResult<unknown>, fd: FormData): Promise<ActionResult<unknown>> {
+export async function duplicateProposal(
+  _p: ActionResult<unknown>,
+  fd: FormData,
+): Promise<ActionResult<unknown>> {
   return runAction(async () => {
     const actor = await requireStaff('proposals:write');
     const id = uuid.parse(fd.get('proposalId'));
@@ -230,20 +291,47 @@ export async function duplicateProposal(_p: ActionResult<unknown>, fd: FormData)
     const items = await db.select().from(proposalItems).where(eq(proposalItems.proposalId, id));
     const newId = await db.transaction(async (tx) => {
       const number = await nextProposalNumber(tx);
-      const { id: _id, number: _n, createdAt: _c, updatedAt: _u, sentAt: _s, acceptedAt: _a, acceptedByName: _b, acceptedByUserId: _bu, ...rest } = src;
+      const {
+        id: _id,
+        number: _n,
+        createdAt: _c,
+        updatedAt: _u,
+        sentAt: _s,
+        acceptedAt: _a,
+        acceptedByName: _b,
+        acceptedByUserId: _bu,
+        ...rest
+      } = src;
       const [p] = await tx
         .insert(proposals)
-        .values({ ...rest, number, status: 'draft', createdById: actor.user.id, title: `${src.title} (revised)` })
+        .values({
+          ...rest,
+          number,
+          status: 'draft',
+          createdById: actor.user.id,
+          title: `${src.title} (revised)`,
+        })
         .returning({ id: proposals.id });
       if (items.length) {
         await tx.insert(proposalItems).values(
-          items.map((i) => ({ proposalId: p!.id, description: i.description, quantity: i.quantity, unitPriceCents: i.unitPriceCents, sortOrder: i.sortOrder })),
+          items.map((i) => ({
+            proposalId: p!.id,
+            description: i.description,
+            quantity: i.quantity,
+            unitPriceCents: i.unitPriceCents,
+            sortOrder: i.sortOrder,
+          })),
         );
       }
       return p!.id;
     });
-    await recordAudit({ actor: auditActor(actor), action: 'proposal.duplicated', entityType: 'proposal', entityId: newId, metadata: { from: id } });
+    await recordAudit({
+      actor: auditActor(actor),
+      action: 'proposal.duplicated',
+      entityType: 'proposal',
+      entityId: newId,
+      metadata: { from: id },
+    });
     redirect(`/app/proposals/${newId}`);
   });
 }
-

@@ -66,7 +66,7 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
   .eyebrow {
-    @apply text-xs font-semibold tracking-[0.18em] text-ocean-600 uppercase;
+    @apply text-ocean-600 text-xs font-semibold tracking-[0.18em] uppercase;
   }
   .ocean-gradient {
     background:
@@ -75,16 +75,25 @@
       linear-gradient(160deg, #082e46 0%, #073c5b 55%, #075069 100%);
   }
   .wave-lines {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='160' viewBox='0 0 1200 160' fill='none'%3E%3Cpath d='M0 80c150-40 300-40 450 0s300 40 450 0 225-30 300-10' stroke='%2323C4C7' stroke-opacity='.35' stroke-width='1.5'/%3E%3Cpath d='M0 110c150-40 300-40 450 0s300 40 450 0 225-30 300-10' stroke='%2323C4C7' stroke-opacity='.22' stroke-width='1.5'/%3E%3Cpath d='M0 140c150-40 300-40 450 0s300 40 450 0 225-30 300-10' stroke='%2323C4C7' stroke-opacity='.12' stroke-width='1.5'/%3E%3C/svg%3E");
+    position: relative;
+    isolation: isolate;
+  }
+  .wave-lines::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 160px;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='160' viewBox='0 0 1200 160' fill='none' preserveAspectRatio='none'%3E%3Cpath d='M0 80c150-40 300-40 450 0s300 40 450 0 225-30 300-10' stroke='%2323C4C7' stroke-opacity='.35' stroke-width='1.5'/%3E%3Cpath d='M0 110c150-40 300-40 450 0s300 40 450 0 225-30 300-10' stroke='%2323C4C7' stroke-opacity='.22' stroke-width='1.5'/%3E%3Cpath d='M0 140c150-40 300-40 450 0s300 40 450 0 225-30 300-10' stroke='%2323C4C7' stroke-opacity='.12' stroke-width='1.5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: bottom center;
-    background-size: 100% auto;
+    background-size: 100% 100%;
   }
   .card {
-    @apply rounded-[var(--radius-card)] border border-ink/8 bg-white shadow-[var(--shadow-card)];
+    @apply border-ink/8 rounded-[var(--radius-card)] border bg-white shadow-[var(--shadow-card)];
   }
   .prose-koral {
-    @apply prose prose-lg max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-ink prose-a:text-ocean-700 prose-a:underline-offset-2 hover:prose-a:text-ocean-600 prose-strong:text-ink prose-li:marker:text-ocean-500;
+    @apply prose prose-lg prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-ink prose-a:text-ocean-700 prose-a:underline-offset-2 hover:prose-a:text-ocean-600 prose-strong:text-ink prose-li:marker:text-ocean-500 max-w-none;
   }
 }
 

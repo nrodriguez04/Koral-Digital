@@ -14,7 +14,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!/^[0-9a-f-]{36}$/.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   const file = await authorizeFileDownload(actor, id);
   if (!file) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  await recordAudit({ actor: auditActor(actor), action: 'file.downloaded', entityType: 'file', entityId: file.id, orgId: file.orgId });
+  await recordAudit({
+    actor: auditActor(actor),
+    action: 'file.downloaded',
+    entityType: 'file',
+    entityId: file.id,
+    orgId: file.orgId,
+  });
   const headers = {
     'cache-control': 'private, no-store',
     'x-content-type-options': 'nosniff',

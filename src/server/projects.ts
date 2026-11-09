@@ -26,14 +26,28 @@ export async function listProjects() {
 
 export async function getProjectDetail(id: string) {
   const db = getDb();
-  const project = await db.query.projects.findFirst({ where: and(eq(projects.id, id), isNull(projects.deletedAt)) });
+  const project = await db.query.projects.findFirst({
+    where: and(eq(projects.id, id), isNull(projects.deletedAt)),
+  });
   if (!project) return null;
   const [org, milestones, projectTasks, updates, projectFiles] = await Promise.all([
     db.query.organizations.findFirst({ where: eq(organizations.id, project.orgId) }),
-    db.select().from(projectMilestones).where(eq(projectMilestones.projectId, id)).orderBy(asc(projectMilestones.sortOrder)),
+    db
+      .select()
+      .from(projectMilestones)
+      .where(eq(projectMilestones.projectId, id))
+      .orderBy(asc(projectMilestones.sortOrder)),
     db.select().from(tasks).where(eq(tasks.projectId, id)).orderBy(asc(tasks.status), asc(tasks.dueAt)),
-    db.select().from(clientUpdates).where(eq(clientUpdates.projectId, id)).orderBy(desc(clientUpdates.createdAt)),
-    db.select().from(files).where(and(eq(files.projectId, id), isNull(files.deletedAt))).orderBy(desc(files.createdAt)),
+    db
+      .select()
+      .from(clientUpdates)
+      .where(eq(clientUpdates.projectId, id))
+      .orderBy(desc(clientUpdates.createdAt)),
+    db
+      .select()
+      .from(files)
+      .where(and(eq(files.projectId, id), isNull(files.deletedAt)))
+      .orderBy(desc(files.createdAt)),
   ]);
   return { project, org: org!, milestones, tasks: projectTasks, updates, files: projectFiles };
 }

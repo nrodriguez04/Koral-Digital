@@ -16,12 +16,18 @@ export default async function DevLoginPage({ searchParams }: { searchParams: Pro
   const { next } = await searchParams;
   const devUsers = await getDb().query.users.findMany({ where: isNotNull(users.devKey) });
   return (
-    <AuthShell title="Development sign-in" intro="Synthetic accounts created by npm run db:seed:dev. Disabled in production builds.">
+    <AuthShell
+      title="Development sign-in"
+      intro="Synthetic accounts created by npm run db:seed:dev. Disabled in production builds."
+    >
       <Alert tone="warning" title="Local development only" className="mb-6">
-        These are fake users for testing roles and tenant isolation. They cannot sign in on a production deployment.
+        These are fake users for testing roles and tenant isolation. They cannot sign in on a production
+        deployment.
       </Alert>
       {devUsers.length === 0 ? (
-        <p className="text-sm text-ink/65">No dev users yet. Run <code>npm run db:seed:dev</code>.</p>
+        <p className="text-ink/65 text-sm">
+          No dev users yet. Run <code>npm run db:seed:dev</code>.
+        </p>
       ) : (
         <ul className="space-y-2">
           {devUsers.map((u) => (
@@ -31,12 +37,12 @@ export default async function DevLoginPage({ searchParams }: { searchParams: Pro
                 <input type="hidden" name="next" value={next ?? ''} />
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-between gap-3 rounded-xl border border-ink/10 bg-white px-4 py-3 text-left text-sm hover:border-ocean-500/50"
+                  className="border-ink/10 hover:border-ocean-500/50 flex w-full items-center justify-between gap-3 rounded-xl border bg-white px-4 py-3 text-left text-sm"
                   data-testid={`dev-login-${u.devKey}`}
                 >
                   <span>
                     <span className="block font-medium">{u.name}</span>
-                    <span className="block text-xs text-ink/55">{u.email}</span>
+                    <span className="text-ink/55 block text-xs">{u.email}</span>
                   </span>
                   <Badge tone={u.staffRole ? 'navy' : 'ocean'}>{u.staffRole ?? 'client'}</Badge>
                 </button>

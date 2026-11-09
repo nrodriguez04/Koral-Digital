@@ -20,15 +20,18 @@ export default async function NoAccessPage() {
       title="You are signed in, but there is nothing to show yet"
       intro={
         <>
-          Signed in as <strong>{actor.user.email ?? 'your account'}</strong>. Access to the Koral Digital portal is by
-          invitation. If you expected access, ask your Koral Digital contact to send an invitation to this email
-          address, then open the link in that email.
+          Signed in as <strong>{actor.user.email ?? 'your account'}</strong>. Access to the Koral Digital
+          portal is by invitation. If you expected access, ask your Koral Digital contact to send an
+          invitation to this email address, then open the link in that email.
         </>
       }
     >
-      <DescopeProvider projectId={env().NEXT_PUBLIC_DESCOPE_PROJECT_ID} baseUrl={env().NEXT_PUBLIC_DESCOPE_BASE_URL}>
+      <DescopeProvider
+        projectId={env().NEXT_PUBLIC_DESCOPE_PROJECT_ID}
+        baseUrl={env().NEXT_PUBLIC_DESCOPE_BASE_URL}
+      >
         <div className="flex flex-col gap-3">
-          <Link href="/" className="text-sm font-semibold text-ocean-700 hover:underline">
+          <Link href="/" className="text-ocean-700 text-sm font-semibold hover:underline">
             ← Back to koraldigital.com
           </Link>
           <div className="max-w-40">

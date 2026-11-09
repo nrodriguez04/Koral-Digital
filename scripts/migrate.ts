@@ -13,7 +13,11 @@ async function main() {
     return;
   }
   // Prefer a direct (non-pooled) connection for DDL when provided.
-  const client = postgres(process.env.DATABASE_URL_UNPOOLED || url, { max: 1, prepare: false, onnotice: () => {} });
+  const client = postgres(process.env.DATABASE_URL_UNPOOLED || url, {
+    max: 1,
+    prepare: false,
+    onnotice: () => {},
+  });
   try {
     await migrate(drizzle(client), { migrationsFolder: './drizzle' });
     console.log('[migrate] Migrations applied.');

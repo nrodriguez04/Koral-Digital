@@ -54,7 +54,7 @@ export const privacySections: LegalSection[] = [
       'Respond to your inquiry, schedule consultations and provide the services you request.',
       'Create and manage our internal record of your inquiry, including follow-up tasks and proposals.',
       'Notify our staff that a new inquiry has arrived, which may involve sending an internal email that contains the details you submitted.',
-      'Operate the client portal, including authenticating users, controlling access to each organization\'s information and sharing project updates and documents.',
+      "Operate the client portal, including authenticating users, controlling access to each organization's information and sharing project updates and documents.",
       'Send you messages you have agreed to receive, and service messages related to an active engagement.',
       'Understand, in aggregate, which pages and campaigns lead people to contact us, so we can improve the website.',
       'Protect the website, portal and our users, including preventing spam, abuse and unauthorized access.',
@@ -81,7 +81,7 @@ export const privacySections: LegalSection[] = [
       'An authentication provider (Descope) that manages sign-in for client and staff portal accounts.',
       'An email service provider that delivers internal notification emails and service messages.',
       'A cloud object storage provider that stores documents shared through the client portal.',
-      'Scheduling tools, if you choose to book a meeting through a booking link. Information you enter there is also subject to that provider\'s own privacy policy.',
+      "Scheduling tools, if you choose to book a meeting through a booking link. Information you enter there is also subject to that provider's own privacy policy.",
       'Professional advisers, such as accountants and attorneys, where needed.',
     ],
   },
@@ -90,7 +90,7 @@ export const privacySections: LegalSection[] = [
     paragraphs: [
       'A list of the specific vendors we use in each category will be published before the website and portal launch publicly, and kept up to date afterward.',
       'We may also disclose information when required by law or legal process, to protect the rights, safety or property of Koral Digital, our clients or others, or in connection with a merger, acquisition or sale of all or part of our business, in which case we will require the recipient to honor this policy. We will share information with other parties at your direction, for example when you ask us to connect one of your business tools.',
-      'When we work inside a client\'s own systems, such as their CRM, we access and process that information only on the client\'s instructions and under our written agreement with that client. The client\'s own privacy notice governs how it handles its customers\' information.',
+      "When we work inside a client's own systems, such as their CRM, we access and process that information only on the client's instructions and under our written agreement with that client. The client's own privacy notice governs how it handles its customers' information.",
     ],
   },
   {
@@ -103,20 +103,20 @@ export const privacySections: LegalSection[] = [
   {
     heading: 'Security',
     paragraphs: [
-      'We use reasonable administrative, technical and organizational measures designed to protect personal information. These include encrypted connections (HTTPS), authentication through a dedicated identity provider, role-based access controls that limit each portal user to their own organization\'s information, server-side permission checks, audit logs of key changes, and expiring links for downloading shared documents.',
+      "We use reasonable administrative, technical and organizational measures designed to protect personal information. These include encrypted connections (HTTPS), authentication through a dedicated identity provider, role-based access controls that limit each portal user to their own organization's information, server-side permission checks, audit logs of key changes, and expiring links for downloading shared documents.",
       'No method of transmission or storage is completely secure, and we cannot guarantee absolute security. If we learn of a security incident that affects your personal information, we will notify you as required by applicable law.',
     ],
   },
   {
     heading: 'Your choices and rights',
     paragraphs: [
-      'You can ask us to access, correct or delete the personal information we hold about you, and you can opt out of marketing messages at any time. Portal users can also ask their organization\'s account owner or us to update their account details.',
+      "You can ask us to access, correct or delete the personal information we hold about you, and you can opt out of marketing messages at any time. Portal users can also ask their organization's account owner or us to update their account details.",
       'Depending on where you live and whether a particular law applies to us, state privacy laws, such as the Texas Data Privacy and Security Act, may give you additional rights, such as the right to obtain a copy of your data, to correct or delete it, to opt out of certain processing, and to appeal a decision we make about your request. We will respond to requests as required by applicable law.',
       'To make a request, email contact@koraldigital.com. We may need to verify your identity before acting on a request, and we will not discriminate against you for exercising your rights.',
     ],
   },
   {
-    heading: 'Children\'s privacy',
+    heading: "Children's privacy",
     paragraphs: [
       'The website and portal are intended for businesses and are not directed to children. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, please contact us and we will delete it.',
     ],
@@ -168,7 +168,7 @@ export const termsSections: LegalSection[] = [
     heading: 'Client portal accounts',
     paragraphs: [
       'Portal access is by invitation only. You are responsible for keeping your sign-in methods secure, for activity that occurs under your account, and for notifying us promptly at contact@koraldigital.com if you suspect unauthorized access.',
-      'An organization\'s account owner may invite or remove members of that organization and is responsible for ensuring that each invited person is authorized to see the organization\'s information. We may suspend or disable access to protect the portal, our clients or others, or when an engagement ends, and we will try to give reasonable notice where practical.',
+      "An organization's account owner may invite or remove members of that organization and is responsible for ensuring that each invited person is authorized to see the organization's information. We may suspend or disable access to protect the portal, our clients or others, or when an engagement ends, and we will try to give reasonable notice where practical.",
     ],
   },
   {
@@ -187,7 +187,7 @@ export const termsSections: LegalSection[] = [
     heading: 'Confidentiality of portal content',
     paragraphs: [
       'Project plans, documents, updates, proposals and other materials in the portal are confidential to Koral Digital and the client organization they relate to. Portal users agree to use that content only for the engagement and not to share it outside their organization without permission, except as required by law.',
-      'We treat client content in the portal as confidential and make it available only to authorized members of that client\'s organization and to Koral Digital personnel who need it to provide services. A signed services agreement may contain additional confidentiality terms, which control where they apply.',
+      "We treat client content in the portal as confidential and make it available only to authorized members of that client's organization and to Koral Digital personnel who need it to provide services. A signed services agreement may contain additional confidentiality terms, which control where they apply.",
     ],
   },
   {
@@ -220,7 +220,7 @@ export const termsSections: LegalSection[] = [
   {
     heading: 'Indemnity',
     paragraphs: [
-      'You agree to indemnify and hold harmless Koral Digital from claims, losses and expenses, including reasonable attorneys\' fees, arising out of your misuse of the website or portal, content you upload, or your violation of these terms or of any law or third-party right.',
+      "You agree to indemnify and hold harmless Koral Digital from claims, losses and expenses, including reasonable attorneys' fees, arising out of your misuse of the website or portal, content you upload, or your violation of these terms or of any law or third-party right.",
     ],
   },
   {

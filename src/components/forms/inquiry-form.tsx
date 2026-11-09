@@ -46,8 +46,8 @@ export function InquiryForm({
     if (state.status === 'error') track('contact_submit_error');
   }, [state]);
 
-  const fe = state.status === 'error' ? state.fieldErrors ?? {} : {};
-  const v = state.status === 'error' ? state.values ?? {} : {};
+  const fe = state.status === 'error' ? (state.fieldErrors ?? {}) : {};
+  const v = state.status === 'error' ? (state.values ?? {}) : {};
   const err = (k: string) => fe[k];
   const invalid = (k: string) => (fe[k] ? true : undefined);
   const described = (k: string) => (fe[k] ? `${k}-error` : undefined);
@@ -55,14 +55,14 @@ export function InquiryForm({
   if (state.status === 'success') {
     return (
       <div className="card p-8 text-center" role="status" aria-live="polite">
-        <CheckCircle2 className="mx-auto size-12 text-ocean-500" aria-hidden="true" />
+        <CheckCircle2 className="text-ocean-500 mx-auto size-12" aria-hidden="true" />
         <h2 className="mt-4 text-2xl font-semibold tracking-tight">Thank you — we have your message.</h2>
-        <p className="mx-auto mt-3 max-w-lg leading-relaxed text-ink/70">
+        <p className="text-ink/70 mx-auto mt-3 max-w-lg leading-relaxed">
           {state.deduplicated
             ? 'We matched this to your earlier inquiry, so everything stays in one place. '
             : ''}
-          A real person will read it and reply within one business day, usually sooner. There is no automated drip
-          campaign on the other end.
+          A real person will read it and reply within one business day, usually sooner. There is no automated
+          drip campaign on the other end.
         </p>
         {bookingUrl ? (
           <a
@@ -71,9 +71,10 @@ export function InquiryForm({
             rel="noopener noreferrer"
             data-track="booking_click"
             data-track-label="post_submit"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-ocean-500 px-5 py-3 text-sm font-semibold text-white hover:bg-ocean-600"
+            className="bg-ocean-500 hover:bg-ocean-600 mt-6 inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white"
           >
-            Prefer to pick a time now? Open the booking calendar <ArrowRight className="size-4" aria-hidden="true" />
+            Prefer to pick a time now? Open the booking calendar{' '}
+            <ArrowRight className="size-4" aria-hidden="true" />
           </a>
         ) : null}
       </div>
@@ -111,19 +112,59 @@ export function InquiryForm({
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Your name" htmlFor="name" required error={err('name')}>
-          <Input id="name" name="name" autoComplete="name" required defaultValue={v.name} aria-invalid={invalid('name')} aria-describedby={described('name')} />
+          <Input
+            id="name"
+            name="name"
+            autoComplete="name"
+            required
+            defaultValue={v.name}
+            aria-invalid={invalid('name')}
+            aria-describedby={described('name')}
+          />
         </Field>
         <Field label="Company" htmlFor="company" required error={err('company')}>
-          <Input id="company" name="company" autoComplete="organization" required defaultValue={v.company} aria-invalid={invalid('company')} aria-describedby={described('company')} />
+          <Input
+            id="company"
+            name="company"
+            autoComplete="organization"
+            required
+            defaultValue={v.company}
+            aria-invalid={invalid('company')}
+            aria-describedby={described('company')}
+          />
         </Field>
         <Field label="Work email" htmlFor="email" required error={err('email')}>
-          <Input id="email" name="email" type="email" autoComplete="email" required defaultValue={v.email} aria-invalid={invalid('email')} aria-describedby={described('email')} />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            defaultValue={v.email}
+            aria-invalid={invalid('email')}
+            aria-describedby={described('email')}
+          />
         </Field>
         <Field label="Phone" htmlFor="phone" error={err('phone')} hint="Only if you would like a call back.">
-          <Input id="phone" name="phone" type="tel" autoComplete="tel" defaultValue={v.phone} aria-invalid={invalid('phone')} aria-describedby={described('phone')} />
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            defaultValue={v.phone}
+            aria-invalid={invalid('phone')}
+            aria-describedby={described('phone')}
+          />
         </Field>
         <Field label="Industry" htmlFor="industry" required error={err('industry')}>
-          <Select id="industry" name="industry" required defaultValue={v.industry ?? defaultIndustry ?? ''} aria-invalid={invalid('industry')} aria-describedby={described('industry')}>
+          <Select
+            id="industry"
+            name="industry"
+            required
+            defaultValue={v.industry ?? defaultIndustry ?? ''}
+            aria-invalid={invalid('industry')}
+            aria-describedby={described('industry')}
+          >
             <option value="" disabled>
               Choose one…
             </option>
@@ -153,8 +194,21 @@ export function InquiryForm({
         >
           <Input id="currentCrm" name="currentCrm" defaultValue={v.currentCrm} />
         </Field>
-        <Field label="What do you most want help with?" htmlFor="topProblem" required error={err('topProblem')} className="sm:col-span-2">
-          <Select id="topProblem" name="topProblem" required defaultValue={v.topProblem ?? ''} aria-invalid={invalid('topProblem')} aria-describedby={described('topProblem')}>
+        <Field
+          label="What do you most want help with?"
+          htmlFor="topProblem"
+          required
+          error={err('topProblem')}
+          className="sm:col-span-2"
+        >
+          <Select
+            id="topProblem"
+            name="topProblem"
+            required
+            defaultValue={v.topProblem ?? ''}
+            aria-invalid={invalid('topProblem')}
+            aria-describedby={described('topProblem')}
+          >
             <option value="" disabled>
               Choose the closest match…
             </option>
@@ -176,9 +230,9 @@ export function InquiryForm({
         </Field>
       </div>
 
-      <fieldset className="space-y-3 rounded-xl bg-ivory p-4 ring-1 ring-ink/8">
+      <fieldset className="bg-ivory ring-ink/8 space-y-3 rounded-xl p-4 ring-1">
         <legend className="sr-only">Contact preferences</legend>
-        <p className="text-sm font-medium text-ink">Contact preferences</p>
+        <p className="text-ink text-sm font-medium">Contact preferences</p>
         <Checkbox
           name="consentEmail"
           defaultChecked={v.consentEmail === 'on'}
@@ -192,14 +246,19 @@ export function InquiryForm({
       </fieldset>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-relaxed text-ink/55">
+        <p className="text-ink/55 text-xs leading-relaxed">
           We use your details only to respond to this inquiry. See our{' '}
-          <a href="/privacy" className="underline underline-offset-2 hover:text-ink">
+          <a href="/privacy" className="hover:text-ink underline underline-offset-2">
             privacy notice
           </a>
           . We never sell your information.
         </p>
-        <SubmitButton size="lg" pendingText="Sending…" data-track="cta_click" data-track-label="contact_submit">
+        <SubmitButton
+          size="lg"
+          pendingText="Sending…"
+          data-track="cta_click"
+          data-track-label="contact_submit"
+        >
           Request my free consultation
         </SubmitButton>
       </div>

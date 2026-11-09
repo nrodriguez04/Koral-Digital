@@ -23,7 +23,9 @@ export async function storeOrgFile(
   const v = await validateUpload(file);
   if (!v.ok) return v;
   if (opts.projectId) {
-    const p = await getDb().query.projects.findFirst({ where: and(eq(projects.id, opts.projectId), eq(projects.orgId, orgId)) });
+    const p = await getDb().query.projects.findFirst({
+      where: and(eq(projects.id, opts.projectId), eq(projects.orgId, orgId)),
+    });
     if (!p) return { ok: false, error: 'Project not found.' };
   }
   const key = newStorageKey(orgId, v.value.name);
@@ -53,7 +55,11 @@ export async function storeOrgFile(
     entityType: 'file',
     entityId: row!.id,
     orgId,
-    metadata: { visibility: opts.visibility, sizeBytes: v.value.bytes.length, contentType: v.value.contentType },
+    metadata: {
+      visibility: opts.visibility,
+      sizeBytes: v.value.bytes.length,
+      contentType: v.value.contentType,
+    },
   });
   return { ok: true, id: row!.id };
 }
@@ -64,7 +70,9 @@ export async function storeOrgFile(
  * actor must not learn the file exists.
  */
 export async function authorizeFileDownload(actor: Actor, fileId: string) {
-  const f = await getDb().query.files.findFirst({ where: and(eq(files.id, fileId), isNull(files.deletedAt)) });
+  const f = await getDb().query.files.findFirst({
+    where: and(eq(files.id, fileId), isNull(files.deletedAt)),
+  });
   if (!f) return null;
   if (staffCan(actor.staffRole, 'clients:read')) return f;
   const member = actor.memberships.some((m) => m.orgId === f.orgId);

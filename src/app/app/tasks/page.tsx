@@ -47,8 +47,18 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
         description="Open follow-ups across leads and projects. Client checklist items assigned to clients appear under “Everyone”."
         actions={
           <div className="flex gap-2 text-sm">
-            <Link href="/app/tasks" className={`rounded-full px-3 py-1.5 ${onlyMine ? 'bg-ocean-900 text-white' : 'bg-white ring-1 ring-ink/10'}`}>Mine</Link>
-            <Link href="/app/tasks?mine=0" className={`rounded-full px-3 py-1.5 ${!onlyMine ? 'bg-ocean-900 text-white' : 'bg-white ring-1 ring-ink/10'}`}>Everyone</Link>
+            <Link
+              href="/app/tasks"
+              className={`rounded-full px-3 py-1.5 ${onlyMine ? 'bg-ocean-900 text-white' : 'ring-ink/10 bg-white ring-1'}`}
+            >
+              Mine
+            </Link>
+            <Link
+              href="/app/tasks?mine=0"
+              className={`rounded-full px-3 py-1.5 ${!onlyMine ? 'bg-ocean-900 text-white' : 'ring-ink/10 bg-white ring-1'}`}
+            >
+              Everyone
+            </Link>
           </div>
         }
       />
@@ -72,23 +82,38 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
                 return (
                   <tr key={t.id}>
                     <Td>
-                      <span className="font-medium">{t.title}</span> {t.priority !== 'normal' ? <StatusBadge status={t.priority} /> : null}
-                      {t.clientVisible ? <div className="text-xs text-ocean-700">Client checklist</div> : null}
+                      <span className="font-medium">{t.title}</span>{' '}
+                      {t.priority !== 'normal' ? <StatusBadge status={t.priority} /> : null}
+                      {t.clientVisible ? (
+                        <div className="text-ocean-700 text-xs">Client checklist</div>
+                      ) : null}
                     </Td>
                     <Td>
                       {t.leadId ? (
-                        <Link href={`/app/leads/${t.leadId}`} className="hover:text-ocean-700">{t.leadTitle}</Link>
+                        <Link href={`/app/leads/${t.leadId}`} className="hover:text-ocean-700">
+                          {t.leadTitle}
+                        </Link>
                       ) : t.projectId ? (
-                        <Link href={`/app/projects/${t.projectId}`} className="hover:text-ocean-700">{t.orgName} · {t.projectName}</Link>
+                        <Link href={`/app/projects/${t.projectId}`} className="hover:text-ocean-700">
+                          {t.orgName} · {t.projectName}
+                        </Link>
                       ) : (
-                        t.orgName ?? '—'
+                        (t.orgName ?? '—')
                       )}
                     </Td>
                     <Td className="text-ink/70">{t.assignee ?? (t.clientVisible ? 'Client' : '—')}</Td>
-                    <Td className={overdue ? 'font-semibold text-red-600' : 'text-ink/60'}>{formatDate(t.dueAt)}</Td>
+                    <Td className={overdue ? 'font-semibold text-red-600' : 'text-ink/60'}>
+                      {formatDate(t.dueAt)}
+                    </Td>
                     <Td>
                       {staffCan(actor.staffRole, 'tasks:write') ? (
-                        <ActionForm action={setTaskStatus} inline submitLabel="Done" submitSize="sm" submitVariant="outline">
+                        <ActionForm
+                          action={setTaskStatus}
+                          inline
+                          submitLabel="Done"
+                          submitSize="sm"
+                          submitVariant="outline"
+                        >
                           <input type="hidden" name="taskId" value={t.id} />
                           <input type="hidden" name="status" value="done" />
                         </ActionForm>

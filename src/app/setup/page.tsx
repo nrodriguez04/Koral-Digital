@@ -16,7 +16,9 @@ export default async function SetupPage() {
   if (!isDatabaseConfigured()) {
     return (
       <AuthShell title="First-time setup">
-        <Alert tone="warning" title="Database not configured">Set DATABASE_URL and run migrations first.</Alert>
+        <Alert tone="warning" title="Database not configured">
+          Set DATABASE_URL and run migrations first.
+        </Alert>
       </AuthShell>
     );
   }
@@ -24,7 +26,9 @@ export default async function SetupPage() {
   if (staff.length) {
     return (
       <AuthShell title="Setup is complete">
-        <Alert tone="info">An administrator already exists. Ask them to invite you from Settings → Team.</Alert>
+        <Alert tone="info">
+          An administrator already exists. Ask them to invite you from Settings → Team.
+        </Alert>
       </AuthShell>
     );
   }
@@ -33,14 +37,19 @@ export default async function SetupPage() {
   return (
     <AuthShell
       title="Claim the first administrator account"
-      intro={<>Signed in as <strong>{actor.user.email ?? actor.user.id}</strong>. This works once, only while no Koral staff account exists.</>}
+      intro={
+        <>
+          Signed in as <strong>{actor.user.email ?? actor.user.id}</strong>. This works once, only while no
+          Koral staff account exists.
+        </>
+      }
     >
       {env().SETUP_TOKEN ? (
         <SetupForm />
       ) : (
         <Alert tone="warning" title="SETUP_TOKEN is not set">
-          Set a long random SETUP_TOKEN environment variable and redeploy, or grant the role from a terminal with{' '}
-          <code>npm run admin:grant -- --email you@example.com --role superadmin</code>.
+          Set a long random SETUP_TOKEN environment variable and redeploy, or grant the role from a terminal
+          with <code>npm run admin:grant -- --email you@example.com --role superadmin</code>.
         </Alert>
       )}
     </AuthShell>

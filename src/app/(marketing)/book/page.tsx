@@ -26,15 +26,15 @@ export default async function BookPage() {
       <section className="container-page py-14">
         {verified ? (
           <div className="card overflow-hidden">
-            <div className="flex items-center justify-between gap-4 border-b border-ink/8 px-5 py-3">
+            <div className="border-ink/8 flex items-center justify-between gap-4 border-b px-5 py-3">
               <p className="flex items-center gap-2 text-sm font-medium">
-                <CalendarCheck2 className="size-4 text-ocean-600" aria-hidden="true" /> Choose a time
+                <CalendarCheck2 className="text-ocean-600 size-4" aria-hidden="true" /> Choose a time
               </p>
               <a
                 href={s.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-semibold text-ocean-700 hover:underline"
+                className="text-ocean-700 text-sm font-semibold hover:underline"
                 data-track="booking_click"
                 data-track-label="book_page_new_tab"
               >
@@ -50,9 +50,9 @@ export default async function BookPage() {
           </div>
         ) : (
           <div className="mx-auto max-w-3xl">
-            <p className="mb-6 text-ink/70">
-              Online scheduling is being set up. Send us a few details below and we will reply within one business day
-              with times that work for you.
+            <p className="text-ink/70 mb-6">
+              Online scheduling is being set up. Send us a few details below and we will reply within one
+              business day with times that work for you.
             </p>
             <InquiryForm />
           </div>

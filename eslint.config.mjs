@@ -5,7 +5,16 @@ const config = [
   ...nextVitals,
   ...nextTs,
   {
-    ignores: ['.next/**', 'node_modules/**', 'drizzle/**', 'playwright-report/**', 'test-results/**', 'next-env.d.ts', '.uploads/**'],
+    ignores: [
+      '.next/**',
+      '.next-e2e/**',
+      'node_modules/**',
+      'drizzle/**',
+      'playwright-report/**',
+      'test-results/**',
+      'next-env.d.ts',
+      '.uploads/**',
+    ],
   },
   {
     rules: {

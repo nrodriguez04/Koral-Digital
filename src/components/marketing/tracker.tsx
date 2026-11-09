@@ -70,7 +70,12 @@ export function track(name: string, props: Record<string, string> = {}) {
     if (navigator.sendBeacon) {
       navigator.sendBeacon('/api/events', new Blob([payload], { type: 'application/json' }));
     } else {
-      void fetch('/api/events', { method: 'POST', body: payload, keepalive: true, headers: { 'content-type': 'application/json' } });
+      void fetch('/api/events', {
+        method: 'POST',
+        body: payload,
+        keepalive: true,
+        headers: { 'content-type': 'application/json' },
+      });
     }
   } catch {
     /* analytics must never break the page */
@@ -88,7 +93,10 @@ export function Tracker() {
     const get = (k: string) => params.get(k) ?? undefined;
     let referrer: string | undefined;
     try {
-      referrer = document.referrer && new URL(document.referrer).host !== window.location.host ? document.referrer : undefined;
+      referrer =
+        document.referrer && new URL(document.referrer).host !== window.location.host
+          ? document.referrer
+          : undefined;
     } catch {
       referrer = undefined;
     }

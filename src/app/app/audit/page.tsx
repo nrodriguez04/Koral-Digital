@@ -10,7 +10,11 @@ import { formatDate } from '@/lib/utils';
 export const metadata = { title: 'Audit log' };
 const PAGE = 50;
 
-export default async function AuditPage({ searchParams }: { searchParams: Promise<{ entity?: string; org?: string; page?: string }> }) {
+export default async function AuditPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ entity?: string; org?: string; page?: string }>;
+}) {
   await pageRequireStaff('audit:read', '/app/audit');
   const sp = await searchParams;
   const page = Math.max(1, Number(sp.page) || 1);
@@ -30,14 +34,42 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
       .offset((page - 1) * PAGE),
     db.$count(auditEvents, where),
   ]);
-  const entities = ['lead', 'proposal', 'organization', 'membership', 'invitation', 'project', 'milestone', 'ticket', 'file', 'invoice', 'user', 'site_settings', 'article'];
+  const entities = [
+    'lead',
+    'proposal',
+    'organization',
+    'membership',
+    'invitation',
+    'project',
+    'milestone',
+    'ticket',
+    'file',
+    'invoice',
+    'user',
+    'site_settings',
+    'article',
+  ];
   return (
     <>
-      <PageHeader title="Audit log" description="Who changed what, when. Metadata never contains message bodies or personal details." />
+      <PageHeader
+        title="Audit log"
+        description="Who changed what, when. Metadata never contains message bodies or personal details."
+      />
       <div className="mb-4 flex flex-wrap gap-2">
-        <Link href="/app/audit" className={`rounded-full px-3 py-1 text-xs ring-1 ring-ink/10 ${!sp.entity ? 'bg-ocean-900 text-white' : 'bg-white'}`}>All</Link>
+        <Link
+          href="/app/audit"
+          className={`ring-ink/10 rounded-full px-3 py-1 text-xs ring-1 ${!sp.entity ? 'bg-ocean-900 text-white' : 'bg-white'}`}
+        >
+          All
+        </Link>
         {entities.map((e) => (
-          <Link key={e} href={`/app/audit?entity=${e}`} className={`rounded-full px-3 py-1 text-xs ring-1 ring-ink/10 ${sp.entity === e ? 'bg-ocean-900 text-white' : 'bg-white'}`}>{e}</Link>
+          <Link
+            key={e}
+            href={`/app/audit?entity=${e}`}
+            className={`ring-ink/10 rounded-full px-3 py-1 text-xs ring-1 ${sp.entity === e ? 'bg-ocean-900 text-white' : 'bg-white'}`}
+          >
+            {e}
+          </Link>
         ))}
       </div>
       <Card>
@@ -55,17 +87,36 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
           <tbody>
             {rows.map(({ e, orgName }) => (
               <tr key={e.id}>
-                <Td className="whitespace-nowrap text-ink/60">{formatDate(e.createdAt, true)}</Td>
+                <Td className="text-ink/60 whitespace-nowrap">{formatDate(e.createdAt, true)}</Td>
                 <Td>{e.actorLabel}</Td>
                 <Td className="font-medium">{e.action}</Td>
-                <Td className="text-xs text-ink/60">{e.entityType}{e.entityId ? ` · ${e.entityId.slice(0, 8)}` : ''}</Td>
-                <Td>{orgName ? <Link href={`/app/audit?org=${e.orgId}`} className="hover:text-ocean-700">{orgName}</Link> : '—'}</Td>
-                <Td className="max-w-xs truncate font-mono text-xs text-ink/55">{Object.keys(e.metadata).length ? JSON.stringify(e.metadata) : ''}</Td>
+                <Td className="text-ink/60 text-xs">
+                  {e.entityType}
+                  {e.entityId ? ` · ${e.entityId.slice(0, 8)}` : ''}
+                </Td>
+                <Td>
+                  {orgName ? (
+                    <Link href={`/app/audit?org=${e.orgId}`} className="hover:text-ocean-700">
+                      {orgName}
+                    </Link>
+                  ) : (
+                    '—'
+                  )}
+                </Td>
+                <Td className="text-ink/55 max-w-xs truncate font-mono text-xs">
+                  {Object.keys(e.metadata).length ? JSON.stringify(e.metadata) : ''}
+                </Td>
               </tr>
             ))}
           </tbody>
         </Table>
-        <Pagination page={page} pageSize={PAGE} total={total} basePath="/app/audit" params={{ entity: sp.entity, org: sp.org }} />
+        <Pagination
+          page={page}
+          pageSize={PAGE}
+          total={total}
+          basePath="/app/audit"
+          params={{ entity: sp.entity, org: sp.org }}
+        />
       </Card>
     </>
   );

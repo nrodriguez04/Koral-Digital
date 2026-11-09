@@ -27,7 +27,7 @@ export function MobileNav({ services }: { services: { href: string; label: strin
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex size-10 items-center justify-center rounded-xl text-ink hover:bg-ink/5"
+        className="text-ink hover:bg-ink/5 inline-flex size-10 items-center justify-center rounded-xl"
         aria-label="Open menu"
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -38,15 +38,15 @@ export function MobileNav({ services }: { services: { href: string; label: strin
         ref={dialogRef}
         onClose={() => setOpen(false)}
         aria-label="Site menu"
-        className="m-0 ml-auto h-dvh max-h-dvh w-full max-w-sm bg-ivory p-0 backdrop:bg-ink/40"
+        className="bg-ivory backdrop:bg-ink/40 m-0 ml-auto h-dvh max-h-dvh w-full max-w-sm p-0"
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-between border-b border-ink/8 px-4">
+          <div className="border-ink/8 flex h-16 items-center justify-between border-b px-4">
             <span className="text-sm font-semibold tracking-[0.2em]">MENU</span>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="inline-flex size-10 items-center justify-center rounded-xl hover:bg-ink/5"
+              className="hover:bg-ink/5 inline-flex size-10 items-center justify-center rounded-xl"
               aria-label="Close menu"
             >
               <X className="size-5" aria-hidden="true" />
@@ -56,13 +56,13 @@ export function MobileNav({ services }: { services: { href: string; label: strin
             <p className="eyebrow mb-2">Services</p>
             <ul className="mb-6 space-y-1">
               <li>
-                <Link href="/services" className="block rounded-lg px-3 py-2 font-medium hover:bg-ink/5">
+                <Link href="/services" className="hover:bg-ink/5 block rounded-lg px-3 py-2 font-medium">
                   All services
                 </Link>
               </li>
               {services.map((s) => (
                 <li key={s.href}>
-                  <Link href={s.href} className="block rounded-lg px-3 py-2 text-ink/80 hover:bg-ink/5">
+                  <Link href={s.href} className="text-ink/80 hover:bg-ink/5 block rounded-lg px-3 py-2">
                     {s.label}
                   </Link>
                 </li>
@@ -72,19 +72,19 @@ export function MobileNav({ services }: { services: { href: string; label: strin
             <ul className="space-y-1">
               {primaryNav.slice(1).map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="block rounded-lg px-3 py-2 font-medium hover:bg-ink/5">
+                  <Link href={item.href} className="hover:bg-ink/5 block rounded-lg px-3 py-2 font-medium">
                     {item.label}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link href="/contact" className="block rounded-lg px-3 py-2 font-medium hover:bg-ink/5">
+                <Link href="/contact" className="hover:bg-ink/5 block rounded-lg px-3 py-2 font-medium">
                   Contact
                 </Link>
               </li>
             </ul>
           </nav>
-          <div className="border-t border-ink/8 p-4">
+          <div className="border-ink/8 border-t p-4">
             <Link
               href="/contact"
               className={buttonClasses({ size: 'lg', className: 'w-full' })}

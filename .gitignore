@@ -13,3 +13,4 @@ test-results
 .uploads
 .pgdata
 .DS_Store
+.next-*

@@ -36,9 +36,15 @@ export const inquirySchema = z.object({
   name: z.string().trim().min(2, 'Please enter your name.').max(120),
   company: z.string().trim().min(2, 'Please enter your company name.').max(160),
   email: z.string().trim().toLowerCase().email('Please enter a valid email address.').max(200),
-  phone: optionalText(40).refine((v) => !v || /^[0-9+().\-\s]{7,40}$/.test(v), 'Please enter a valid phone number.'),
+  phone: optionalText(40).refine(
+    (v) => !v || /^[0-9+().\-\s]{7,40}$/.test(v),
+    'Please enter a valid phone number.',
+  ),
   industry: z.enum(INDUSTRIES, { message: 'Please choose your industry.' }),
-  monthlyLeads: z.enum(MONTHLY_LEAD_RANGES).optional().or(z.literal('').transform(() => undefined)),
+  monthlyLeads: z
+    .enum(MONTHLY_LEAD_RANGES)
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
   currentCrm: optionalText(120),
   topProblem: z.enum(TOP_PROBLEMS, { message: 'Please choose what you want help with.' }),
   message: optionalText(4000),

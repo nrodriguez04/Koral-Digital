@@ -29,7 +29,7 @@ export const services: ServiceContent[] = [
       heading: 'Leads are coming in. Some of them are quietly going nowhere.',
       paragraphs: [
         'For a lot of contractors, the problem is not a shortage of inquiries. It is the lack of a reliable path for them. A web form lands in a shared inbox. A Google Business Profile message sits unread over the weekend. A call goes to voicemail while the office is on another line, and nobody is sure whether anyone called back.',
-        'Each tool does its own job. The website collects the form, the phone system logs the call, the CRM holds the contact. What is missing is the handoff between them: who gets notified, who owns the reply, whether this homeowner is already in the system from last month\'s call, and when the estimate actually gets on the calendar.',
+        "Each tool does its own job. The website collects the form, the phone system logs the call, the CRM holds the contact. What is missing is the handoff between them: who gets notified, who owns the reply, whether this homeowner is already in the system from last month's call, and when the estimate actually gets on the calendar.",
         'When those handoffs depend on someone remembering, leads slip through and you cannot see where. You paid for the click, the lead or the canvassing hours, and the opportunity disappears somewhere between the inbox and the calendar.',
         'The Lead-to-Booked Pilot fixes that path for one or two sources first, in a fixed scope, so you can see it working in your own business before committing to anything bigger.',
       ],
@@ -83,7 +83,7 @@ export const services: ServiceContent[] = [
       },
       {
         title: 'Build in your tools',
-        body: 'We configure capture, duplicate checks, routing, reply drafts and the scheduling handoff using your existing systems\' native features first, adding n8n, Zapier or Make only where those fall short.',
+        body: "We configure capture, duplicate checks, routing, reply drafts and the scheduling handoff using your existing systems' native features first, adding n8n, Zapier or Make only where those fall short.",
       },
       {
         title: 'Test the messy cases',
@@ -135,8 +135,8 @@ export const services: ServiceContent[] = [
         'The workflow checks the CRM for an existing contact by phone and email, finds none, and creates a new lead tagged with the website as its source.',
         'The estimator who covers that ZIP code gets a text alert with the address and request; the office manager gets a CRM task as backup for the morning.',
         'A reply draft acknowledging the request and offering inspection windows is prepared in the CRM for the estimator to review.',
-        'The estimator edits the draft and sends it. The homeowner picks a time from the booking link, and the inspection lands on the estimator\'s calendar.',
-        'The lead\'s timestamps for received, assigned, first reply and booked feed the pilot report.',
+        "The estimator edits the draft and sends it. The homeowner picks a time from the booking link, and the inspection lands on the estimator's calendar.",
+        "The lead's timestamps for received, assigned, first reply and booked feed the pilot report.",
       ],
     },
     faqs: [
@@ -150,7 +150,7 @@ export const services: ServiceContent[] = [
       },
       {
         q: 'Which lead sources can the pilot cover?',
-        a: 'Common choices are website forms, Google Business Profile messages and calls, call-tracking lines, missed-call alerts from your phone system, and lead vendor feeds. What we can connect depends on each vendor\'s API access and your plan level, so we confirm feasibility for your specific sources during the workflow review, before you commit to anything.',
+        a: "Common choices are website forms, Google Business Profile messages and calls, call-tracking lines, missed-call alerts from your phone system, and lead vendor feeds. What we can connect depends on each vendor's API access and your plan level, so we confirm feasibility for your specific sources during the workflow review, before you commit to anything.",
       },
       {
         q: 'Will AI be sending messages to our customers?',
@@ -290,7 +290,7 @@ export const services: ServiceContent[] = [
       },
       {
         q: 'Which CRMs do you work with?',
-        a: 'We are vendor-neutral and commonly work with contractor platforms such as JobNimbus, AccuLynx, Roofr, Jobber, Housecall Pro, ServiceTitan, Buildertrend and Contractor Foreman, as well as general CRMs like HubSpot and HighLevel. We are not a certified partner or reseller of any of them. What we can configure or integrate depends on each vendor\'s features, API access and your plan.',
+        a: "We are vendor-neutral and commonly work with contractor platforms such as JobNimbus, AccuLynx, Roofr, Jobber, Housecall Pro, ServiceTitan, Buildertrend and Contractor Foreman, as well as general CRMs like HubSpot and HighLevel. We are not a certified partner or reseller of any of them. What we can configure or integrate depends on each vendor's features, API access and your plan.",
       },
       {
         q: 'Will we lose data during cleanup or migration?',
@@ -347,7 +347,7 @@ export const services: ServiceContent[] = [
       },
       {
         title: 'Human-approved message drafts',
-        body: 'Templates, and optional AI-assisted drafts, that pull in the job details. Salespeople review, personalize and send. Pricing changes and discounts are always a person\'s decision.',
+        body: "Templates, and optional AI-assisted drafts, that pull in the job details. Salespeople review, personalize and send. Pricing changes and discounts are always a person's decision.",
       },
       {
         title: 'Reactivation pass',
@@ -441,7 +441,7 @@ export const services: ServiceContent[] = [
       },
       {
         q: 'Do we need a specific CRM for estimate follow-up?',
-        a: 'No. We build the follow-up in the system you already use, whether that is a contractor platform like JobNimbus, AccuLynx or Jobber or a general CRM like HubSpot or HighLevel. If your CRM lacks the automation needed, we may add a lightweight integration tool, depending on what your vendor\'s API and plan allow.',
+        a: "No. We build the follow-up in the system you already use, whether that is a contractor platform like JobNimbus, AccuLynx or Jobber or a general CRM like HubSpot or HighLevel. If your CRM lacks the automation needed, we may add a lightweight integration tool, depending on what your vendor's API and plan allow.",
       },
     ],
     pricingKey: null,
@@ -577,7 +577,7 @@ export const services: ServiceContent[] = [
       },
       {
         q: 'Can you integrate any two systems?',
-        a: 'No one can honestly promise that. Integrations depend on each vendor\'s API, what your plan includes, rate limits and sometimes vendor approval. We check feasibility before quoting, and if a connection is not possible, we suggest the most reliable alternative, even if that is a clearly defined manual step.',
+        a: "No one can honestly promise that. Integrations depend on each vendor's API, what your plan includes, rate limits and sometimes vendor approval. We check feasibility before quoting, and if a connection is not possible, we suggest the most reliable alternative, even if that is a clearly defined manual step.",
       },
       {
         q: 'Who owns the automations you build?',
@@ -691,10 +691,10 @@ export const services: ServiceContent[] = [
       title: 'Example: tracing a Google Ads call to a signed roof replacement',
       steps: [
         'A homeowner clicks a Google Ads search ad and calls the tracking number shown on the landing page.',
-        'The call-tracking system records the campaign and keyword and passes the caller\'s details to the CRM as a new lead with its source attached.',
+        "The call-tracking system records the campaign and keyword and passes the caller's details to the CRM as a new lead with its source attached.",
         'The lead is booked for an inspection, and the appointment is linked to the original lead record.',
         'The estimate is issued and later marked signed, carrying the same source through each stage.',
-        'The monthly report shows that campaign\'s leads, booked inspections, issued estimates and signed jobs side by side with other sources.',
+        "The monthly report shows that campaign's leads, booked inspections, issued estimates and signed jobs side by side with other sources.",
         'Where configured, the signed job is uploaded to Google Ads as an offline conversion.',
       ],
     },
@@ -717,7 +717,7 @@ export const services: ServiceContent[] = [
       },
       {
         q: 'Will this show whether our marketing agency is performing?',
-        a: 'It shows what happens to the leads each channel produces, from inquiry through signed contract, using your own CRM data. That gives you an independent basis for conversations with any agency. It does not replace the agency\'s own campaign reporting.',
+        a: "It shows what happens to the leads each channel produces, from inquiry through signed contract, using your own CRM data. That gives you an independent basis for conversations with any agency. It does not replace the agency's own campaign reporting.",
       },
     ],
     pricingKey: null,
@@ -803,7 +803,7 @@ export const services: ServiceContent[] = [
     notIncluded: [
       'Large new builds or new integrations, which are scoped as separate projects.',
       'Round-the-clock emergency response, unless it is specifically agreed in writing.',
-      'Fixing problems inside a vendor\'s own software. We help you document and escalate them to the vendor.',
+      "Fixing problems inside a vendor's own software. We help you document and escalate them to the vendor.",
       'Day-to-day CRM data entry or front-office staffing.',
     ],
     tools: [
@@ -841,7 +841,7 @@ export const services: ServiceContent[] = [
       },
       {
         q: 'How is managed support priced?',
-        a: 'It is a monthly retainer. Your plan\'s scope, price and terms are confirmed in a written agreement after we review the systems to be covered, because one integration needs far less attention than a dozen. Larger new work is always quoted separately.',
+        a: "It is a monthly retainer. Your plan's scope, price and terms are confirmed in a written agreement after we review the systems to be covered, because one integration needs far less attention than a dozen. Larger new work is always quoted separately.",
       },
       {
         q: 'Do we need managed support after a pilot?',
@@ -951,7 +951,7 @@ export const services: ServiceContent[] = [
     exampleWorkflow: {
       title: 'Example: a storm-inspection landing page wired into the CRM',
       steps: [
-        'After a hailstorm, a Google Ads campaign targets roof inspection searches within the contractor\'s own service area.',
+        "After a hailstorm, a Google Ads campaign targets roof inspection searches within the contractor's own service area.",
         'Ads point to a focused landing page with a short inspection request form and a tracked phone number.',
         'Form submissions and calls create leads in the CRM with the campaign and keyword attached.',
         'The lead-routing workflow alerts the estimator covering that area and prepares a reply draft for approval.',
@@ -961,11 +961,11 @@ export const services: ServiceContent[] = [
     faqs: [
       {
         q: 'Is Koral Digital a full-service marketing agency?',
-        a: 'No. Koral\'s roots are in contractor lead generation, and we still build websites and landing pages and manage Google Ads where it fits. Our main focus is the systems that turn leads into booked jobs, and if you need large-scale agency work or a specialty we do not offer, we will say so.',
+        a: "No. Koral's roots are in contractor lead generation, and we still build websites and landing pages and manage Google Ads where it fits. Our main focus is the systems that turn leads into booked jobs, and if you need large-scale agency work or a specialty we do not offer, we will say so.",
       },
       {
         q: 'Can you guarantee first-page Google rankings or a set number of leads?',
-        a: 'No, and you should be cautious of anyone who does. Search rankings and ad performance depend on competition, budget, your reviews and many other factors outside anyone\'s control. What we can commit to is a well-built site, clean tracking and honest reporting on what is working.',
+        a: "No, and you should be cautious of anyone who does. Search rankings and ad performance depend on competition, budget, your reviews and many other factors outside anyone's control. What we can commit to is a well-built site, clean tracking and honest reporting on what is working.",
       },
       {
         q: 'Do you only work with contractors in Dallas–Fort Worth?',

@@ -27,26 +27,59 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         actions={
           <>
             <StatusBadge status={a.status} />
-            <Link href={`/insights/${a.slug}?preview=1`} target="_blank" className="text-sm font-semibold text-ocean-700 hover:underline">Preview</Link>
+            <Link
+              href={`/insights/${a.slug}?preview=1`}
+              target="_blank"
+              className="text-ocean-700 text-sm font-semibold hover:underline"
+            >
+              Preview
+            </Link>
           </>
         }
       />
       <Alert tone="info" className="mb-6" title="Editorial standard">
-        Publish only what you can stand behind: no invented statistics, client stories or guarantees. Formatting supports ## headings, - bullets, 1. lists, **bold**, *italic*, [links](/path) and &gt; quotes.
+        Publish only what you can stand behind: no invented statistics, client stories or guarantees.
+        Formatting supports ## headings, - bullets, 1. lists, **bold**, *italic*, [links](/path) and &gt;
+        quotes.
       </Alert>
       <Card className="p-6">
         <ActionForm action={saveArticle} submitLabel="Save article">
           <input type="hidden" name="articleId" value={a.id} />
-          <Field label="Title" htmlFor="title" required><Input id="title" name="title" defaultValue={a.title} required /></Field>
-          <Field label="Meta description" htmlFor="description" required hint="140–160 characters works best in search results."><Input id="description" name="description" defaultValue={a.description} required /></Field>
-          <Field label="Body" htmlFor="body" required><Textarea id="body" name="body" defaultValue={a.body} className="min-h-[480px] font-mono text-[13px]" required /></Field>
+          <Field label="Title" htmlFor="title" required>
+            <Input id="title" name="title" defaultValue={a.title} required />
+          </Field>
+          <Field
+            label="Meta description"
+            htmlFor="description"
+            required
+            hint="140–160 characters works best in search results."
+          >
+            <Input id="description" name="description" defaultValue={a.description} required />
+          </Field>
+          <Field label="Body" htmlFor="body" required>
+            <Textarea
+              id="body"
+              name="body"
+              defaultValue={a.body}
+              className="min-h-[480px] font-mono text-[13px]"
+              required
+            />
+          </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Status" htmlFor="status" required>
               <Select id="status" name="status" defaultValue={a.status}>
-                {articleStatusEnum.enumValues.map((s) => <option key={s} value={s}>{titleCase(s)}</option>)}
+                {articleStatusEnum.enumValues.map((s) => (
+                  <option key={s} value={s}>
+                    {titleCase(s)}
+                  </option>
+                ))}
               </Select>
             </Field>
-            <Checkbox name="reviewed" label="I have reviewed this article for accuracy and it contains no unverifiable claims." className="self-end pb-2" />
+            <Checkbox
+              name="reviewed"
+              label="I have reviewed this article for accuracy and it contains no unverifiable claims."
+              className="self-end pb-2"
+            />
           </div>
         </ActionForm>
       </Card>

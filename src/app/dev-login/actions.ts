@@ -13,7 +13,9 @@ import { isDevAuthMockEnabled } from '@/lib/env';
 export async function devSignIn(formData: FormData) {
   if (!isDevAuthMockEnabled()) throw new Error('Not available.');
   const userId = String(formData.get('userId') ?? '');
-  const user = await getDb().query.users.findFirst({ where: and(eq(users.id, userId), isNotNull(users.devKey)) });
+  const user = await getDb().query.users.findFirst({
+    where: and(eq(users.id, userId), isNotNull(users.devKey)),
+  });
   if (!user) throw new Error('Unknown dev user.');
   (await cookies()).set(DEV_SESSION_COOKIE, signDevSession(user.id), {
     httpOnly: true,

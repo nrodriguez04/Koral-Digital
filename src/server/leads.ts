@@ -38,7 +38,13 @@ export function leadWhere(f: LeadFilters): SQL | undefined {
   if (f.q) {
     const q = `%${f.q.replace(/[%_\\]/g, (c) => `\\${c}`)}%`;
     conds.push(
-      or(ilike(leads.title, q), ilike(companies.name, q), ilike(contacts.fullName, q), ilike(contacts.email, q), ilike(leads.industry, q)),
+      or(
+        ilike(leads.title, q),
+        ilike(companies.name, q),
+        ilike(contacts.fullName, q),
+        ilike(contacts.email, q),
+        ilike(leads.industry, q),
+      ),
     );
   }
   return and(...conds);
@@ -71,7 +77,10 @@ export async function listLeads(f: LeadFilters) {
     .leftJoin(users, eq(users.id, leads.ownerId))
     .where(where);
   const [rows, countRows] = await Promise.all([
-    base.orderBy(desc(leads.createdAt)).limit(LEADS_PAGE_SIZE).offset((page - 1) * LEADS_PAGE_SIZE),
+    base
+      .orderBy(desc(leads.createdAt))
+      .limit(LEADS_PAGE_SIZE)
+      .offset((page - 1) * LEADS_PAGE_SIZE),
     db
       .select({ n: sql<number>`count(*)::int` })
       .from(leads)
@@ -86,34 +95,57 @@ export async function getLeadDetail(id: string) {
   const db = getDb();
   const lead = await db.query.leads.findFirst({ where: and(eq(leads.id, id), isNull(leads.deletedAt)) });
   if (!lead) return null;
-  const [company, contact, owner, activities, answers, leadTasks, leadMeetings, leadProposals, companyContacts] =
-    await Promise.all([
-      lead.companyId ? db.query.companies.findFirst({ where: eq(companies.id, lead.companyId) }) : null,
-      lead.contactId ? db.query.contacts.findFirst({ where: eq(contacts.id, lead.contactId) }) : null,
-      lead.ownerId ? db.query.users.findFirst({ where: eq(users.id, lead.ownerId) }) : null,
-      db
-        .select({
-          id: leadActivities.id,
-          type: leadActivities.type,
-          body: leadActivities.body,
-          createdAt: leadActivities.createdAt,
-          actorName: users.name,
-          actorEmail: users.email,
-        })
-        .from(leadActivities)
-        .leftJoin(users, eq(users.id, leadActivities.actorId))
-        .where(eq(leadActivities.leadId, id))
-        .orderBy(desc(leadActivities.createdAt))
-        .limit(100),
-      db.select().from(discoveryAnswers).where(eq(discoveryAnswers.leadId, id)),
-      db.select().from(tasks).where(eq(tasks.leadId, id)).orderBy(asc(tasks.status), asc(tasks.dueAt)),
-      db.select().from(meetings).where(eq(meetings.leadId, id)).orderBy(desc(meetings.scheduledAt)),
-      db.select().from(proposals).where(eq(proposals.leadId, id)).orderBy(desc(proposals.createdAt)),
-      lead.companyId
-        ? db.select().from(contacts).where(and(eq(contacts.companyId, lead.companyId), isNull(contacts.deletedAt)))
-        : Promise.resolve([]),
-    ]);
-  return { lead, company, contact, owner, activities, answers, tasks: leadTasks, meetings: leadMeetings, proposals: leadProposals, companyContacts };
+  const [
+    company,
+    contact,
+    owner,
+    activities,
+    answers,
+    leadTasks,
+    leadMeetings,
+    leadProposals,
+    companyContacts,
+  ] = await Promise.all([
+    lead.companyId ? db.query.companies.findFirst({ where: eq(companies.id, lead.companyId) }) : null,
+    lead.contactId ? db.query.contacts.findFirst({ where: eq(contacts.id, lead.contactId) }) : null,
+    lead.ownerId ? db.query.users.findFirst({ where: eq(users.id, lead.ownerId) }) : null,
+    db
+      .select({
+        id: leadActivities.id,
+        type: leadActivities.type,
+        body: leadActivities.body,
+        createdAt: leadActivities.createdAt,
+        actorName: users.name,
+        actorEmail: users.email,
+      })
+      .from(leadActivities)
+      .leftJoin(users, eq(users.id, leadActivities.actorId))
+      .where(eq(leadActivities.leadId, id))
+      .orderBy(desc(leadActivities.createdAt))
+      .limit(100),
+    db.select().from(discoveryAnswers).where(eq(discoveryAnswers.leadId, id)),
+    db.select().from(tasks).where(eq(tasks.leadId, id)).orderBy(asc(tasks.status), asc(tasks.dueAt)),
+    db.select().from(meetings).where(eq(meetings.leadId, id)).orderBy(desc(meetings.scheduledAt)),
+    db.select().from(proposals).where(eq(proposals.leadId, id)).orderBy(desc(proposals.createdAt)),
+    lead.companyId
+      ? db
+          .select()
+          .from(contacts)
+          .where(and(eq(contacts.companyId, lead.companyId), isNull(contacts.deletedAt)))
+      : Promise.resolve([]),
+  ]);
+  return {
+    lead,
+    company,
+    contact,
+    owner,
+    activities,
+    answers,
+    tasks: leadTasks,
+    meetings: leadMeetings,
+    proposals: leadProposals,
+    companyContacts,
+  };
 }
 
 export async function listStaff() {

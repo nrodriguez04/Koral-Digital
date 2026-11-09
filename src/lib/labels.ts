@@ -11,7 +11,8 @@ export const LEAD_STAGES: { value: LeadStage; label: string; tone: Tone }[] = [
   { value: 'won', label: 'Won', tone: 'green' },
   { value: 'lost', label: 'Lost', tone: 'neutral' },
 ];
-export const stageMeta = (s: string) => LEAD_STAGES.find((x) => x.value === s) ?? { value: s, label: s, tone: 'neutral' as Tone };
+export const stageMeta = (s: string) =>
+  LEAD_STAGES.find((x) => x.value === s) ?? { value: s, label: s, tone: 'neutral' as Tone };
 
 export const STATUS_TONES: Record<string, Tone> = {
   draft: 'neutral',

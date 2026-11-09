@@ -114,7 +114,9 @@ async function persistInquiry(input: InquiryInput, now: number) {
     // Company: business domain first, then normalized name.
     let company =
       (domain
-        ? await tx.query.companies.findFirst({ where: and(eq(companies.domain, domain), isNull(companies.deletedAt)) })
+        ? await tx.query.companies.findFirst({
+            where: and(eq(companies.domain, domain), isNull(companies.deletedAt)),
+          })
         : undefined) ??
       (await tx.query.companies.findFirst({
         where: and(eq(companies.normalizedName, normalizedName), isNull(companies.deletedAt)),
@@ -164,7 +166,11 @@ async function persistInquiry(input: InquiryInput, now: number) {
 
     // Lead: reuse an open lead for this contact.
     const open = await tx.query.leads.findFirst({
-      where: and(eq(leads.contactId, contact!.id), notInArray(leads.stage, ['won', 'lost']), isNull(leads.deletedAt)),
+      where: and(
+        eq(leads.contactId, contact!.id),
+        notInArray(leads.stage, ['won', 'lost']),
+        isNull(leads.deletedAt),
+      ),
     });
 
     const submittedAt = new Date(now);
@@ -217,10 +223,7 @@ async function persistInquiry(input: InquiryInput, now: number) {
     await tx.insert(leadActivities).values({
       leadId,
       type: 'form_submission',
-      body: [
-        `Website inquiry: ${input.topProblem}`,
-        input.message ? `\n${input.message}` : '',
-      ].join(''),
+      body: [`Website inquiry: ${input.topProblem}`, input.message ? `\n${input.message}` : ''].join(''),
       metadata: {
         industry: input.industry,
         monthlyLeads: input.monthlyLeads ?? null,

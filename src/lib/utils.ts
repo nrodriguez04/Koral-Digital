@@ -15,9 +15,11 @@ export function formatCents(cents: number | null | undefined, opts: { compact?: 
 }
 
 export function formatUsd(dollars: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(
-    dollars,
-  );
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(dollars);
 }
 
 const TZ = 'America/Chicago';

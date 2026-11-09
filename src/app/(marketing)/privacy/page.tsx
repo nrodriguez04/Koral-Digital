@@ -4,7 +4,8 @@ import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
   title: 'Privacy notice',
-  description: 'How Koral Digital collects, uses and protects information submitted through koraldigital.com and the client portal.',
+  description:
+    'How Koral Digital collects, uses and protects information submitted through koraldigital.com and the client portal.',
   path: '/privacy',
 });
 

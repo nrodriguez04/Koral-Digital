@@ -74,16 +74,19 @@ export default async function ArticlePage({ params, searchParams }: Props) {
               This article is not public. Publish it from the content admin after review.
             </Alert>
           ) : null}
-          <nav aria-label="Breadcrumb" className="text-sm text-ink/55">
+          <nav aria-label="Breadcrumb" className="text-ink/55 text-sm">
             <Link href="/insights" className="hover:text-ink">
               ← All insights
             </Link>
           </nav>
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{article.title}</h1>
-          <p className="mt-4 text-lg leading-relaxed text-ink/70">{article.description}</p>
-          <p className="mt-6 text-sm text-ink/55">
+          <h1 className="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            {article.title}
+          </h1>
+          <p className="text-ink/70 mt-4 text-lg leading-relaxed">{article.description}</p>
+          <p className="text-ink/55 mt-6 text-sm">
             By {article.authorName}
-            {article.publishedAt ? ` · ${formatDate(article.publishedAt)}` : ''} · {article.readingMinutes} min read
+            {article.publishedAt ? ` · ${formatDate(article.publishedAt)}` : ''} · {article.readingMinutes}{' '}
+            min read
           </p>
           <div className="prose-koral mt-10">{renderMarkdown(article.body)}</div>
         </div>

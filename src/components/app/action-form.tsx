@@ -66,7 +66,9 @@ export function ActionForm({
             {state.error}
             {state.fieldErrors ? (
               <ul className="mt-1 list-disc pl-4">
-                {Object.entries(state.fieldErrors).map(([k, v]) => (v?.length ? <li key={k}>{`${k}: ${v[0]}`}</li> : null))}
+                {Object.entries(state.fieldErrors).map(([k, v]) =>
+                  v?.length ? <li key={k}>{`${k}: ${v[0]}`}</li> : null,
+                )}
               </ul>
             ) : null}
           </Alert>

@@ -13,7 +13,10 @@ export default async function ProposalsPage() {
   const rows = await listProposals();
   return (
     <>
-      <PageHeader title="Proposals" description="Draft proposals from a lead’s page. Sent and accepted proposals become visible to the client once the lead is converted." />
+      <PageHeader
+        title="Proposals"
+        description="Draft proposals from a lead’s page. Sent and accepted proposals become visible to the client once the lead is converted."
+      />
       <Card>
         {rows.length === 0 ? (
           <EmptyState icon={<FileText className="size-6" />} title="No proposals yet">
@@ -34,10 +37,10 @@ export default async function ProposalsPage() {
               {rows.map((p) => (
                 <tr key={p.id}>
                   <Td>
-                    <Link href={`/app/proposals/${p.id}`} className="font-semibold hover:text-ocean-700">
+                    <Link href={`/app/proposals/${p.id}`} className="hover:text-ocean-700 font-semibold">
                       {p.number}
                     </Link>
-                    <div className="text-xs text-ink/55">{p.title}</div>
+                    <div className="text-ink/55 text-xs">{p.title}</div>
                   </Td>
                   <Td>
                     {p.companyName ?? '—'} {p.isDemo ? <Badge tone="red">Synthetic</Badge> : null}

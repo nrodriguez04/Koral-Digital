@@ -4,7 +4,13 @@ import { notFound } from 'next/navigation';
 import { ArrowRight, CheckCircle2, MinusCircle } from 'lucide-react';
 import { services } from '@/content/services';
 import { ContentIcon } from '@/components/marketing/icon';
-import { CtaBand, FaqList, IllustrativeLabel, PageHero, SectionHeading } from '@/components/marketing/sections';
+import {
+  CtaBand,
+  FaqList,
+  IllustrativeLabel,
+  PageHero,
+  SectionHeading,
+} from '@/components/marketing/sections';
 import { ButtonLink } from '@/components/ui/button';
 import { siteUrl } from '@/lib/env';
 import { breadcrumbJsonLd, faqJsonLd, JsonLd, pageMetadata, serviceJsonLd } from '@/lib/seo';
@@ -22,7 +28,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const svc = services.find((s) => s.slug === slug);
   if (!svc) return {};
-  return pageMetadata({ title: svc.metaTitle, description: svc.metaDescription, path: `/services/${svc.slug}` });
+  return pageMetadata({
+    title: svc.metaTitle,
+    description: svc.metaDescription,
+    path: `/services/${svc.slug}`,
+  });
 }
 
 export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -36,7 +46,9 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     { name: 'Services', path: '/services' },
     { name: svc.shortName, path: `/services/${svc.slug}` },
   ];
-  const related = svc.related.map((r) => services.find((x) => x.slug === r)).filter(Boolean) as typeof services;
+  const related = svc.related
+    .map((r) => services.find((x) => x.slug === r))
+    .filter(Boolean) as typeof services;
 
   return (
     <>
@@ -76,7 +88,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       <section className="container-page grid gap-12 py-16 sm:py-20 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <h2 className="text-3xl font-semibold tracking-tight text-balance">{svc.problem.heading}</h2>
-          <div className="mt-6 space-y-4 text-lg leading-relaxed text-ink/75">
+          <div className="text-ink/75 mt-6 space-y-4 text-lg leading-relaxed">
             {svc.problem.paragraphs.map((p) => (
               <p key={p.slice(0, 40)}>{p}</p>
             ))}
@@ -84,11 +96,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         </div>
         <aside className="lg:col-span-5">
           <div className="card p-6 sm:p-7">
-            <p className="font-semibold text-ink">What changes</p>
+            <p className="text-ink font-semibold">What changes</p>
             <ul className="mt-4 space-y-3">
               {svc.outcomes.map((o) => (
-                <li key={o} className="flex gap-2.5 text-sm leading-relaxed text-ink/75">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-ocean-500" aria-hidden="true" />
+                <li key={o} className="text-ink/75 flex gap-2.5 text-sm leading-relaxed">
+                  <CheckCircle2 className="text-ocean-500 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                   {o}
                 </li>
               ))}
@@ -97,15 +109,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         </aside>
       </section>
 
-      <section className="border-y border-ink/8 bg-white">
+      <section className="border-ink/8 border-y bg-white">
         <div className="container-page py-16 sm:py-20">
           <SectionHeading eyebrow="Deliverables" title="What is included" />
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {svc.included.map((it) => (
-              <div key={it.title} className="rounded-2xl bg-ivory p-6 ring-1 ring-ink/8">
-                <ContentIcon name={svc.icon} className="size-5 text-ocean-600" />
-                <h3 className="mt-3 font-semibold text-ink">{it.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink/65">{it.body}</p>
+              <div key={it.title} className="bg-ivory ring-ink/8 rounded-2xl p-6 ring-1">
+                <ContentIcon name={svc.icon} className="text-ocean-600 size-5" />
+                <h3 className="text-ink mt-3 font-semibold">{it.title}</h3>
+                <p className="text-ink/65 mt-2 text-sm leading-relaxed">{it.body}</p>
               </div>
             ))}
           </div>
@@ -118,12 +130,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           <ol className="mt-8 space-y-5">
             {svc.process.map((p, i) => (
               <li key={p.title} className="flex gap-4">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ocean-900 text-sm font-semibold text-white">
+                <span className="bg-ocean-900 flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white">
                   {i + 1}
                 </span>
                 <div>
                   <h3 className="font-semibold">{p.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-ink/65">{p.body}</p>
+                  <p className="text-ink/65 mt-1 text-sm leading-relaxed">{p.body}</p>
                 </div>
               </li>
             ))}
@@ -134,8 +146,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <h2 className="font-semibold">A good fit if…</h2>
             <ul className="mt-4 space-y-2.5">
               {svc.idealFor.map((x) => (
-                <li key={x} className="flex gap-2.5 text-sm text-ink/75">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-ocean-500" aria-hidden="true" />
+                <li key={x} className="text-ink/75 flex gap-2.5 text-sm">
+                  <CheckCircle2 className="text-ocean-500 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                   {x}
                 </li>
               ))}
@@ -145,8 +157,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <h2 className="font-semibold">What this is not</h2>
             <ul className="mt-4 space-y-2.5">
               {svc.notIncluded.map((x) => (
-                <li key={x} className="flex gap-2.5 text-sm text-ink/75">
-                  <MinusCircle className="mt-0.5 size-4 shrink-0 text-ink/40" aria-hidden="true" />
+                <li key={x} className="text-ink/75 flex gap-2.5 text-sm">
+                  <MinusCircle className="text-ink/40 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                   {x}
                 </li>
               ))}
@@ -154,13 +166,13 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           </div>
           <div className="card p-6">
             <h2 className="font-semibold">Tools we commonly work with</h2>
-            <p className="mt-1 text-xs text-ink/55">
-              Vendor-neutral — no reseller or partner arrangements. Integration depth depends on each vendor&apos;s API
-              access and your plan.
+            <p className="text-ink/55 mt-1 text-xs">
+              Vendor-neutral — no reseller or partner arrangements. Integration depth depends on each
+              vendor&apos;s API access and your plan.
             </p>
             <ul className="mt-4 flex flex-wrap gap-2">
               {svc.tools.map((t) => (
-                <li key={t} className="rounded-full bg-ink/[0.05] px-3 py-1 text-xs font-medium text-ink/75">
+                <li key={t} className="bg-ink/[0.05] text-ink/75 rounded-full px-3 py-1 text-xs font-medium">
                   {t}
                 </li>
               ))}
@@ -172,11 +184,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       <section className="ocean-gradient text-white">
         <div className="container-page py-16 sm:py-20">
           <IllustrativeLabel />
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">{svc.exampleWorkflow.title}</h2>
+          <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
+            {svc.exampleWorkflow.title}
+          </h2>
           <ol className="mt-8 grid gap-3 md:grid-cols-2">
             {svc.exampleWorkflow.steps.map((st, i) => (
               <li key={st} className="flex gap-3 rounded-2xl bg-white/[0.06] p-4 ring-1 ring-white/10">
-                <span className="text-sm font-semibold text-ocean-300 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-ocean-300 text-sm font-semibold tabular-nums">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 <span className="text-sm leading-relaxed text-white/85">{st}</span>
               </li>
             ))}
@@ -198,9 +214,13 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           <h2 className="text-lg font-semibold">Related services</h2>
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             {related.map((r) => (
-              <Link key={r.slug} href={`/services/${r.slug}`} className="card p-5 transition hover:border-ocean-500/40">
+              <Link
+                key={r.slug}
+                href={`/services/${r.slug}`}
+                className="card hover:border-ocean-500/40 p-5 transition"
+              >
                 <p className="font-semibold">{r.name}</p>
-                <p className="mt-1 line-clamp-2 text-sm text-ink/60">{r.summary}</p>
+                <p className="text-ink/60 mt-1 line-clamp-2 text-sm">{r.summary}</p>
               </Link>
             ))}
           </div>

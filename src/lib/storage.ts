@@ -11,14 +11,23 @@ export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // stays under serverless reque
 /** Allowlist with magic-byte signatures. No HTML/SVG/executables (no inline-renderable active content). */
 const TYPES: Record<string, { ext: string[]; magic?: (b: Buffer) => boolean }> = {
   'application/pdf': { ext: ['pdf'], magic: (b) => b.subarray(0, 5).toString() === '%PDF-' },
-  'image/png': { ext: ['png'], magic: (b) => b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) },
+  'image/png': {
+    ext: ['png'],
+    magic: (b) => b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+  },
   'image/jpeg': { ext: ['jpg', 'jpeg'], magic: (b) => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
-  'image/webp': { ext: ['webp'], magic: (b) => b.subarray(0, 4).toString() === 'RIFF' && b.subarray(8, 12).toString() === 'WEBP' },
+  'image/webp': {
+    ext: ['webp'],
+    magic: (b) => b.subarray(0, 4).toString() === 'RIFF' && b.subarray(8, 12).toString() === 'WEBP',
+  },
   'text/plain': { ext: ['txt'] },
   'text/csv': { ext: ['csv'] },
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { ext: ['docx'], magic: isZip },
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { ext: ['xlsx'], magic: isZip },
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation': { ext: ['pptx'], magic: isZip },
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+    ext: ['pptx'],
+    magic: isZip,
+  },
 };
 
 function isZip(b: Buffer) {
@@ -29,22 +38,36 @@ export const ALLOWED_UPLOAD_EXTENSIONS = Object.values(TYPES).flatMap((t) => t.e
 
 export function sanitizeFileName(name: string) {
   const base = name.split(/[\\/]/).pop() ?? 'file';
-  return base.replace(/[^\w.\- ]+/g, '_').replace(/\s+/g, ' ').trim().slice(0, 120) || 'file';
+  return (
+    base
+      .replace(/[^\w.\- ]+/g, '_')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 120) || 'file'
+  );
 }
 
 export type ValidatedUpload = { name: string; contentType: string; bytes: Buffer };
 
-export async function validateUpload(file: File): Promise<{ ok: true; value: ValidatedUpload } | { ok: false; error: string }> {
+export async function validateUpload(
+  file: File,
+): Promise<{ ok: true; value: ValidatedUpload } | { ok: false; error: string }> {
   if (!file || file.size === 0) return { ok: false, error: 'Choose a file to upload.' };
   if (file.size > MAX_UPLOAD_BYTES) return { ok: false, error: 'Files must be 4 MB or smaller.' };
   const name = sanitizeFileName(file.name);
   const ext = name.split('.').pop()?.toLowerCase() ?? '';
   const entry = Object.entries(TYPES).find(([, t]) => t.ext.includes(ext));
-  if (!entry) return { ok: false, error: `That file type is not allowed. Allowed: ${ALLOWED_UPLOAD_EXTENSIONS.join(', ')}.` };
+  if (!entry)
+    return {
+      ok: false,
+      error: `That file type is not allowed. Allowed: ${ALLOWED_UPLOAD_EXTENSIONS.join(', ')}.`,
+    };
   const [contentType, spec] = entry;
   const bytes = Buffer.from(await file.arrayBuffer());
-  if (spec.magic && !spec.magic(bytes)) return { ok: false, error: 'The file contents do not match its extension.' };
-  if (!spec.magic && bytes.subarray(0, 4096).includes(0)) return { ok: false, error: 'Text files must not contain binary data.' };
+  if (spec.magic && !spec.magic(bytes))
+    return { ok: false, error: 'The file contents do not match its extension.' };
+  if (!spec.magic && bytes.subarray(0, 4096).includes(0))
+    return { ok: false, error: 'Text files must not contain binary data.' };
   return { ok: true, value: { name, contentType, bytes } };
 }
 
@@ -53,11 +76,16 @@ export type StorageStatus = { driver: 's3' | 'local' | 'none'; ready: boolean; r
 export function storageStatus(): StorageStatus {
   const e = env();
   if (e.STORAGE_DRIVER === 's3') {
-    const missing = ['S3_ENDPOINT', 'S3_BUCKET', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'].filter((k) => !e[k as keyof typeof e]);
-    return missing.length ? { driver: 's3', ready: false, reason: `Missing ${missing.join(', ')}` } : { driver: 's3', ready: true };
+    const missing = ['S3_ENDPOINT', 'S3_BUCKET', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'].filter(
+      (k) => !e[k as keyof typeof e],
+    );
+    return missing.length
+      ? { driver: 's3', ready: false, reason: `Missing ${missing.join(', ')}` }
+      : { driver: 's3', ready: true };
   }
   if (e.STORAGE_DRIVER === 'local') {
-    if (isProduction()) return { driver: 'local', ready: false, reason: 'Local disk storage is disabled in production.' };
+    if (isProduction())
+      return { driver: 'local', ready: false, reason: 'Local disk storage is disabled in production.' };
     return { driver: 'local', ready: true };
   }
   return { driver: 'none', ready: false, reason: 'File storage is not configured (STORAGE_DRIVER).' };
@@ -65,7 +93,12 @@ export function storageStatus(): StorageStatus {
 
 const LOCAL_ROOT = path.join(process.cwd(), '.uploads');
 
-function s3Presign(method: 'GET' | 'PUT' | 'DELETE', key: string, expiresSeconds: number, query?: Record<string, string>) {
+function s3Presign(
+  method: 'GET' | 'PUT' | 'DELETE',
+  key: string,
+  expiresSeconds: number,
+  query?: Record<string, string>,
+) {
   const e = env();
   return presignUrl({
     method,

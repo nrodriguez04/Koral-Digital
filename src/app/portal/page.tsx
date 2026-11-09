@@ -16,7 +16,10 @@ export default async function PortalIndex() {
       <ul className="space-y-2">
         {actor.memberships.map((m) => (
           <li key={m.orgId}>
-            <Link href={`/portal/${m.orgSlug}`} className="block rounded-xl border border-ink/10 bg-white px-4 py-3 font-medium hover:border-ocean-500/50">
+            <Link
+              href={`/portal/${m.orgSlug}`}
+              className="border-ink/10 hover:border-ocean-500/50 block rounded-xl border bg-white px-4 py-3 font-medium"
+            >
               {m.orgName}
             </Link>
           </li>

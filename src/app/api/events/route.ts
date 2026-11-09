@@ -7,12 +7,23 @@ import { log } from '@/lib/logger';
 import { rateLimit } from '@/lib/rate-limit';
 import { clientIp } from '@/lib/request';
 
-const ALLOWED = ['page_view', 'cta_click', 'booking_click', 'contact_start', 'contact_submit_success', 'contact_submit_error'] as const;
+const ALLOWED = [
+  'page_view',
+  'cta_click',
+  'booking_click',
+  'contact_start',
+  'contact_submit_success',
+  'contact_submit_error',
+] as const;
 
 const schema = z.object({
   name: z.enum(ALLOWED),
   path: z.string().max(300).startsWith('/').optional(),
-  sessionId: z.string().max(64).regex(/^[a-z0-9]+$/).optional(),
+  sessionId: z
+    .string()
+    .max(64)
+    .regex(/^[a-z0-9]+$/)
+    .optional(),
   utmSource: z.string().max(120).optional(),
   utmMedium: z.string().max(120).optional(),
   utmCampaign: z.string().max(160).optional(),

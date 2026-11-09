@@ -13,7 +13,10 @@ export default async function ClientsPage() {
   const rows = await listClients();
   return (
     <>
-      <PageHeader title="Clients" description="Client workspaces are created by converting a won lead. Each has its own isolated portal." />
+      <PageHeader
+        title="Clients"
+        description="Client workspaces are created by converting a won lead. Each has its own isolated portal."
+      />
       <Card>
         {rows.length === 0 ? (
           <EmptyState icon={<Briefcase className="size-6" />} title="No clients yet">
@@ -36,11 +39,11 @@ export default async function ClientsPage() {
               {rows.map((c) => (
                 <tr key={c.id}>
                   <Td>
-                    <Link href={`/app/clients/${c.id}`} className="font-semibold hover:text-ocean-700">
+                    <Link href={`/app/clients/${c.id}`} className="hover:text-ocean-700 font-semibold">
                       {c.name}
                     </Link>{' '}
                     {c.isDemo ? <Badge tone="red">Synthetic</Badge> : null}
-                    <div className="text-xs text-ink/50">/portal/{c.slug}</div>
+                    <div className="text-ink/50 text-xs">/portal/{c.slug}</div>
                   </Td>
                   <Td>
                     <StatusBadge status={c.status} />

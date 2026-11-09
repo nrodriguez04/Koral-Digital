@@ -12,7 +12,14 @@ function tzOffsetMinutes(date: Date, timeZone = BUSINESS_TZ) {
     second: '2-digit',
   }).formatToParts(date);
   const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
-  const asUtc = Date.UTC(get('year'), get('month') - 1, get('day'), get('hour'), get('minute'), get('second'));
+  const asUtc = Date.UTC(
+    get('year'),
+    get('month') - 1,
+    get('day'),
+    get('hour'),
+    get('minute'),
+    get('second'),
+  );
   return (asUtc - date.getTime()) / 60000;
 }
 

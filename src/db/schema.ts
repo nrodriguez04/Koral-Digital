@@ -48,7 +48,13 @@ export const activityTypeEnum = pgEnum('activity_type', [
 ]);
 export const taskStatusEnum = pgEnum('task_status', ['open', 'done', 'cancelled']);
 export const priorityEnum = pgEnum('priority', ['low', 'normal', 'high', 'urgent']);
-export const proposalStatusEnum = pgEnum('proposal_status', ['draft', 'sent', 'accepted', 'declined', 'expired']);
+export const proposalStatusEnum = pgEnum('proposal_status', [
+  'draft',
+  'sent',
+  'accepted',
+  'declined',
+  'expired',
+]);
 export const projectStatusEnum = pgEnum('project_status', [
   'planning',
   'active',
@@ -56,7 +62,12 @@ export const projectStatusEnum = pgEnum('project_status', [
   'completed',
   'cancelled',
 ]);
-export const milestoneStatusEnum = pgEnum('milestone_status', ['not_started', 'in_progress', 'blocked', 'done']);
+export const milestoneStatusEnum = pgEnum('milestone_status', [
+  'not_started',
+  'in_progress',
+  'blocked',
+  'done',
+]);
 export const ticketStatusEnum = pgEnum('ticket_status', [
   'open',
   'waiting_on_client',
@@ -64,9 +75,20 @@ export const ticketStatusEnum = pgEnum('ticket_status', [
   'resolved',
   'closed',
 ]);
-export const invoiceStatusEnum = pgEnum('invoice_status', ['draft', 'sent', 'partially_paid', 'paid', 'void']);
+export const invoiceStatusEnum = pgEnum('invoice_status', [
+  'draft',
+  'sent',
+  'partially_paid',
+  'paid',
+  'void',
+]);
 export const fileVisibilityEnum = pgEnum('file_visibility', ['internal', 'client']);
-export const invitationStatusEnum = pgEnum('invitation_status', ['pending', 'accepted', 'revoked', 'expired']);
+export const invitationStatusEnum = pgEnum('invitation_status', [
+  'pending',
+  'accepted',
+  'revoked',
+  'expired',
+]);
 export const integrationStatusEnum = pgEnum('integration_status', [
   'not_connected',
   'access_requested',
@@ -149,7 +171,10 @@ export const memberships = pgTable(
     role: memberRoleEnum('role').notNull().default('client_member'),
     ...timestamps,
   },
-  (t) => [uniqueIndex('memberships_org_user_uq').on(t.orgId, t.userId), index('memberships_user_idx').on(t.userId)],
+  (t) => [
+    uniqueIndex('memberships_org_user_uq').on(t.orgId, t.userId),
+    index('memberships_user_idx').on(t.userId),
+  ],
 );
 
 export const invitations = pgTable(
@@ -177,7 +202,10 @@ export const invitations = pgTable(
     uniqueIndex('invitations_token_hash_uq').on(t.tokenHash),
     index('invitations_org_idx').on(t.orgId),
     index('invitations_email_idx').on(t.email),
-    check('invitations_role_ck', sql`(${t.orgId} is not null and ${t.memberRole} is not null and ${t.staffRole} is null) or (${t.orgId} is null and ${t.staffRole} is not null and ${t.memberRole} is null)`),
+    check(
+      'invitations_role_ck',
+      sql`(${t.orgId} is not null and ${t.memberRole} is not null and ${t.staffRole} is null) or (${t.orgId} is null and ${t.staffRole} is not null and ${t.memberRole} is null)`,
+    ),
   ],
 );
 
@@ -206,7 +234,9 @@ export const companies = pgTable(
     ...timestamps,
   },
   (t) => [
-    uniqueIndex('companies_domain_uq').on(t.domain).where(sql`${t.domain} is not null and ${t.deletedAt} is null`),
+    uniqueIndex('companies_domain_uq')
+      .on(t.domain)
+      .where(sql`${t.domain} is not null and ${t.deletedAt} is null`),
     index('companies_normalized_name_idx').on(t.normalizedName),
   ],
 );
@@ -228,7 +258,9 @@ export const contacts = pgTable(
     ...timestamps,
   },
   (t) => [
-    uniqueIndex('contacts_email_uq').on(t.email).where(sql`${t.email} is not null and ${t.deletedAt} is null`),
+    uniqueIndex('contacts_email_uq')
+      .on(t.email)
+      .where(sql`${t.email} is not null and ${t.deletedAt} is null`),
     index('contacts_company_idx').on(t.companyId),
   ],
 );

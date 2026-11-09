@@ -36,13 +36,22 @@ export default async function ServicesPage() {
       <section className="container-page py-16 sm:py-20">
         <div className="grid gap-6 lg:grid-cols-3">
           {[
-            ['1. Discovery', 'A free consultation, then (if useful) a paid diagnostic of your lead flow, tools and data.'],
-            ['2. Fixed-fee implementation', 'Clear scope, deliverables, acceptance tests and price — agreed in writing before work starts.'],
-            ['3. Ongoing optimization', 'Optional monthly support to monitor, maintain and improve what was built.'],
+            [
+              '1. Discovery',
+              'A free consultation, then (if useful) a paid diagnostic of your lead flow, tools and data.',
+            ],
+            [
+              '2. Fixed-fee implementation',
+              'Clear scope, deliverables, acceptance tests and price — agreed in writing before work starts.',
+            ],
+            [
+              '3. Ongoing optimization',
+              'Optional monthly support to monitor, maintain and improve what was built.',
+            ],
           ].map(([t, b]) => (
             <div key={t} className="card p-6">
-              <p className="font-semibold text-ink">{t}</p>
-              <p className="mt-2 text-sm leading-relaxed text-ink/65">{b}</p>
+              <p className="text-ink font-semibold">{t}</p>
+              <p className="text-ink/65 mt-2 text-sm leading-relaxed">{b}</p>
             </div>
           ))}
         </div>
@@ -55,7 +64,7 @@ export default async function ServicesPage() {
             <article key={svc.slug} className="card grid gap-6 p-6 sm:p-8 lg:grid-cols-12">
               <div className="lg:col-span-5">
                 <div className="flex items-center gap-3">
-                  <span className="flex size-11 items-center justify-center rounded-2xl bg-ocean-900 text-ocean-300">
+                  <span className="bg-ocean-900 text-ocean-300 flex size-11 items-center justify-center rounded-2xl">
                     <ContentIcon name={svc.icon} className="size-5" />
                   </span>
                   <h2 className="text-xl font-semibold tracking-tight">
@@ -64,9 +73,9 @@ export default async function ServicesPage() {
                     </Link>
                   </h2>
                 </div>
-                <p className="mt-4 leading-relaxed text-ink/70">{svc.summary}</p>
+                <p className="text-ink/70 mt-4 leading-relaxed">{svc.summary}</p>
                 {s.pricing.show && svc.pricingKey ? (
-                  <p className="mt-4 text-sm text-ocean-800">
+                  <p className="text-ocean-800 mt-4 text-sm">
                     {svc.pricingKey === 'pilot'
                       ? `Founding pilots from ${formatUsd(s.pricing.pilotFrom)}`
                       : `Support plans from ${formatUsd(s.pricing.supportFrom)}/month`}
@@ -75,15 +84,15 @@ export default async function ServicesPage() {
                 ) : null}
                 <Link
                   href={`/services/${svc.slug}`}
-                  className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-ocean-700 hover:text-ocean-600"
+                  className="text-ocean-700 hover:text-ocean-600 mt-5 inline-flex items-center gap-1 text-sm font-semibold"
                 >
                   Details, process and FAQs <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </div>
               <ul className="grid gap-3 sm:grid-cols-2 lg:col-span-7">
                 {svc.outcomes.slice(0, 4).map((o) => (
-                  <li key={o} className="flex gap-2.5 text-sm leading-relaxed text-ink/75">
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-ocean-500" aria-hidden="true" />
+                  <li key={o} className="text-ink/75 flex gap-2.5 text-sm leading-relaxed">
+                    <CheckCircle2 className="text-ocean-500 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                     {o}
                   </li>
                 ))}

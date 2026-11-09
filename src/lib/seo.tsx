@@ -32,7 +32,9 @@ export function pageMetadata({
       siteName: SITE_NAME,
       locale: 'en_US',
       type,
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: 'Koral Digital — Building a better tomorrow' }],
+      images: [
+        { url: OG_IMAGE, width: 1200, height: 630, alt: 'Koral Digital — Building a better tomorrow' },
+      ],
       ...(type === 'article' ? { publishedTime, modifiedTime } : {}),
     },
     twitter: { card: 'summary_large_image', title, description, images: [OG_IMAGE] },
@@ -77,7 +79,12 @@ export function organizationJsonLd(base: string, s: SiteSettings) {
         '@id': `${base}/#organization`,
         name: s.businessName,
         url: base,
-        logo: { '@type': 'ImageObject', url: `${base}/brand/koral-mark-light.png`, width: 1024, height: 1024 },
+        logo: {
+          '@type': 'ImageObject',
+          url: `${base}/brand/koral-mark-light.png`,
+          width: 1024,
+          height: 1024,
+        },
         slogan: s.tagline,
         description: s.seo.defaultDescription,
         ...(s.founderName ? { founder: { '@type': 'Person', name: s.founderName } } : {}),
@@ -91,7 +98,12 @@ export function organizationJsonLd(base: string, s: SiteSettings) {
         url: base,
         image: `${base}/brand/og-image-1200x630.jpg`,
         parentOrganization: { '@id': `${base}/#organization` },
-        address: { '@type': 'PostalAddress', addressLocality: s.city, addressRegion: s.region, addressCountry: 'US' },
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: s.city,
+          addressRegion: s.region,
+          addressCountry: 'US',
+        },
         areaServed: s.serviceAreas.map((name) => ({ '@type': 'City', name: `${name}, TX` })),
         knowsAbout: [
           'CRM implementation',
@@ -129,7 +141,10 @@ export function breadcrumbJsonLd(base: string, items: { name: string; path: stri
   };
 }
 
-export function serviceJsonLd(base: string, s: { name: string; description: string; path: string; areas: string[] }) {
+export function serviceJsonLd(
+  base: string,
+  s: { name: string; description: string; path: string; areas: string[] },
+) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -148,13 +163,24 @@ export function faqJsonLd(faqs: { q: string; a: string }[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
   };
 }
 
 export function articleJsonLd(
   base: string,
-  a: { title: string; description: string; slug: string; authorName: string; publishedAt: Date; updatedAt: Date },
+  a: {
+    title: string;
+    description: string;
+    slug: string;
+    authorName: string;
+    publishedAt: Date;
+    updatedAt: Date;
+  },
 ) {
   return {
     '@context': 'https://schema.org',

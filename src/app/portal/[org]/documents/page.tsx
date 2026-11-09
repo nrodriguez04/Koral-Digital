@@ -18,19 +18,27 @@ export default async function PortalDocuments({ params }: { params: Promise<{ or
   const st = storageStatus();
   return (
     <>
-      <PageHeader title="Documents" description="Files shared between your team and Koral Digital. Download links expire after a few minutes." />
+      <PageHeader
+        title="Documents"
+        description="Files shared between your team and Koral Digital. Download links expire after a few minutes."
+      />
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           {files.length === 0 ? (
             <EmptyState icon={<FolderOpen className="size-6" />} title="No documents yet" />
           ) : (
-            <ul className="divide-y divide-ink/6">
+            <ul className="divide-ink/6 divide-y">
               {files.map((f) => (
                 <li key={f.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm">
-                  <a href={`/api/files/${f.id}`} className="flex items-center gap-2 font-medium hover:text-ocean-700">
-                    <Download className="size-4 text-ink/40" aria-hidden="true" /> {f.name}
+                  <a
+                    href={`/api/files/${f.id}`}
+                    className="hover:text-ocean-700 flex items-center gap-2 font-medium"
+                  >
+                    <Download className="text-ink/40 size-4" aria-hidden="true" /> {f.name}
                   </a>
-                  <span className="text-xs text-ink/50">{Math.max(1, Math.round(f.sizeBytes / 1024))} KB · {formatDate(f.createdAt)}</span>
+                  <span className="text-ink/50 text-xs">
+                    {Math.max(1, Math.round(f.sizeBytes / 1024))} KB · {formatDate(f.createdAt)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -44,8 +52,20 @@ export default async function PortalDocuments({ params }: { params: Promise<{ or
               <Alert tone="info">Never upload passwords, API keys or customers’ payment details.</Alert>
               <ActionForm action={portalUploadFile} submitLabel="Upload" resetOnSuccess>
                 <input type="hidden" name="org" value={org.slug} />
-                <Field label="File" htmlFor="file" required hint={`Up to 4 MB: ${ALLOWED_UPLOAD_EXTENSIONS.join(', ')}`}>
-                  <input id="file" name="file" type="file" required className="block w-full text-sm" accept={ALLOWED_UPLOAD_EXTENSIONS.map((e) => `.${e}`).join(',')} />
+                <Field
+                  label="File"
+                  htmlFor="file"
+                  required
+                  hint={`Up to 4 MB: ${ALLOWED_UPLOAD_EXTENSIONS.join(', ')}`}
+                >
+                  <input
+                    id="file"
+                    name="file"
+                    type="file"
+                    required
+                    className="block w-full text-sm"
+                    accept={ALLOWED_UPLOAD_EXTENSIONS.map((e) => `.${e}`).join(',')}
+                  />
                 </Field>
               </ActionForm>
             </div>

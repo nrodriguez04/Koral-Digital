@@ -35,7 +35,9 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: SITE_NAME,
       type: 'website',
       locale: 'en_US',
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: 'Koral Digital — Building a better tomorrow' }],
+      images: [
+        { url: OG_IMAGE, width: 1200, height: 630, alt: 'Koral Digital — Building a better tomorrow' },
+      ],
     },
     twitter: { card: 'summary_large_image' },
     robots: isIndexingAllowed() ? { index: true, follow: true } : { index: false, follow: false },
@@ -55,7 +57,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en-US" className={inter.variable}>
+    <html lang="en-US" className={inter.variable} data-scroll-behavior="smooth">
       <body className="min-h-dvh font-sans">{children}</body>
     </html>
   );

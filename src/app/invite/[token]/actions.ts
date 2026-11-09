@@ -4,7 +4,10 @@ import { redirect } from 'next/navigation';
 import { requireActor } from '@/lib/auth/guards';
 import { acceptInvitationByToken } from '@/server/invitations';
 
-export async function acceptInvitation(_prev: { error?: string }, formData: FormData): Promise<{ error?: string }> {
+export async function acceptInvitation(
+  _prev: { error?: string },
+  formData: FormData,
+): Promise<{ error?: string }> {
   const token = String(formData.get('token') ?? '');
   let actor;
   try {

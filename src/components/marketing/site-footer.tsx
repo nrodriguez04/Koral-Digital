@@ -12,28 +12,38 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         <div className="md:col-span-4">
           <Logo inverse />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
-            Founder-led operations, automation and systems-integration partner for home-service businesses. Based in{' '}
-            {settings.city}, {settings.region}, serving North Dallas–Fort Worth in person and clients elsewhere remotely.
+            Founder-led operations, automation and systems-integration partner for home-service businesses.
+            Based in {settings.city}, {settings.region}, serving North Dallas–Fort Worth in person and clients
+            elsewhere remotely.
           </p>
           <p className="mt-4 text-sm text-white/70">
             Service area: {settings.serviceAreas.join(', ')} and the wider DFW metroplex.
           </p>
           {settings.contactEmailVerified ? (
             <p className="mt-4 text-sm">
-              <a href={`mailto:${settings.contactEmail}`} className="text-ocean-300 underline-offset-2 hover:underline">
+              <a
+                href={`mailto:${settings.contactEmail}`}
+                className="text-ocean-300 underline-offset-2 hover:underline"
+              >
                 {settings.contactEmail}
               </a>
             </p>
           ) : null}
           {settings.phoneVerified && settings.phone ? (
             <p className="mt-1 text-sm">
-              <a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`} className="text-ocean-300 hover:underline">
+              <a
+                href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
+                className="text-ocean-300 hover:underline"
+              >
                 {settings.phone}
               </a>
             </p>
           ) : null}
         </div>
-        <FooterCol title="Services" links={services.map((s) => ({ href: `/services/${s.slug}`, label: s.shortName }))} />
+        <FooterCol
+          title="Services"
+          links={services.map((s) => ({ href: `/services/${s.slug}`, label: s.shortName }))}
+        />
         <FooterCol
           title="Industries"
           links={[
@@ -66,7 +76,10 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           <p>
             © {year} {settings.businessName}. {settings.tagline}
           </p>
-          <p>Koral Initiative: a planned reef-conservation giving program — progress will be published as it happens.</p>
+          <p>
+            Koral Initiative: a planned reef-conservation giving program — progress will be published as it
+            happens.
+          </p>
         </div>
       </div>
     </footer>
@@ -76,7 +89,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
 function FooterCol({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <div className="md:col-span-2">
-      <p className="text-xs font-semibold tracking-[0.18em] text-ocean-300 uppercase">{title}</p>
+      <p className="text-ocean-300 text-xs font-semibold tracking-[0.18em] uppercase">{title}</p>
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map((l) => (
           <li key={l.href}>

@@ -4,7 +4,17 @@ import { Download, Trash2 } from 'lucide-react';
 import { ActionForm } from '@/components/app/action-form';
 import { StatusBadge } from '@/components/app/status-badge';
 import { Tabs } from '@/components/app/tabs';
-import { Alert, Badge, Card, CardHeader, EmptyState, PageHeader, Table, Td, Th } from '@/components/ui/primitives';
+import {
+  Alert,
+  Badge,
+  Card,
+  CardHeader,
+  EmptyState,
+  PageHeader,
+  Table,
+  Td,
+  Th,
+} from '@/components/ui/primitives';
 import { Checkbox, Field, Input, Select, Textarea } from '@/components/ui/form';
 import { integrationStatusEnum, invoiceStatusEnum, orgStatusEnum } from '@/db/schema';
 import { pageRequireStaff } from '@/lib/auth/guards';
@@ -33,7 +43,13 @@ export const metadata = { title: 'Client' };
 
 const TABS = ['overview', 'team', 'projects', 'billing', 'files', 'integrations', 'updates'] as const;
 
-export default async function ClientDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ tab?: string }> }) {
+export default async function ClientDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
+}) {
   const { id } = await params;
   const { tab: rawTab } = await searchParams;
   const actor = await pageRequireStaff('clients:read', `/app/clients/${id}`);
@@ -55,7 +71,10 @@ export default async function ClientDetailPage({ params, searchParams }: { param
             {org.isDemo ? <Badge tone="red">Synthetic dev data</Badge> : null}
             <StatusBadge status={org.status} />
             {org.leadId ? (
-              <Link href={`/app/leads/${org.leadId}`} className="text-sm font-semibold text-ocean-700 hover:underline">
+              <Link
+                href={`/app/leads/${org.leadId}`}
+                className="text-ocean-700 text-sm font-semibold hover:underline"
+              >
                 Original lead
               </Link>
             ) : null}
@@ -99,7 +118,11 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                     </Field>
                   </div>
                   <Field label="Service package" htmlFor="servicePackage">
-                    <Input id="servicePackage" name="servicePackage" defaultValue={org.servicePackage ?? ''} />
+                    <Input
+                      id="servicePackage"
+                      name="servicePackage"
+                      defaultValue={org.servicePackage ?? ''}
+                    />
                   </Field>
                   <Field label="Internal notes (never shown to the client)" htmlFor="notes">
                     <Textarea id="notes" name="notes" defaultValue={org.notes ?? ''} />
@@ -111,10 +134,10 @@ export default async function ClientDetailPage({ params, searchParams }: { param
           <Card>
             <CardHeader title="Support requests" />
             {d.tickets.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.tickets.map((t) => (
                   <li key={t.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm">
-                    <Link href={`/app/tickets/${t.id}`} className="font-medium hover:text-ocean-700">
+                    <Link href={`/app/tickets/${t.id}`} className="hover:text-ocean-700 font-medium">
                       {t.subject}
                     </Link>
                     <StatusBadge status={t.status} />
@@ -122,7 +145,7 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No support requests yet.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No support requests yet.</p>
             )}
           </Card>
         </div>
@@ -131,7 +154,10 @@ export default async function ClientDetailPage({ params, searchParams }: { param
       {tab === 'team' ? (
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
-            <CardHeader title="Members" description="People who can sign in to this client’s portal. They only ever see this organization." />
+            <CardHeader
+              title="Members"
+              description="People who can sign in to this client’s portal. They only ever see this organization."
+            />
             {d.members.length ? (
               <Table>
                 <thead>
@@ -147,7 +173,7 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                     <tr key={m.id}>
                       <Td>
                         <span className="font-medium">{m.name ?? m.email}</span>
-                        <div className="text-xs text-ink/50">{m.email}</div>
+                        <div className="text-ink/50 text-xs">{m.email}</div>
                       </Td>
                       <Td>
                         <Badge tone="ocean">{titleCase(m.role)}</Badge>
@@ -155,10 +181,21 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                       <Td className="text-ink/60">{m.lastLoginAt ? relativeTime(m.lastLoginAt) : 'Never'}</Td>
                       <Td>
                         {can('members:manage') ? (
-                          <ActionForm action={changeMemberRole} inline submitLabel="Apply" submitSize="sm" submitVariant="outline">
+                          <ActionForm
+                            action={changeMemberRole}
+                            inline
+                            submitLabel="Apply"
+                            submitSize="sm"
+                            submitVariant="outline"
+                          >
                             <input type="hidden" name="orgId" value={org.id} />
                             <input type="hidden" name="membershipId" value={m.id} />
-                            <Select name="role" defaultValue={m.role} className="h-8 w-auto text-xs" aria-label={`Role for ${m.email}`}>
+                            <Select
+                              name="role"
+                              defaultValue={m.role}
+                              className="h-8 w-auto text-xs"
+                              aria-label={`Role for ${m.email}`}
+                            >
                               <option value="client_owner">Client owner</option>
                               <option value="client_member">Client member</option>
                               <option value="read_only">Read only</option>
@@ -172,22 +209,29 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 </tbody>
               </Table>
             ) : (
-              <EmptyState title="No one has portal access yet">Invite the client’s owner or office manager to get started.</EmptyState>
+              <EmptyState title="No one has portal access yet">
+                Invite the client’s owner or office manager to get started.
+              </EmptyState>
             )}
             {d.pendingInvites.length ? (
-              <div className="border-t border-ink/8 p-5">
+              <div className="border-ink/8 border-t p-5">
                 <p className="text-sm font-semibold">Pending invitations</p>
                 <ul className="mt-2 space-y-2">
                   {d.pendingInvites.map((i) => (
                     <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 text-sm">
                       <span>
-                        {i.email} · {titleCase(i.memberRole ?? '')} · {i.delivery === 'descope_email' ? 'emailed by Descope' : 'manual link'} · expires {formatDate(i.expiresAt)}
+                        {i.email} · {titleCase(i.memberRole ?? '')} ·{' '}
+                        {i.delivery === 'descope_email' ? 'emailed by Descope' : 'manual link'} · expires{' '}
+                        {formatDate(i.expiresAt)}
                       </span>
                       {can('members:manage') ? (
                         <ActionForm action={revokeInvitation} hideSubmit inline>
                           <input type="hidden" name="orgId" value={org.id} />
                           <input type="hidden" name="invitationId" value={i.id} />
-                          <button type="submit" className="text-xs font-semibold text-red-600 hover:underline">
+                          <button
+                            type="submit"
+                            className="text-xs font-semibold text-red-600 hover:underline"
+                          >
                             Revoke
                           </button>
                         </ActionForm>
@@ -204,11 +248,13 @@ export default async function ClientDetailPage({ params, searchParams }: { param
               <div className="space-y-4 p-5">
                 {!isDescopeConfigured() ? (
                   <Alert tone="warning" title="Descope is not configured">
-                    Invitations can be created, but nobody can sign in until NEXT_PUBLIC_DESCOPE_PROJECT_ID is set.
+                    Invitations can be created, but nobody can sign in until NEXT_PUBLIC_DESCOPE_PROJECT_ID is
+                    set.
                   </Alert>
                 ) : !isDescopeManagementConfigured() ? (
                   <Alert tone="info">
-                    Without DESCOPE_MANAGEMENT_KEY, you will get a single-use link to send yourself (shown once).
+                    Without DESCOPE_MANAGEMENT_KEY, you will get a single-use link to send yourself (shown
+                    once).
                   </Alert>
                 ) : null}
                 <ActionForm action={inviteClientMember} submitLabel="Create invitation" resetOnSuccess>
@@ -238,15 +284,16 @@ export default async function ClientDetailPage({ params, searchParams }: { param
           <Card className="lg:col-span-2">
             <CardHeader title="Projects" />
             {d.projects.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.projects.map((p) => (
                   <li key={p.id} className="flex items-center justify-between gap-3 px-5 py-3">
                     <div>
-                      <Link href={`/app/projects/${p.id}`} className="font-semibold hover:text-ocean-700">
+                      <Link href={`/app/projects/${p.id}`} className="hover:text-ocean-700 font-semibold">
                         {p.name}
                       </Link>
-                      <p className="text-xs text-ink/50">
-                        {formatDate(p.startDate)} → {formatDate(p.targetDate)} {p.clientVisible ? '' : '· hidden from client'}
+                      <p className="text-ink/50 text-xs">
+                        {formatDate(p.startDate)} → {formatDate(p.targetDate)}{' '}
+                        {p.clientVisible ? '' : '· hidden from client'}
                       </p>
                     </div>
                     <StatusBadge status={p.status} />
@@ -254,7 +301,9 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 ))}
               </ul>
             ) : (
-              <EmptyState title="No projects yet">Create one from a template to get milestones and an access checklist.</EmptyState>
+              <EmptyState title="No projects yet">
+                Create one from a template to get milestones and an access checklist.
+              </EmptyState>
             )}
           </Card>
           {can('projects:write') ? (
@@ -264,7 +313,12 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 <ActionForm action={createProject} submitLabel="Create project">
                   <input type="hidden" name="orgId" value={org.id} />
                   <Field label="Name" htmlFor="pname" required>
-                    <Input id="pname" name="name" defaultValue={`${org.name} — Lead-to-Booked pilot`} required />
+                    <Input
+                      id="pname"
+                      name="name"
+                      defaultValue={`${org.name} — Lead-to-Booked pilot`}
+                      required
+                    />
                   </Field>
                   <Field label="Template" htmlFor="template" required>
                     <Select id="template" name="template" defaultValue="lead-to-booked">
@@ -298,16 +352,20 @@ export default async function ClientDetailPage({ params, searchParams }: { param
       {tab === 'billing' ? (
         <div className="space-y-6">
           <Alert tone="info" title="How payments work today">
-            Koral does not process cards here. Attach a hosted payment link (e.g. a Stripe Payment Link or QuickBooks invoice URL) for the client to pay, and record
-            payments manually with a note. Invoice status is visible to the client in their portal.
+            Koral does not process cards here. Attach a hosted payment link (e.g. a Stripe Payment Link or
+            QuickBooks invoice URL) for the client to pay, and record payments manually with a note. Invoice
+            status is visible to the client in their portal.
           </Alert>
           <Card>
-            <CardHeader title="Proposals visible to this client" description="Sent and accepted proposals linked to this workspace." />
+            <CardHeader
+              title="Proposals visible to this client"
+              description="Sent and accepted proposals linked to this workspace."
+            />
             {d.proposals.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.proposals.map((p) => (
                   <li key={p.id} className="flex items-center justify-between px-5 py-3 text-sm">
-                    <Link href={`/app/proposals/${p.id}`} className="font-medium hover:text-ocean-700">
+                    <Link href={`/app/proposals/${p.id}`} className="hover:text-ocean-700 font-medium">
                       {p.number} · {p.title}
                     </Link>
                     <StatusBadge status={p.status} />
@@ -315,14 +373,14 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No proposals linked.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No proposals linked.</p>
             )}
           </Card>
           <div className="grid gap-6 lg:grid-cols-3">
             <Card className="lg:col-span-2">
               <CardHeader title="Invoices" />
               {d.invoices.length ? (
-                <ul className="divide-y divide-ink/6">
+                <ul className="divide-ink/6 divide-y">
                   {d.invoices.map((inv) => (
                     <li key={inv.id} className="space-y-2 px-5 py-4">
                       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -334,31 +392,55 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                           <StatusBadge status={inv.status} />
                         </div>
                       </div>
-                      <p className="text-xs text-ink/55">
+                      <p className="text-ink/55 text-xs">
                         Due {formatDate(inv.dueDate)}
                         {inv.paymentUrl ? ' · payment link attached' : ' · no payment link'}
                         {inv.paymentNote ? ` · ${inv.paymentNote}` : ''}
                       </p>
                       {can('invoices:write') ? (
-                        <ActionForm action={updateInvoice} inline submitLabel="Update" submitSize="sm" submitVariant="outline">
+                        <ActionForm
+                          action={updateInvoice}
+                          inline
+                          submitLabel="Update"
+                          submitSize="sm"
+                          submitVariant="outline"
+                        >
                           <input type="hidden" name="orgId" value={org.id} />
                           <input type="hidden" name="invoiceId" value={inv.id} />
-                          <Select name="status" defaultValue={inv.status} className="h-8 w-auto text-xs" aria-label="Invoice status">
+                          <Select
+                            name="status"
+                            defaultValue={inv.status}
+                            className="h-8 w-auto text-xs"
+                            aria-label="Invoice status"
+                          >
                             {invoiceStatusEnum.enumValues.map((s) => (
                               <option key={s} value={s}>
                                 {titleCase(s)}
                               </option>
                             ))}
                           </Select>
-                          <Input name="paymentUrl" type="url" defaultValue={inv.paymentUrl ?? ''} placeholder="https://payment link" className="h-8 w-56 text-xs" aria-label="Payment link" />
-                          <Input name="paymentNote" defaultValue={inv.paymentNote ?? ''} placeholder="Payment note (e.g. ACH received 11/9)" className="h-8 w-56 text-xs" aria-label="Payment note" />
+                          <Input
+                            name="paymentUrl"
+                            type="url"
+                            defaultValue={inv.paymentUrl ?? ''}
+                            placeholder="https://payment link"
+                            className="h-8 w-56 text-xs"
+                            aria-label="Payment link"
+                          />
+                          <Input
+                            name="paymentNote"
+                            defaultValue={inv.paymentNote ?? ''}
+                            placeholder="Payment note (e.g. ACH received 11/9)"
+                            className="h-8 w-56 text-xs"
+                            aria-label="Payment note"
+                          />
                         </ActionForm>
                       ) : null}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="px-5 py-4 text-sm text-ink/50">No invoices yet.</p>
+                <p className="text-ink/50 px-5 py-4 text-sm">No invoices yet.</p>
               )}
             </Card>
             {can('invoices:write') ? (
@@ -400,22 +482,34 @@ export default async function ClientDetailPage({ params, searchParams }: { param
       {tab === 'files' ? (
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
-            <CardHeader title="Files" description="Client-visible files appear in the client portal. Downloads use short-lived signed links." />
+            <CardHeader
+              title="Files"
+              description="Client-visible files appear in the client portal. Downloads use short-lived signed links."
+            />
             {d.files.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.files.map((f) => (
                   <li key={f.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm">
-                    <a href={`/api/files/${f.id}`} className="flex items-center gap-2 font-medium hover:text-ocean-700">
-                      <Download className="size-4 text-ink/40" aria-hidden="true" /> {f.name}
+                    <a
+                      href={`/api/files/${f.id}`}
+                      className="hover:text-ocean-700 flex items-center gap-2 font-medium"
+                    >
+                      <Download className="text-ink/40 size-4" aria-hidden="true" /> {f.name}
                     </a>
-                    <span className="flex items-center gap-2 text-xs text-ink/55">
+                    <span className="text-ink/55 flex items-center gap-2 text-xs">
                       {(f.sizeBytes / 1024).toFixed(0)} KB · {formatDate(f.createdAt)}
-                      <Badge tone={f.visibility === 'client' ? 'ocean' : 'neutral'}>{f.visibility === 'client' ? 'Client-visible' : 'Internal'}</Badge>
+                      <Badge tone={f.visibility === 'client' ? 'ocean' : 'neutral'}>
+                        {f.visibility === 'client' ? 'Client-visible' : 'Internal'}
+                      </Badge>
                       {can('files:write') ? (
                         <ActionForm action={deleteClientFile} hideSubmit inline confirm={`Delete ${f.name}?`}>
                           <input type="hidden" name="orgId" value={org.id} />
                           <input type="hidden" name="fileId" value={f.id} />
-                          <button type="submit" aria-label={`Delete ${f.name}`} className="rounded p-1 text-ink/40 hover:bg-red-50 hover:text-red-600">
+                          <button
+                            type="submit"
+                            aria-label={`Delete ${f.name}`}
+                            className="text-ink/40 rounded p-1 hover:bg-red-50 hover:text-red-600"
+                          >
                             <Trash2 className="size-4" />
                           </button>
                         </ActionForm>
@@ -425,18 +519,34 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No files yet.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No files yet.</p>
             )}
           </Card>
           {can('files:write') ? (
             <Card>
               <CardHeader title="Upload" />
               <div className="space-y-4 p-5">
-                {!storage.ready ? <Alert tone="warning" title="Uploads unavailable">{storage.reason}</Alert> : null}
+                {!storage.ready ? (
+                  <Alert tone="warning" title="Uploads unavailable">
+                    {storage.reason}
+                  </Alert>
+                ) : null}
                 <ActionForm action={uploadClientFile} submitLabel="Upload file" resetOnSuccess>
                   <input type="hidden" name="orgId" value={org.id} />
-                  <Field label="File" htmlFor="file" required hint={`Max 4 MB. Allowed: ${ALLOWED_UPLOAD_EXTENSIONS.join(', ')}`}>
-                    <input id="file" name="file" type="file" required className="block w-full text-sm" accept={ALLOWED_UPLOAD_EXTENSIONS.map((e) => `.${e}`).join(',')} />
+                  <Field
+                    label="File"
+                    htmlFor="file"
+                    required
+                    hint={`Max 4 MB. Allowed: ${ALLOWED_UPLOAD_EXTENSIONS.join(', ')}`}
+                  >
+                    <input
+                      id="file"
+                      name="file"
+                      type="file"
+                      required
+                      className="block w-full text-sm"
+                      accept={ALLOWED_UPLOAD_EXTENSIONS.map((e) => `.${e}`).join(',')}
+                    />
                   </Field>
                   <Field label="Visibility" htmlFor="visibility" required>
                     <Select id="visibility" name="visibility" defaultValue="client">
@@ -464,14 +574,17 @@ export default async function ClientDetailPage({ params, searchParams }: { param
       {tab === 'integrations' ? (
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
-            <CardHeader title="Client tools" description="Metadata only — which systems the client uses and their connection status. Never store credentials here." />
+            <CardHeader
+              title="Client tools"
+              description="Metadata only — which systems the client uses and their connection status. Never store credentials here."
+            />
             {d.integrations.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.integrations.map((i) => (
                   <li key={i.id} className="flex items-start justify-between gap-3 px-5 py-3 text-sm">
                     <div>
                       <p className="font-semibold">{i.tool}</p>
-                      <p className="text-xs text-ink/55">
+                      <p className="text-ink/55 text-xs">
                         {titleCase(i.category)}
                         {i.notes ? ` · ${i.notes}` : ''}
                       </p>
@@ -481,7 +594,7 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No tools recorded yet.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No tools recorded yet.</p>
             )}
           </Card>
           {can('clients:write') ? (
@@ -505,7 +618,17 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                   </Field>
                   <Field label="Category" htmlFor="category" required>
                     <Select id="category" name="category" defaultValue="crm">
-                      {['crm', 'phone', 'calendar', 'forms', 'ads', 'email', 'accounting', 'automation', 'other'].map((c) => (
+                      {[
+                        'crm',
+                        'phone',
+                        'calendar',
+                        'forms',
+                        'ads',
+                        'email',
+                        'accounting',
+                        'automation',
+                        'other',
+                      ].map((c) => (
                         <option key={c} value={c}>
                           {titleCase(c)}
                         </option>
@@ -521,7 +644,11 @@ export default async function ClientDetailPage({ params, searchParams }: { param
                       ))}
                     </Select>
                   </Field>
-                  <Field label="Notes" htmlFor="inotes" hint="e.g. plan tier, API availability, who owns the account. No passwords or keys.">
+                  <Field
+                    label="Notes"
+                    htmlFor="inotes"
+                    hint="e.g. plan tier, API availability, who owns the account. No passwords or keys."
+                  >
                     <Textarea id="inotes" name="notes" />
                   </Field>
                 </ActionForm>
@@ -536,20 +663,22 @@ export default async function ClientDetailPage({ params, searchParams }: { param
           <Card className="lg:col-span-2">
             <CardHeader title="Updates & meeting notes" />
             {d.updates.length ? (
-              <ul className="divide-y divide-ink/6">
+              <ul className="divide-ink/6 divide-y">
                 {d.updates.map((u) => (
                   <li key={u.id} className="px-5 py-4">
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-ink/55">
-                      <Badge tone={u.clientVisible ? 'ocean' : 'neutral'}>{u.clientVisible ? 'Client-visible' : 'Internal'}</Badge>
+                    <div className="text-ink/55 flex flex-wrap items-center gap-2 text-xs">
+                      <Badge tone={u.clientVisible ? 'ocean' : 'neutral'}>
+                        {u.clientVisible ? 'Client-visible' : 'Internal'}
+                      </Badge>
                       <span>{titleCase(u.kind)}</span>·<span>{formatDate(u.createdAt, true)}</span>
                     </div>
                     <p className="mt-1.5 font-semibold">{u.title}</p>
-                    <p className="mt-1 text-sm whitespace-pre-line text-ink/75">{u.body}</p>
+                    <p className="text-ink/75 mt-1 text-sm whitespace-pre-line">{u.body}</p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-4 text-sm text-ink/50">No updates yet.</p>
+              <p className="text-ink/50 px-5 py-4 text-sm">No updates yet.</p>
             )}
           </Card>
           {can('projects:write') ? (

@@ -16,7 +16,7 @@ export default async function ProposalPrintPage({ params }: { params: Promise<{ 
   const s = await getSiteSettings();
   return (
     <div className="-mx-4 -my-6 bg-white sm:-mx-6 lg:-mx-8 lg:-my-8">
-      <div className="no-print flex justify-end gap-2 border-b border-ink/8 p-3">
+      <div className="no-print border-ink/8 flex justify-end gap-2 border-b p-3">
         <PrintButton />
       </div>
       <ProposalDocument
