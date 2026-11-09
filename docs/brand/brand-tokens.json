@@ -1,0 +1,14 @@
+{
+  "name": "Koral Digital",
+  "tagline": "Building a better tomorrow",
+  "palette": {
+    "deepOcean": "#082E46",
+    "navy": "#073C5B",
+    "teal": "#04A5B8",
+    "aqua": "#23C4C7",
+    "ivory": "#FBF8F2",
+    "ink": "#071E2A"
+  },
+  "fontStack": "Inter, system-ui, sans-serif",
+  "logoUsage": "Preserve coral-in-hands motif; do not stretch, recolor to unrelated hues or use raster logos smaller than designed. These assets are a new derivative of the provided screenshot, not the original vector master."
+}
