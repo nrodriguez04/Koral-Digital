@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql } from 'drizzle-orm';
 import { getDb, isDatabaseConfigured } from '@/db';
 import { isDescopeConfigured, isEmailConfigured, env } from '@/lib/env';
+import { log } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,8 +13,10 @@ export async function GET() {
     try {
       await getDb().execute(sql`select 1`);
       database = 'ok';
-    } catch {
+    } catch (err) {
       database = 'error';
+      // The response stays generic; the reason goes to the Worker's logs.
+      log.warn('health.database_error', { err });
     }
   }
   return NextResponse.json(
