@@ -59,33 +59,101 @@ export async function loadDescopeProfile(
   }
 }
 
+type DescopeResult<T = unknown> = ({ ok: true } & T) | { ok: false; reason: string };
+
+const NOT_CONFIGURED = { ok: false, reason: 'Descope management key is not configured.' } as const;
+const failed = (res: { error?: { errorMessage?: string } }, fallback: string) => ({
+  ok: false as const,
+  reason: res.error?.errorMessage ?? fallback,
+});
+
 /**
- * Creates (or re-invites) the user in Descope and asks Descope to email them a
- * sign-in invitation. Returns the Descope user ID so the invitation can be bound
- * to that exact identity.
+ * Invites the person into a tenant with one role: Descope creates the user, grants the role and
+ * emails them a sign-in link. Someone who already has a Descope account is not created again;
+ * the role is added to their account, and the result says Descope sent no email.
  */
-export async function sendDescopeInvite(input: {
+export async function inviteToTenant(input: {
   email: string;
   name?: string | null;
   inviteUrl: string;
-}): Promise<{ ok: true; descopeUserId: string } | { ok: false; reason: string }> {
+  tenantId: string;
+  roleName: string;
+}): Promise<DescopeResult<{ descopeUserId: string; emailed: boolean }>> {
   const sdk = managementSdk();
-  if (!sdk) return { ok: false, reason: 'Descope management key is not configured.' };
+  if (!sdk) return NOT_CONFIGURED;
   try {
+    const existing = await sdk.management.user.load(input.email);
+    if (existing.ok && existing.data?.userId) {
+      const granted = await setTenantRole(existing.data.userId, input.tenantId, input.roleName);
+      return granted.ok ? { ok: true, descopeUserId: existing.data.userId, emailed: false } : granted;
+    }
     const res = await sdk.management.user.invite(input.email, {
       email: input.email,
       displayName: input.name ?? undefined,
+      userTenants: [{ tenantId: input.tenantId, roleNames: [input.roleName] }],
       inviteUrl: input.inviteUrl,
       sendMail: true,
     });
-    if (!res.ok || !res.data) {
-      return { ok: false, reason: res.error?.errorMessage ?? 'Descope rejected the invitation.' };
-    }
+    if (!res.ok || !res.data) return failed(res, 'Descope rejected the invitation.');
     const userId = (res.data as { userId?: string }).userId;
     if (!userId) return { ok: false, reason: 'Descope did not return a user ID.' };
-    return { ok: true, descopeUserId: userId };
+    return { ok: true, descopeUserId: userId, emailed: true };
   } catch (err) {
     log.error('auth.descope_invite_error', { err });
+    return { ok: false, reason: 'Could not reach Descope.' };
+  }
+}
+
+/** Gives the user exactly this role in the tenant, or removes them from it when `roleName` is null. */
+export async function setTenantRole(
+  descopeUserId: string,
+  tenantId: string,
+  roleName: string | null,
+): Promise<DescopeResult> {
+  const sdk = managementSdk();
+  if (!sdk) return NOT_CONFIGURED;
+  try {
+    if (roleName === null) {
+      const res = await sdk.management.user.removeTenant(descopeUserId, tenantId);
+      return res.ok ? { ok: true } : failed(res, 'Descope could not remove the access.');
+    }
+    const user = await sdk.management.user.loadByUserId(descopeUserId);
+    if (!user.ok || !user.data) return failed(user, 'Descope user not found.');
+    if (!user.data.userTenants?.some((t) => t.tenantId === tenantId)) {
+      const added = await sdk.management.user.addTenant(descopeUserId, tenantId);
+      if (!added.ok) return failed(added, 'Descope could not add the user to the tenant.');
+    }
+    const res = await sdk.management.user.setTenantRoles(descopeUserId, tenantId, [roleName]);
+    return res.ok ? { ok: true } : failed(res, 'Descope could not set the role.');
+  } catch (err) {
+    log.error('auth.descope_role_error', { err });
+    return { ok: false, reason: 'Could not reach Descope.' };
+  }
+}
+
+/** Creates a tenant under `parentTenantId`, or confirms it exists already. */
+export async function ensureTenant(input: {
+  tenantId: string;
+  name: string;
+  parentTenantId: string;
+}): Promise<DescopeResult> {
+  const sdk = managementSdk();
+  if (!sdk) return NOT_CONFIGURED;
+  try {
+    const found = await sdk.management.tenant.load(input.tenantId);
+    if (found.ok && found.data) return { ok: true };
+    const res = await sdk.management.tenant.createWithId(
+      input.tenantId,
+      input.name,
+      [],
+      undefined,
+      false,
+      false,
+      input.parentTenantId,
+    );
+    return res.ok ? { ok: true } : failed(res, 'Descope could not create the tenant.');
+  } catch (err) {
+    log.error('auth.descope_tenant_error', { err });
     return { ok: false, reason: 'Could not reach Descope.' };
   }
 }

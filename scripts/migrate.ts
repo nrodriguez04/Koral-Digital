@@ -8,6 +8,13 @@ config({ path: '.env.local', override: false });
 
 async function main() {
   const url = process.env.DATABASE_URL;
+  if (!url && process.env.WORKERS_CI) {
+    // A Cloudflare deploy without its migrations ships code the database cannot serve.
+    console.error(
+      '[migrate] DATABASE_URL is not set for this build. Add it under Worker → Settings → Build → Variables and secrets.',
+    );
+    process.exit(1);
+  }
   if (!url) {
     console.warn('[migrate] DATABASE_URL not set — skipping migrations.');
     return;

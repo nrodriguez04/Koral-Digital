@@ -202,7 +202,10 @@ export default async function SettingsPage() {
             />
           </Card>
           <Card>
-            <CardHeader title="Team" description="Internal Koral roles. Never granted by email domain." />
+            <CardHeader
+              title="Team"
+              description="Staff roles live in Descope (Koral Digital Internal tenant). Changes here update Descope; changes made in Descope show here after that person's next sign-in."
+            />
             <ul className="divide-ink/6 divide-y">
               {staff.map((u) => (
                 <li key={u.id} className="space-y-2 px-5 py-3 text-sm">

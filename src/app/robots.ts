@@ -7,7 +7,6 @@ const PRIVATE_PATHS = [
   '/api/',
   '/sign-in',
   '/invite/',
-  '/setup',
   '/no-access',
   '/dev-login',
   '/demo',

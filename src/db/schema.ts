@@ -18,7 +18,7 @@ import {
 /* Enums                                                               */
 /* ------------------------------------------------------------------ */
 
-export const staffRoleEnum = pgEnum('staff_role', ['superadmin', 'admin', 'sales', 'delivery']);
+export const staffRoleEnum = pgEnum('staff_role', ['owner', 'employee', 'contractor']);
 export const memberRoleEnum = pgEnum('member_role', ['client_owner', 'client_member', 'read_only']);
 export const leadStageEnum = pgEnum('lead_stage', [
   'new',
@@ -124,7 +124,10 @@ export const users = pgTable(
     /** True only when the email came from a verified source (Descope management API / verified claim). */
     emailVerified: boolean('email_verified').notNull().default(false),
     name: text('name'),
-    /** Internal Koral role. Null = not Koral staff. Only grantable server-side by an admin. */
+    /**
+     * Internal Koral role, mirrored from Descope at each sign-in. Descope is the source of truth;
+     * this copy serves staff lists and joins. Null = not Koral staff.
+     */
     staffRole: staffRoleEnum('staff_role'),
     isActive: boolean('is_active').notNull().default(true),
     lastLoginAt: timestamp('last_login_at', { withTimezone: true }),
@@ -148,16 +151,20 @@ export const organizations = pgTable(
     leadId: uuid('lead_id'),
     servicePackage: text('service_package'),
     notes: text('notes'),
-    /** Optional Descope tenant mapping. Local memberships remain authoritative. */
+    /** The client's Descope tenant. Membership and client roles are granted there. */
     descopeTenantId: text('descope_tenant_id'),
     /** Synthetic development/demo data. Never shown on public pages. */
     isDemo: boolean('is_demo').notNull().default(false),
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
     ...timestamps,
   },
-  (t) => [uniqueIndex('organizations_slug_uq').on(t.slug)],
+  (t) => [
+    uniqueIndex('organizations_slug_uq').on(t.slug),
+    uniqueIndex('organizations_descope_tenant_uq').on(t.descopeTenantId),
+  ],
 );
 
+/** Mirror of each user's client tenants and roles in Descope, refreshed at sign-in. */
 export const memberships = pgTable(
   'memberships',
   {

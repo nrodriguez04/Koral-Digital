@@ -10,6 +10,7 @@ import { auditActor, requireStaff, runAction, type ActionResult } from '@/lib/au
 import { grantableStaffRoles } from '@/lib/auth/permissions';
 import { siteSettingsSchema } from '@/lib/settings-schema';
 import { SITE_SETTINGS_KEY, getSiteSettings } from '@/lib/settings';
+import { setStaffRole } from '@/server/access';
 import { createInvitation } from '@/server/invitations';
 
 const lines = (v: FormDataEntryValue | null) =>
@@ -122,12 +123,13 @@ export async function inviteStaff(_p: ActionResult<unknown>, fd: FormData): Prom
       staffRole: parsed.data.role,
       name: parsed.data.name,
     });
+    if (!inv.ok) return inv;
     return {
       ok: true,
       message:
         inv.delivery === 'descope_email'
           ? `Invitation emailed by Descope. Backup single-use link: ${inv.link}`
-          : `Send this single-use link to ${parsed.data.email} (shown once, expires in 7 days). Staff invitations require a verified email at acceptance: ${inv.link}`,
+          : `${inv.deliveryNote ? `${inv.deliveryNote} ` : ''}Single-use link for ${parsed.data.email} (shown once, expires in 7 days): ${inv.link}`,
     };
   });
 }
@@ -156,10 +158,8 @@ export async function changeStaffRole(
     if (!allowed.includes(target.staffRole!) || (role !== 'none' && !allowed.includes(role))) {
       return { ok: false, error: 'You do not have permission to make that change.' };
     }
-    await db
-      .update(users)
-      .set({ staffRole: role === 'none' ? null : role })
-      .where(eq(users.id, userId));
+    const changed = await setStaffRole(target, role === 'none' ? null : role);
+    if (!changed.ok) return { ok: false, error: `Descope: ${changed.reason}` };
     await recordAudit({
       actor: auditActor(actor),
       action: 'staff.role_changed',
