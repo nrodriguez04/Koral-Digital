@@ -148,8 +148,11 @@ extension and file signature). There is no antivirus scanning yet — see `SECUR
    - Git repository: `nrodriguez04/Koral-Digital`, production branch `master`.
    - **Build command:** `npm run cf:build`
    - **Deploy command:** `npm run cf:deploy` (migrate → bootstrap → deploy)
-   - **Preview command** (non-production branches): `npx opennextjs-cloudflare upload`, or turn
-     non-production builds off.
+   - **Non-production branches** (pull requests): turn them off under _Branch control_. To keep
+     them, give them build command `npm run cf:build` and deploy command
+     `npx opennextjs-cloudflare upload`. Cloudflare's defaults (`npm run build`, then
+     `npx wrangler preview`) skip the OpenNext step and fail on the missing `previews` block in
+     `wrangler.jsonc`. A preview version uses the production database and secrets.
 3. Add the **build variables** and the **runtime variables and secrets** from step 0.
 4. Push to `master` (or Retry the latest build). Check
    `https://koral-digital.<your-subdomain>.workers.dev/api/health` →
