@@ -26,7 +26,7 @@ consistency, real reviews over time, and useful content.
 1. **Confirm production URL** is `https://koraldigital.com` (www redirects to it) and `NEXT_PUBLIC_SITE_URL` matches.
 2. **Google Search Console**
    - Add a **Domain property** for `koraldigital.com` and verify with the TXT record Google gives
-     you (add it in Hostinger DNS — it does not affect email). Alternatively use a URL-prefix
+     you (add it in Cloudflare DNS — it does not affect email). Alternatively use a URL-prefix
      property with the HTML tag value in `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
    - Sitemaps → submit `https://koraldigital.com/sitemap.xml`.
    - URL Inspection → request indexing for `/`, `/services`, `/services/lead-to-booked`, `/about`, `/contact`.
@@ -36,9 +36,9 @@ consistency, real reviews over time, and useful content.
    detected. FAQ rich results are limited by Google to certain sites, so detection ≠ display.
 5. **Schema Markup Validator** (validator.schema.org) on the same pages — zero errors.
 6. **PageSpeed Insights** on `/` (mobile) — aim for green Core Web Vitals.
-7. **Let AI crawlers through the edge.** If DNS or the CDN runs through Cloudflare, turn off
-   "Block AI bots" / AI Crawl Control for the public site (new Cloudflare zones block them by
-   default), and check Vercel Firewall rules do the same. `robots.txt` allowing them is not enough
+7. **Let AI crawlers through the edge.** In Cloudflare, turn off "Block AI bots" and allow the
+   crawlers in AI Crawl Control for the public site (new Cloudflare zones block them by default),
+   and leave Bot Fight Mode off. `robots.txt` allowing them is not enough
    if the edge returns 403. Then fetch `/llms.txt` and `/robots.txt` from outside your network.
 8. **Google Business Profile** (optional for a remote business) — if you create one, make it a
    **service-area business** with the street address hidden, a category such as "Business

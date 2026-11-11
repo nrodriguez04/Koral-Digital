@@ -9,7 +9,7 @@ public issue).
 - **Descope** authenticates users. The session JWT (`DS` cookie, `Secure`, `SameSite=Lax`) is
   validated **server-side** with Descope's signing keys on every request that reads private data
   (`src/lib/auth/descope.ts` → `session()` from `@descope/nextjs-sdk/server`).
-- `src/proxy.ts` only redirects obviously-anonymous requests and adds `noindex`/`no-store`
+- `src/middleware.ts` only redirects obviously-anonymous requests and adds `noindex`/`no-store`
   headers. It is **not** the security boundary — every page, server action and route handler
   re-authorizes.
 - If Descope is not configured, nobody can sign in (fail closed). The public site keeps working.
@@ -96,4 +96,4 @@ Descope web component and the optional Calendly embed need allowances). Recommen
 ## Secrets
 
 All credentials come from environment variables (see `.env.example`). `APP_SECRET` must be 32+
-characters in production or the app refuses to sign. Rotate keys in Vercel and redeploy.
+characters in production or the app refuses to sign. Rotate keys in the Cloudflare dashboard (Worker → Settings → Variables and Secrets).

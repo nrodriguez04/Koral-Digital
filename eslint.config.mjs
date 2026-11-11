@@ -14,6 +14,8 @@ const config = [
       'test-results/**',
       'next-env.d.ts',
       '.uploads/**',
+      '.open-next/**',
+      '.wrangler/**',
     ],
   },
   {

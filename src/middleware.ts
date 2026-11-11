@@ -1,13 +1,19 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 /**
- * Next.js 16 proxy (formerly middleware). This is a fast pre-check only:
- * every private page, server action and route handler re-validates the
- * session and enforces roles/tenancy server-side against the database.
+ * A fast pre-check only: every private page, server action and route handler
+ * re-validates the session and enforces roles/tenancy server-side against the
+ * database.
+ *
+ * This stays `middleware.ts` rather than Next 16's `proxy.ts` on purpose. A
+ * proxy always compiles to the Node.js runtime, which the Cloudflare adapter
+ * supports only experimentally and bundles at about 4 MB. Middleware compiles
+ * to the Edge runtime, which it bundles in a few hundred KB, and this handler
+ * only reads cookies.
  */
 const PRIVATE_PREFIXES = ['/app', '/portal'];
 
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const isPrivate = PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   if (!isPrivate) return NextResponse.next();
