@@ -95,5 +95,6 @@ Descope web component and the optional Calendly embed need allowances). Recommen
 
 ## Secrets
 
-All credentials come from environment variables (see `.env.example`). `APP_SECRET` must be 32+
+All credentials come from environment variables (listed in `DEPLOYMENT.md`). No `.env` file is
+committed; `.gitignore` excludes them all. `APP_SECRET` must be 32+
 characters in production or the app refuses to sign. Rotate keys in the Cloudflare dashboard (Worker → Settings → Variables and Secrets).

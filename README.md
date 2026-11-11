@@ -34,12 +34,19 @@ Requirements: Node 20.9+ (22 recommended) and a PostgreSQL 14+ database.
 npm install
 ```
 
-```bash
-cp .env.example .env.local
+Create `.env.local` in the project root. Git ignores every `.env*` file, so it never leaves your
+machine. For local development:
+
+```dotenv
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+DATABASE_URL=postgres://postgres@127.0.0.1:5432/koral_dev
+APP_SECRET=
+AUTH_DEV_MOCK=true
+STORAGE_DRIVER=local
 ```
 
-Edit `.env.local`: set `DATABASE_URL`, an `APP_SECRET` (`openssl rand -base64 48`), and for
-local development `AUTH_DEV_MOCK=true` and `STORAGE_DRIVER=local`.
+Fill `APP_SECRET` with `openssl rand -base64 48`. Everything else is optional; the full list is in
+[DEPLOYMENT.md](DEPLOYMENT.md#0-environment-variables).
 
 ```bash
 npm run db:migrate

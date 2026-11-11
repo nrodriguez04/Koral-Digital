@@ -12,33 +12,34 @@ reports "not configured" instead of failing silently.
 
 ## 0. Environment variables
 
-There are three places a value can live:
+No `.env` file is committed; `.gitignore` excludes them all. Every value lives in Cloudflare, in
+one of two places:
 
-- **`.env.production`** (committed) — public, non-secret values. `NEXT_PUBLIC_*` values are
-  inlined into the browser bundle at build time, and the Worker reads this file at runtime too.
-- **Build variables** — Worker → Settings → Build → _Variables and secrets_. Visible only to
-  the build and deploy commands (migrations, prerendering).
-- **Runtime secrets** — Worker → Settings → _Variables and Secrets_. Add each as type **Secret**.
-  `wrangler.jsonc` sets `keep_vars`, so a deploy never wipes them.
+- **Runtime variables and secrets** — Worker → Settings → _Variables and Secrets_. Add public
+  values as type **Text** and credentials as type **Secret**. The Worker reads both on every
+  request, and `wrangler.jsonc` sets `keep_vars`, so a deploy never wipes them.
+- **Build variables** — Worker → Settings → Build → _Variables and secrets_. Visible only to the
+  build and deploy commands: migrations, and the `NEXT_PUBLIC_*` values that Next.js writes into
+  the pages at build time.
 
-| Variable                                                                                                                     | Set in                                | Where it comes from                                   | Notes                                                              |
-| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------ |
-| `NEXT_PUBLIC_SITE_URL`                                                                                                       | `.env.production`                     | `https://koraldigital.com`                            | Canonical URLs, sitemap, invitation links                          |
-| `NEXT_PUBLIC_DESCOPE_PROJECT_ID`                                                                                             | `.env.production`                     | Descope console → Project settings                    | Public by design (it ships to the browser)                         |
-| `NEXT_PUBLIC_DESCOPE_SIGN_IN_FLOW_ID`                                                                                        | `.env.production`                     | Descope flow ID                                       | `koral-digital-sign-in` — a sign-in-only flow, see step 2          |
-| `NEXT_PUBLIC_DESCOPE_BASE_URL`                                                                                               | `.env.production`                     | Descope custom domain                                 | Optional; leave unset by default                                   |
-| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, `NEXT_PUBLIC_BING_SITE_VERIFICATION`                                                 | `.env.production`                     | Search Console / Bing Webmaster Tools                 | Optional; or verify via DNS instead                                |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`                                                                                               | `.env.production`                     | `koraldigital.com`                                    | Optional cookieless analytics                                      |
-| `DATABASE_URL`                                                                                                               | Runtime secret **and** build variable | Postgres provider (pooled URL)                        | Supabase: _Transaction pooler_, port 6543                          |
-| `DATABASE_URL_UNPOOLED`                                                                                                      | Build variable                        | Postgres provider (direct URL)                        | Used only by migrations                                            |
-| `APP_SECRET`                                                                                                                 | Runtime secret                        | `openssl rand -base64 48`                             | Signs rate-limit fingerprints; 32+ chars                           |
-| `DESCOPE_MANAGEMENT_KEY`                                                                                                     | Runtime secret                        | Descope → Company → Management keys                   | Needed with the sign-in-only flow, see step 2                      |
-| `SETUP_TOKEN`                                                                                                                | Runtime secret (first deploy only)    | `openssl rand -base64 32`                             | Lets you claim the first superadmin at `/setup`; delete afterwards |
-| `RESEND_API_KEY`                                                                                                             | Runtime secret                        | resend.com → API keys                                 | Staff notifications for new inquiries/tickets                      |
-| `EMAIL_FROM`, `LEAD_NOTIFICATION_EMAILS`                                                                                     | Runtime secret                        | e.g. `Koral Digital <notifications@koraldigital.com>` | Domain must be verified in Resend                                  |
-| `STORAGE_DRIVER`, `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_FORCE_PATH_STYLE` | Runtime secret                        | Cloudflare R2 / Supabase Storage / AWS                | `s3` or `none`; `local` is development-only                        |
-| `SITE_INDEXING`                                                                                                              | Runtime secret                        | `auto`                                                | `auto` = production builds are indexable                           |
-| `AUTH_DEV_MOCK`                                                                                                              | Never in prod                         | —                                                     | Ignored in production builds                                       |
+| Variable                                                                                                                     | Set in                                | Where it comes from                                   | Notes                                                               |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                                                                                                       | Runtime variable                      | `https://koraldigital.com`                            | Canonical URLs, sitemap, invitation links; this is also the default |
+| `NEXT_PUBLIC_DESCOPE_PROJECT_ID`                                                                                             | Runtime variable                      | Descope console → Project settings                    | Public by design (it ships to the browser)                          |
+| `NEXT_PUBLIC_DESCOPE_SIGN_IN_FLOW_ID`                                                                                        | Runtime variable                      | Descope flow ID                                       | `koral-digital-sign-in` — a sign-in-only flow, see step 2           |
+| `NEXT_PUBLIC_DESCOPE_BASE_URL`                                                                                               | Runtime variable                      | Descope custom domain                                 | Optional; leave unset by default                                    |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, `NEXT_PUBLIC_BING_SITE_VERIFICATION`                                                 | Build variable                        | Search Console / Bing Webmaster Tools                 | Optional; or verify via DNS instead                                 |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`                                                                                               | Build variable                        | `koraldigital.com`                                    | Optional cookieless analytics                                       |
+| `DATABASE_URL`                                                                                                               | Runtime secret **and** build variable | Postgres provider (pooled URL)                        | Supabase: _Transaction pooler_, port 6543                           |
+| `DATABASE_URL_UNPOOLED`                                                                                                      | Build variable                        | Postgres provider (direct URL)                        | Used only by migrations                                             |
+| `APP_SECRET`                                                                                                                 | Runtime secret                        | `openssl rand -base64 48`                             | Signs rate-limit fingerprints; 32+ chars                            |
+| `DESCOPE_MANAGEMENT_KEY`                                                                                                     | Runtime secret                        | Descope → Company → Management keys                   | Needed with the sign-in-only flow, see step 2                       |
+| `SETUP_TOKEN`                                                                                                                | Runtime secret (first deploy only)    | `openssl rand -base64 32`                             | Lets you claim the first superadmin at `/setup`; delete afterwards  |
+| `RESEND_API_KEY`                                                                                                             | Runtime secret                        | resend.com → API keys                                 | Staff notifications for new inquiries/tickets                       |
+| `EMAIL_FROM`, `LEAD_NOTIFICATION_EMAILS`                                                                                     | Runtime secret                        | e.g. `Koral Digital <notifications@koraldigital.com>` | Domain must be verified in Resend                                   |
+| `STORAGE_DRIVER`, `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_FORCE_PATH_STYLE` | Runtime secret                        | Cloudflare R2 / Supabase Storage / AWS                | `s3` or `none`; `local` is development-only                         |
+| `SITE_INDEXING`                                                                                                              | Runtime secret                        | `auto`                                                | `auto` = production builds are indexable                            |
+| `AUTH_DEV_MOCK`                                                                                                              | Never in prod                         | —                                                     | Ignored in production builds                                        |
 
 **Never deploy from your own machine** (`npm run cf:deploy` locally). The build bundles every
 `.env*` file it finds, including your `.env.local`. Let Workers Builds deploy from GitHub.
@@ -77,7 +78,7 @@ Never run `db:seed:dev` against production — it refuses non-local databases.
 
 ## 2. Descope (≈15 minutes)
 
-The project ID and the flow ID (`koral-digital-sign-in`) are already in `.env.production`.
+Set the project ID and the flow ID (`koral-digital-sign-in`) as runtime variables (step 0).
 
 1. **Authentication methods:** the flow offers email, passkeys, Google, Microsoft and Apple.
    Each social provider must be enabled under Authentication Methods for its button to work.
@@ -147,9 +148,12 @@ extension and file signature). There is no antivirus scanning yet — see `SECUR
    - Git repository: `nrodriguez04/Koral-Digital`, production branch `master`.
    - **Build command:** `npm run cf:build`
    - **Deploy command:** `npm run cf:deploy` (migrate → bootstrap → deploy)
-   - **Preview command** (non-production branches): `npx opennextjs-cloudflare upload`, or turn
-     non-production builds off.
-3. Add the **build variables** and **runtime secrets** from step 0.
+   - **Non-production branches** (pull requests): turn them off under _Branch control_. To keep
+     them, give them build command `npm run cf:build` and deploy command
+     `npx opennextjs-cloudflare upload`. Cloudflare's defaults (`npm run build`, then
+     `npx wrangler preview`) skip the OpenNext step and fail on the missing `previews` block in
+     `wrangler.jsonc`. A preview version uses the production database and secrets.
+3. Add the **build variables** and the **runtime variables and secrets** from step 0.
 4. Push to `master` (or Retry the latest build). Check
    `https://koral-digital.<your-subdomain>.workers.dev/api/health` →
    `{"status":"ok","database":"ok",…}`.
