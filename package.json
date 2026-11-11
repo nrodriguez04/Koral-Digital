@@ -1,0 +1,62 @@
+{
+  "name": "koral-digital",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Koral Digital marketing site, internal operations portal and multi-tenant client portal.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:bootstrap": "tsx scripts/bootstrap.ts",
+    "db:seed:dev": "tsx scripts/seed-dev.ts",
+    "admin:grant": "tsx scripts/grant-role.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "node scripts/e2e.mjs",
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "vercel-build": "tsx scripts/migrate.ts && tsx scripts/bootstrap.ts && next build",
+    "test:all": "npm run test && npm run test:e2e"
+  },
+  "dependencies": {
+    "@descope/nextjs-sdk": "^0.16.28",
+    "@descope/node-sdk": "^2.21.1",
+    "@fontsource-variable/inter": "^5.3.0",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.4",
+    "lucide-react": "^1.70.0",
+    "next": "^16.4.5",
+    "postgres": "^4.1.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@tailwindcss/typography": "^0.5.20",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "dotenv": "^18.0.10",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.5",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
