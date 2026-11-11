@@ -18,13 +18,13 @@ security model and [`SEO_LAUNCH_CHECKLIST.md`](SEO_LAUNCH_CHECKLIST.md) for sear
 
 ## Stack
 
-- **Next.js 16** (App Router, Turbopack, `proxy.ts`), **React 19**, **TypeScript** (strict)
+- **Next.js 16** (App Router, Turbopack, Edge `middleware.ts`), **React 19**, **TypeScript** (strict)
 - **Tailwind CSS v4**, Lucide icons, self-hosted Inter (no external font requests)
 - **PostgreSQL** + **Drizzle ORM** (SQL migrations in `drizzle/`), Zod validation
 - **Descope** (`@descope/nextjs-sdk`) for authentication; authorization is database-backed
 - Optional: **Resend** (email), **S3-compatible storage** (Supabase Storage / R2 / S3), Plausible
 - Tests: **Vitest** (unit + integration against real Postgres) and **Playwright** (end-to-end)
-- Deploy target: **Vercel** + managed Postgres (Supabase or Neon)
+- Deploy target: **Cloudflare Workers** via the OpenNext adapter + managed Postgres (Supabase or Neon)
 
 ## Quick start (local)
 
@@ -59,7 +59,7 @@ npm run dev
 
 Open http://localhost:3000. With `AUTH_DEV_MOCK=true`, `/dev-login` lists **synthetic**
 development accounts (staff in every role, owners of two isolated demo client orgs, and a
-user with no access). The mock is hard-disabled in production builds and on Vercel.
+user with no access). The mock is hard-disabled in production builds.
 
 ## Scripts
 
@@ -74,7 +74,8 @@ user with no access). The mock is hard-disabled in production builds and on Verc
 | `npm run admin:grant -- --email you@x.com --role superadmin` | Grant a staff role from a terminal                                                   |
 | `npm test`                                                   | Unit + integration tests (needs Postgres; uses `TEST_DATABASE_URL` or `koral_test`)  |
 | `npm run test:e2e`                                           | Playwright end-to-end tests (needs Postgres; uses `E2E_DATABASE_URL` or `koral_e2e`) |
-| `npm run vercel-build`                                       | What Vercel runs: migrate → bootstrap → build                                        |
+| `npm run preview`                                            | Build for Cloudflare and run it locally in the Workers runtime (port 8787)           |
+| `npm run cf:build` / `cf:deploy`                             | What Cloudflare Workers Builds runs: build, then migrate → bootstrap → deploy        |
 
 ## How it fits together
 
@@ -92,7 +93,7 @@ src/
   lib/auth/             Descope session validation, actor resolution, guards, permissions, invitations
   lib/                  env, settings, rate limiting, email, storage (SigV4), SEO/JSON-LD, markdown, audit
   server/               data access (leads, proposals, clients, projects, tickets, portal, files)
-  proxy.ts              fast pre-check + noindex headers for /app and /portal (not the security boundary)
+  middleware.ts         fast pre-check + noindex headers for /app and /portal (not the security boundary)
 scripts/                migrate, bootstrap (prod-safe), seed-dev (dev-only), grant-role
 tests/                  unit, integration (Postgres), e2e (Playwright)
 ```

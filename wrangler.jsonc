@@ -1,0 +1,25 @@
+// Cloudflare Workers deployment, built by the OpenNext adapter (see DEPLOYMENT.md).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "koral-digital",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-10",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    // Lets the revalidation queue re-render a stale page through this same Worker.
+    { "binding": "WORKER_SELF_REFERENCE", "service": "koral-digital" },
+  ],
+  "r2_buckets": [
+    // Page cache for the public pages' 5-minute regeneration. Create the bucket once before the first deploy.
+    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "koral-digital-cache" },
+  ],
+  // next/image optimization through Cloudflare Images.
+  "images": { "binding": "IMAGES" },
+  // Secrets and variables are managed in the dashboard; a deploy must not wipe them.
+  "keep_vars": true,
+  "observability": { "enabled": true },
+}

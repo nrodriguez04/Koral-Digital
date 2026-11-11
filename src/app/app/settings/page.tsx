@@ -7,7 +7,7 @@ import { users } from '@/db/schema';
 import { pageRequireStaff } from '@/lib/auth/guards';
 import { isDescopeManagementConfigured } from '@/lib/auth/descope';
 import { grantableStaffRoles } from '@/lib/auth/permissions';
-import { env, isDescopeConfigured, isEmailConfigured } from '@/lib/env';
+import { isDescopeConfigured, isEmailConfigured, isIndexingAllowed } from '@/lib/env';
 import { getSiteSettings } from '@/lib/settings';
 import { storageStatus } from '@/lib/storage';
 import { relativeTime, titleCase } from '@/lib/utils';
@@ -24,7 +24,6 @@ export default async function SettingsPage() {
     .where(isNotNull(users.staffRole))
     .orderBy(asc(users.email));
   const grantable = grantableStaffRoles(actor.staffRole);
-  const e = env();
   const st = storageStatus();
   const ok = (v: boolean, yes = 'Configured', no = 'Not configured') => (
     <Badge tone={v ? 'green' : 'amber'}>{v ? yes : no}</Badge>
@@ -193,11 +192,7 @@ export default async function SettingsPage() {
                 { label: 'File storage', value: ok(st.ready, `Ready (${st.driver})`, st.reason ?? 'Off') },
                 {
                   label: 'Search indexing',
-                  value: ok(
-                    e.VERCEL_ENV === 'production' || e.SITE_INDEXING === 'on',
-                    'Allowed',
-                    'Blocked (non-production)',
-                  ),
+                  value: ok(isIndexingAllowed(), 'Allowed', 'Blocked (non-production)'),
                 },
                 {
                   label: 'Search Console tag',

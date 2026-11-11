@@ -54,6 +54,10 @@ export function env(): ServerEnv {
 
 export const isProduction = () => env().NODE_ENV === 'production';
 
+/** True inside the Cloudflare Workers runtime, false in Node (dev server, tests, scripts). */
+export const isCloudflareWorkers = () =>
+  typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers';
+
 /** Descope is usable only with a project ID. */
 export const isDescopeConfigured = () => Boolean(env().NEXT_PUBLIC_DESCOPE_PROJECT_ID);
 
