@@ -23,7 +23,7 @@ const steps = [
     time: 'Tue 6:42 PM',
     body: 'A homeowner fills out the website form asking about hail damage on a roof. It is after hours and the office has gone home.',
     panel: [
-      ['Source', 'Website form · Google Ads campaign “Storm – Plano”'],
+      ['Source', 'Website form · Google Ads campaign “Storm – North”'],
       ['Name', 'Sample Homeowner (synthetic)'],
       ['Need', 'Roof inspection after hail'],
       ['Preferred contact', 'Text, evenings'],
@@ -36,7 +36,7 @@ const steps = [
     body: 'The workflow checks the CRM for an existing contact by phone and email. None found, so it creates one contact and one job record — with the ad campaign and landing page attached.',
     panel: [
       ['CRM action', 'Created contact + lead (no duplicate found)'],
-      ['Attribution', 'utm_campaign = storm-plano'],
+      ['Attribution', 'utm_campaign = storm-north'],
       ['Pipeline stage', 'New inquiry'],
     ],
   },

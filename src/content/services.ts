@@ -53,7 +53,7 @@ export const services: ServiceContent[] = [
       },
       {
         title: 'Notification and routing rules',
-        body: 'New leads trigger alerts by text, email or CRM task based on rules you approve, such as service type, ZIP code or time of day, with an escalation path if the first person does not pick it up.',
+        body: 'New leads trigger alerts by text, email or CRM task based on rules you approve, such as service type, ZIP or postal code, or time of day, with an escalation path if the first person does not pick it up.',
       },
       {
         title: 'Human-approved response drafts',
@@ -75,7 +75,7 @@ export const services: ServiceContent[] = [
     process: [
       {
         title: 'Free workflow review',
-        body: 'A consultation, in person in North Dallas–Fort Worth or by video, to walk through how leads arrive today, which tools you use and where things fall through. If a pilot fits, we confirm the sources and scope in a written proposal.',
+        body: 'A consultation by video to walk through how leads arrive today, which tools you use and where things fall through. If a pilot fits, we confirm the sources and scope in a written proposal.',
       },
       {
         title: 'Kickoff and access',
@@ -866,7 +866,7 @@ export const services: ServiceContent[] = [
       'Koral started in contractor marketing. We still build websites and landing pages and manage Google Ads where it fits, always wired into your CRM and follow-up.',
     metaTitle: 'Contractor Websites, Landing Pages & Google Ads',
     metaDescription:
-      'Conversion-focused websites, landing pages and Google Ads for contractors, wired into your CRM and lead follow-up. Offered selectively from Frisco, TX.',
+      'Conversion-focused websites, landing pages and Google Ads for contractors, wired into your CRM and lead follow-up. Offered selectively to contractors worldwide.',
     problem: {
       heading: 'More traffic does not help if the leads go nowhere',
       paragraphs: [
@@ -930,7 +930,6 @@ export const services: ServiceContent[] = [
       'Contractors whose current website makes it hard to request an estimate or does not show where leads come from',
       'Businesses running Google Ads without clear tracking from click to booked appointment',
       'Companies that want marketing and lead follow-up handled by the same partner',
-      'Local contractors in North Dallas–Fort Worth who prefer to meet in person',
     ],
     notIncluded: [
       'Guaranteed rankings, lead volumes or ad results. No honest provider can promise those.',
@@ -968,8 +967,8 @@ export const services: ServiceContent[] = [
         a: "No, and you should be cautious of anyone who does. Search rankings and ad performance depend on competition, budget, your reviews and many other factors outside anyone's control. What we can commit to is a well-built site, clean tracking and honest reporting on what is working.",
       },
       {
-        q: 'Do you only work with contractors in Dallas–Fort Worth?',
-        a: 'No. We are based in Frisco, Texas, and can meet in person with businesses around North Dallas–Fort Worth, including Plano, McKinney, Allen, Prosper and Celina. Website and ads work can also be done remotely for contractors in other areas.',
+        q: 'Do you work with contractors outside Texas or the United States?',
+        a: 'Yes. We work remotely with contractors worldwide. Websites, landing pages and Google Ads campaigns are built and managed online, and ad targeting is set to your own service area, wherever that is.',
       },
       {
         q: 'Can you take over our existing website and ad accounts?',

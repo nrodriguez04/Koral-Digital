@@ -8,9 +8,9 @@ import {
   ClipboardList,
   Copy,
   FileCheck2,
+  Globe,
   Handshake,
   LineChart,
-  MapPin,
   MessageSquareText,
   PhoneMissed,
   Plug,
@@ -143,8 +143,8 @@ export default async function HomePage() {
         <div className="container-page grid gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:py-24">
           <div className="lg:col-span-7">
             <p className="text-ocean-200 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium ring-1 ring-white/15">
-              <MapPin className="size-3.5" aria-hidden="true" /> Frisco, Texas · Serving North Dallas–Fort
-              Worth
+              <Globe className="size-3.5" aria-hidden="true" /> Remote-first · Working with businesses
+              worldwide
             </p>
             <h1 className="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.6rem] lg:leading-[1.05]">
               Get more out of the leads and software you already pay for.
@@ -435,17 +435,15 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Local + Initiative */}
+      {/* Worldwide + Initiative */}
       <section className="container-page grid gap-5 pb-20 lg:grid-cols-2">
         <div className="card p-8">
-          <MapPin className="text-ocean-600 size-6" aria-hidden="true" />
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight">
-            Based in Frisco. Working across North DFW.
-          </h2>
+          <Globe className="text-ocean-600 size-6" aria-hidden="true" />
+          <h2 className="mt-4 text-2xl font-semibold tracking-tight">Remote-first. Working worldwide.</h2>
           <p className="text-ink/70 mt-3 leading-relaxed">
-            We meet in person with businesses across {s.serviceAreas.slice(0, -1).join(', ')} and{' '}
-            {s.serviceAreas.at(-1)}, and work remotely with home-service companies elsewhere in Texas and the
-            US when it makes sense.
+            We work with home-service businesses wherever they operate, over video calls and screen shares and
+            inside the tools you already use. We schedule around your time zone and build in accounts you own
+            wherever possible.
           </p>
         </div>
         <div className="ocean-gradient relative overflow-hidden rounded-[var(--radius-card)] p-8 text-white">

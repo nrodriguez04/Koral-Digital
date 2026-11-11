@@ -19,7 +19,7 @@ export const industries: IndustryContent[] = [
       'Lead response, CRM integrations and estimate follow-up for roofing contractors handling storm surges, insurance claims, inspections and retail jobs.',
     headline: 'Lead response and CRM operations for roofing contractors',
     intro:
-      "Roofing lead flow is uneven by nature: quiet for weeks, then a hailstorm crosses North Texas and the phones, web forms and door-knock sheets fill up at once. Insurance work then moves on the carrier's and adjuster's schedule, not yours. We help roofers keep every inspection request, claim and estimate moving in the CRM they already use, whether that is JobNimbus, AccuLynx, Roofr or something else.",
+      "Roofing lead flow is uneven by nature: quiet for weeks, then a hailstorm rolls through and the phones, web forms and door-knock sheets fill up at once. Insurance work then moves on the carrier's and adjuster's schedule, not yours. We help roofers keep every inspection request, claim and estimate moving in the CRM they already use, whether that is JobNimbus, AccuLynx, Roofr or something else.",
     challenges: [
       {
         title: 'Storm surges overwhelm intake',
@@ -45,7 +45,7 @@ export const industries: IndustryContent[] = [
     approach: [
       {
         title: 'Storm-ready intake',
-        body: 'Forms, calls, Google Business Profile messages and canvassing leads flow into one intake path with duplicate checks on phone, email and property address. Routing rules, such as by ZIP code or rep capacity, can be adjusted quickly when a storm hits.',
+        body: 'Forms, calls, Google Business Profile messages and canvassing leads flow into one intake path with duplicate checks on phone, email and property address. Routing rules, such as by ZIP or postal code or rep capacity, can be adjusted quickly when a storm hits.',
       },
       {
         title: 'Separate retail and insurance pipelines',
@@ -112,7 +112,7 @@ export const industries: IndustryContent[] = [
     ],
     exampleScenario: {
       title: 'Example: inspection requests the morning after a hailstorm',
-      body: 'A hailstorm moves through Collin County overnight. By morning, inspection requests are arriving through the website, Google Business Profile and the main phone line, while canvassers log doors in their app. Each inquiry is checked against existing records by phone and property address, so a homeowner who called and also filled out the form becomes one lead, not two. Requests are routed by ZIP code to the rep covering that area, and each rep sees a reply draft offering inspection windows to review and send. Booked inspections land on rep calendars with the address attached. After each inspection, the job moves into the retail or insurance pipeline with a dated next step, and by end of day the owner can see how many requests came in, how many have been answered and how many are scheduled.',
+      body: 'A hailstorm moves through the area overnight. By morning, inspection requests are arriving through the website, Google Business Profile and the main phone line, while canvassers log doors in their app. Each inquiry is checked against existing records by phone and property address, so a homeowner who called and also filled out the form becomes one lead, not two. Requests are routed by ZIP code to the rep covering that area, and each rep sees a reply draft offering inspection windows to review and send. Booked inspections land on rep calendars with the address attached. After each inspection, the job moves into the retail or insurance pipeline with a dated next step, and by end of day the owner can see how many requests came in, how many have been answered and how many are scheduled.',
     },
     faqs: [
       {
@@ -125,7 +125,7 @@ export const industries: IndustryContent[] = [
       },
       {
         q: 'How do you handle the lead surge after a storm?',
-        a: 'We set up intake so every form, call and message is captured with duplicate checks, and routing rules that can be changed quickly, for example by ZIP code or by rep. Reply drafts let your team respond to a high volume of requests consistently, and a simple view shows what is still unanswered. People still approve every message and confirm every inspection.',
+        a: 'We set up intake so every form, call and message is captured with duplicate checks, and routing rules that can be changed quickly, for example by ZIP or postal code or by rep. Reply drafts let your team respond to a high volume of requests consistently, and a simple view shows what is still unanswered. People still approve every message and confirm every inspection.',
       },
       {
         q: 'Can canvassing leads go into the same CRM as inbound leads?',
@@ -234,7 +234,7 @@ export const industries: IndustryContent[] = [
     ],
     exampleScenario: {
       title: 'Example: from kitchen remodel inquiry to production handoff',
-      body: 'A homeowner in Plano fills out a website form about a kitchen remodel. The form asks for budget range, timeline and whether both decision-makers can attend a consultation, and the answers land in the CRM. The office reviews the inquiry and sends an approved reply with a scheduling link, and the homeowner books a design consultation. After the proposal is delivered, the salesperson gets dated follow-up tasks, including a point to share the financing information the office has approved. When the homeowner signs, a handoff record with scope, selections and allowances is created in the project management tool, and the production manager is notified to schedule kickoff. Mid-project, the homeowner asks to upgrade the backsplash; the change order is written up, priced by the project manager and signed before the work is done.',
+      body: 'A homeowner fills out a website form about a kitchen remodel. The form asks for budget range, timeline and whether both decision-makers can attend a consultation, and the answers land in the CRM. The office reviews the inquiry and sends an approved reply with a scheduling link, and the homeowner books a design consultation. After the proposal is delivered, the salesperson gets dated follow-up tasks, including a point to share the financing information the office has approved. When the homeowner signs, a handoff record with scope, selections and allowances is created in the project management tool, and the production manager is notified to schedule kickoff. Mid-project, the homeowner asks to upgrade the backsplash; the change order is written up, priced by the project manager and signed before the work is done.',
     },
     faqs: [
       {
@@ -355,7 +355,7 @@ export const industries: IndustryContent[] = [
     ],
     exampleScenario: {
       title: 'Example: an HOA work order from request to invoice',
-      body: 'A community manager for an HOA in McKinney emails a request about a gate at the community entrance that will not close. The email is turned into a work order in the field-service tool with the property, client and priority recorded, and the office sends an approved acknowledgment. Dispatch rules suggest the technician who covers that area and handles access-control repairs, and the dispatcher confirms the assignment. On site, the technician attaches before-and-after photos and notes and cannot mark the job complete until both are in. The work order record shows it was completed within the window agreed with that HOA, the invoice goes out with the photos attached, and at month end the community manager receives a summary of all work orders for the property.',
+      body: 'A community manager for a homeowners association (HOA) emails a request about a gate at the community entrance that will not close. The email is turned into a work order in the field-service tool with the property, client and priority recorded, and the office sends an approved acknowledgment. Dispatch rules suggest the technician who covers that area and handles access-control repairs, and the dispatcher confirms the assignment. On site, the technician attaches before-and-after photos and notes and cannot mark the job complete until both are in. The work order record shows it was completed within the window agreed with that HOA, the invoice goes out with the photos attached, and at month end the community manager receives a summary of all work orders for the property.',
     },
     faqs: [
       {
@@ -477,7 +477,7 @@ export const industries: IndustryContent[] = [
     ],
     exampleScenario: {
       title: 'Example: a 2 a.m. water loss call through to rebuild',
-      body: "A homeowner in Frisco calls at 2 a.m. about a burst supply line. The call rings through to the on-call technician; if it is missed, the technician and the operations manager both get an alert with the caller's number and voicemail, and a callback task is created. If nobody acknowledges it within the window the company set, the alert escalates to the backup technician. The technician calls back, and intake captures the loss source, affected rooms, carrier and claim number before the job is created in the job management system. On site, the job cannot advance to drying until initial photos, moisture readings and the signed work authorization are attached. When mitigation is complete, a rebuild opportunity is created with the scope notes and photos, and an estimator gets a dated task to contact the owner about reconstruction.",
+      body: "A homeowner calls at 2 a.m. about a burst supply line. The call rings through to the on-call technician; if it is missed, the technician and the operations manager both get an alert with the caller's number and voicemail, and a callback task is created. If nobody acknowledges it within the window the company set, the alert escalates to the backup technician. The technician calls back, and intake captures the loss source, affected rooms, carrier and claim number before the job is created in the job management system. On site, the job cannot advance to drying until initial photos, moisture readings and the signed work authorization are attached. When mitigation is complete, a rebuild opportunity is created with the scope notes and photos, and an estimator gets a dated task to contact the owner about reconstruction.",
     },
     faqs: [
       {

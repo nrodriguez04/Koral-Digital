@@ -65,19 +65,11 @@ export default async function SettingsPage() {
                   label="Phone verified — show it publicly"
                   className="self-end pb-2"
                 />
-                <Field label="City" htmlFor="city" required>
+                <Field label="Headquarters city" htmlFor="city" required>
                   <Input id="city" name="city" defaultValue={s.city} />
                 </Field>
-                <Field label="State" htmlFor="region" required>
+                <Field label="Headquarters state / region" htmlFor="region" required>
                   <Input id="region" name="region" defaultValue={s.region} />
-                </Field>
-                <Field
-                  label="Service areas (one per line)"
-                  htmlFor="serviceAreas"
-                  required
-                  className="sm:col-span-2"
-                >
-                  <Textarea id="serviceAreas" name="serviceAreas" defaultValue={s.serviceAreas.join('\n')} />
                 </Field>
                 <Field label="Booking URL (Calendly etc.)" htmlFor="bookingUrl">
                   <Input id="bookingUrl" name="bookingUrl" type="url" defaultValue={s.bookingUrl} />

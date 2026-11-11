@@ -2,7 +2,7 @@
 
 Marketing website, internal operations portal and multi-tenant client portal for
 **Koral Digital** — a founder-led digital operations, automation and
-systems-integration consultancy for home-service businesses in Dallas–Fort Worth.
+systems-integration consultancy for home-service businesses worldwide.
 
 > _Building a better tomorrow._
 
@@ -117,7 +117,7 @@ portal queries resolve the org **only** from the caller's own memberships.
 ## Content editing
 
 - **Admin-editable without deploys** (`/app/settings`): business name, tagline, contact email
-  (shown publicly only once marked verified), phone, service areas, booking URL (embedded only
+  (shown publicly only once marked verified), phone, headquarters city, booking URL (embedded only
   once verified), notification recipients, founder bio, "starting at" prices and whether to show
   them, Koral Initiative status note, SEO defaults.
 - **Insights articles** (`/app/content`): three original drafts are loaded by `db:bootstrap` as

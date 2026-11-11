@@ -9,7 +9,7 @@ import { breadcrumbJsonLd, JsonLd, pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
   title: 'Industries: roofing, remodeling, property maintenance, restoration',
   description:
-    'How Koral Digital helps DFW roofing, remodeling, construction, property maintenance and restoration companies respond faster and follow up consistently.',
+    'How Koral Digital helps roofing, remodeling, construction, property maintenance and restoration companies worldwide respond faster and follow up consistently.',
   path: '/industries',
 });
 

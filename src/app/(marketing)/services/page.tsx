@@ -13,7 +13,7 @@ export const revalidate = 300;
 export const metadata = pageMetadata({
   title: 'Services: lead response, CRM, automation & reporting',
   description:
-    'Lead-to-Booked pilots, CRM rescue, estimate follow-up, systems integration, revenue attribution and managed automation for DFW home-service businesses.',
+    'Lead-to-Booked pilots, CRM rescue, estimate follow-up, systems integration, revenue attribution and managed automation for home-service businesses worldwide.',
   path: '/services',
 });
 

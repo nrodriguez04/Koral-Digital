@@ -58,7 +58,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           name: svc.name,
           description: svc.metaDescription,
           path: `/services/${svc.slug}`,
-          areas: s.serviceAreas,
         })}
       />
       <JsonLd data={faqJsonLd(svc.faqs)} />

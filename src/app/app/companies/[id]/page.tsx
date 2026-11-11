@@ -66,7 +66,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                     id="serviceArea"
                     name="serviceArea"
                     defaultValue={c.serviceArea ?? ''}
-                    placeholder="e.g. Collin County"
+                    placeholder="e.g. county, metro area or region"
                   />
                 </Field>
                 <Field label="Current CRM" htmlFor="currentCrm">

@@ -11,12 +11,14 @@ consistency, real reviews over time, and useful content.
 - [x] `sitemap.xml` (public pages + published articles only), `robots.txt` (blocks `/app`, `/portal`, `/api`, auth pages, `/demo`)
 - [x] Preview deployments and non-production hosts are `noindex` and robots-disallowed (`SITE_INDEXING=auto`)
 - [x] Private areas send `X-Robots-Tag: noindex` and are protected by real authentication
-- [x] JSON-LD: `Organization` + `ProfessionalService` (city/region and service area only — no street address, hours, prices or ratings), `WebSite`, `Service` per service page, `BreadcrumbList`, `FAQPage` only where the same Q&A is visible, `Article` for published posts
+- [x] JSON-LD: `Organization` + `ProfessionalService` (headquarters city/region, `areaServed: Worldwide` and an `OfferCatalog` of the services — no street address, hours, prices or ratings), `WebSite`, `Service` per service page, `BreadcrumbList`, `FAQPage` only where the same Q&A is visible, `Article` for published posts
 - [x] Favicon/app icons from the coral-in-hands mark, web manifest, theme color
 - [x] Self-hosted font, optimized images, minimal client JavaScript on marketing pages
-- [x] `llms.txt` as a plain-text navigation summary (a convenience, not a ranking factor)
+- [x] `llms.txt` (summary, key facts and links) and `llms-full.txt` (every service, industry and FAQ in one document), both built from the same content the pages render
+- [x] `robots.txt` names the AI search and assistant crawlers (GPTBot, OAI-SearchBot, ClaudeBot, Claude-SearchBot, PerplexityBot, Google-Extended and others) and allows the public site
+- [x] A definitional "What is Koral Digital?" FAQ on the home page, written to be quoted as-is
 - [x] Internal linking: services ↔ industries ↔ related services ↔ contact
-- [x] Local relevance: Frisco base and named North DFW service areas, without doorway pages
+- [x] Worldwide positioning: no service-area list or city pages; Frisco, TX is stated once as headquarters
 - [x] First-party analytics for CTA clicks, form starts/submits, booking clicks and UTM source
 
 ## Do on launch day (owner actions)
@@ -34,12 +36,18 @@ consistency, real reviews over time, and useful content.
    detected. FAQ rich results are limited by Google to certain sites, so detection ≠ display.
 5. **Schema Markup Validator** (validator.schema.org) on the same pages — zero errors.
 6. **PageSpeed Insights** on `/` (mobile) — aim for green Core Web Vitals.
-7. **Google Business Profile** — create a **service-area business** (hide the street address),
-   category such as "Business management consultant" or "Marketing consultant", service areas
-   Frisco/Plano/McKinney/Prosper/Celina/Allen, website = koraldigital.com, same name everywhere.
-8. **Consistent NAP** — use exactly "Koral Digital", "Frisco, TX", the same website URL and (once
-   verified) the same email/phone on LinkedIn, Google Business Profile, Bing Places, the Frisco
-   Chamber of Commerce and any directories you join.
+7. **Let AI crawlers through the edge.** If DNS or the CDN runs through Cloudflare, turn off
+   "Block AI bots" / AI Crawl Control for the public site (new Cloudflare zones block them by
+   default), and check Vercel Firewall rules do the same. `robots.txt` allowing them is not enough
+   if the edge returns 403. Then fetch `/llms.txt` and `/robots.txt` from outside your network.
+8. **Google Business Profile** (optional for a remote business) — if you create one, make it a
+   **service-area business** with the street address hidden, a category such as "Business
+   management consultant", and website = koraldigital.com. Do not list a narrow set of cities.
+9. **Consistent entity description** — use exactly "Koral Digital", the same one-sentence
+   description ("founder-led operations and automation partner for home-service businesses
+   worldwide"), the same website URL and (once verified) the same email on LinkedIn, Crunchbase,
+   Clutch, Google Business Profile, Bing Places and any directory you join. AI answers lean on
+   consistent third-party mentions, not just your own site.
 
 ## First 30 days
 
@@ -47,12 +55,14 @@ consistency, real reviews over time, and useful content.
 - [ ] Mark the contact email and booking link as verified in `/app/settings` once tested.
 - [ ] Ask the first pilot clients for honest Google reviews **after** delivering results (never incentivized, never written for them).
 - [ ] Publish one practical article every 2–4 weeks answering a real question prospects asked you.
-- [ ] Join and get listed by real local organizations (Frisco Chamber, NARI/roofing associations) — genuine citations beat directory spam.
+- [ ] Join and get listed by real industry organizations (NARI, roofing and restoration associations, CRM vendors' partner directories) — genuine citations beat directory spam.
+- [ ] Each month, ask ChatGPT, Claude, Perplexity, Gemini and Copilot the questions prospects ask ("who can fix lead follow-up for a roofing company?", "what is Koral Digital?") and note whether Koral appears and whether the description is right. Fix wrong facts at the source page, then in `llms.txt`.
+- [ ] Answer real questions where prospects and assistants read them (industry forums, LinkedIn articles, podcast guest spots) and link back to the matching service page.
 - [ ] When you have permission and verified outcomes, add case studies (real names, real numbers, signed approval).
 - [ ] Check Search Console → Pages and Enhancements weekly for errors.
 
 ## Do not
 
-- Create one page per city with swapped names (doorway pages).
+- Create one page per city or country with swapped names (doorway pages).
 - Publish AI-generated articles without expert review, fake reviews, review schema you didn't earn, or invented statistics.
 - Promise "#1 rankings" or "guaranteed inclusion in ChatGPT".

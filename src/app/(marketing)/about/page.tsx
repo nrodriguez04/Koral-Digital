@@ -9,7 +9,7 @@ export const revalidate = 300;
 export const metadata = pageMetadata({
   title: 'About Koral Digital · Founder-led, vendor-neutral',
   description:
-    'Koral Digital is a founder-led operations and automation partner in Frisco, Texas, helping home-service businesses connect the tools they already pay for.',
+    'Koral Digital is a founder-led, remote-first operations and automation partner helping home-service businesses worldwide connect the tools they already pay for.',
   path: '/about',
 });
 
@@ -51,7 +51,7 @@ export default async function AboutPage() {
         breadcrumbs={crumbs}
         eyebrow="About"
         title="A founder-led partner for the unglamorous systems that win jobs."
-        intro={`${s.businessName} is a digital operations, automation and systems-integration consultancy based in ${s.city}, Texas. We help home-service businesses turn more inquiries into booked estimates and signed work — using the tools they already have.`}
+        intro={`${s.businessName} is a digital operations, automation and systems-integration consultancy working with businesses worldwide. We help home-service businesses turn more inquiries into booked estimates and signed work — using the tools they already have.`}
       />
 
       <section className="container-page grid gap-12 py-16 sm:py-20 lg:grid-cols-12">
@@ -133,11 +133,11 @@ export default async function AboutPage() {
             </p>
           </div>
           <div>
-            <SectionHeading eyebrow="Where we work" title={`Based in ${s.city}, ${s.region}`} />
+            <SectionHeading eyebrow="Where we work" title="Remote-first, worldwide" />
             <p className="text-ink/75 mt-5 text-lg leading-relaxed">
-              We work in person with businesses across North Dallas–Fort Worth — {s.serviceAreas.join(', ')} —
-              and remotely with home-service companies in other markets when the work can be done well that
-              way.
+              We are headquartered in {s.city}, {s.region}, and work remotely with businesses anywhere in the
+              world. Consultations, working sessions and handoffs happen over video and screen share,
+              scheduled around your time zone.
             </p>
           </div>
         </div>

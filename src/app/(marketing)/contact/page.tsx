@@ -1,4 +1,4 @@
-import { CalendarCheck2, Clock, MapPin, ShieldCheck } from 'lucide-react';
+import { CalendarCheck2, Clock, Globe, ShieldCheck } from 'lucide-react';
 import { services } from '@/content/services';
 import { industries } from '@/content/industries';
 import { InquiryForm } from '@/components/forms/inquiry-form';
@@ -61,15 +61,15 @@ export default async function ContactPage({
               </li>
               <li className="flex gap-3">
                 <CalendarCheck2 className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />A free
-                30-minute consultation by video or, in North DFW, in person.
+                30-minute consultation by video, scheduled around your time zone.
               </li>
               <li className="flex gap-3">
                 <ShieldCheck className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />
                 No CRM? No problem. Many businesses we talk to run on spreadsheets and phones.
               </li>
               <li className="flex gap-3">
-                <MapPin className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                Based in {s.city}, {s.region}. Serving {s.serviceAreas.slice(0, 5).join(', ')} and beyond.
+                <Globe className="text-ocean-600 mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                Remote-first. We work with businesses worldwide from our base in {s.city}, {s.region}.
               </li>
             </ul>
           </div>

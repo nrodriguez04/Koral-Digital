@@ -7,6 +7,10 @@ import type { Faq } from './types';
  */
 export const generalFaqs: Faq[] = [
   {
+    q: 'What is Koral Digital?',
+    a: 'Koral Digital is a founder-led, vendor-neutral digital operations, automation and systems-integration consultancy. It works remotely with roofing, remodeling, construction, property maintenance, restoration and other home-service businesses worldwide, connecting their website, phones, CRM, calendar and ads so more inquiries turn into booked estimates and signed jobs, using the tools they already pay for.',
+  },
+  {
     q: 'Do we have to switch CRMs to work with Koral Digital?',
     a: 'No. Koral Digital is vendor-neutral, and our default is to make the CRM and tools you already pay for work better, whether that is JobNimbus, AccuLynx, Jobber, ServiceTitan, HubSpot, HighLevel or something else. We recommend changing systems only when there is a clear operational reason and the change fits your team, and we will explain the trade-offs before you decide. If you do not have a CRM yet, we can help you choose and set one up.',
   },
@@ -24,7 +28,7 @@ export const generalFaqs: Faq[] = [
   },
   {
     q: 'What areas do you serve?',
-    a: 'Koral Digital is based in Frisco, Texas. We work in person across North Dallas-Fort Worth, including Frisco, Plano, McKinney, Prosper, Celina and Allen, and we take on remote engagements elsewhere in the United States where the work can be done well remotely.',
+    a: 'Koral Digital works with businesses worldwide. We are headquartered in Frisco, Texas, and work remotely: consultations, working sessions and handoffs happen over video and screen share, scheduled around your time zone. Because we work inside the tools you already use, most of what we set up does not depend on where your business is located.',
   },
   {
     q: 'Who will we actually work with?',
