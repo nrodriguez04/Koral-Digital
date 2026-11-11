@@ -10,8 +10,12 @@ import { env, isDescopeConfigured, isDevAuthMockEnabled } from '@/lib/env';
 export const metadata: Metadata = { title: 'Sign in', robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
 
-export default async function SignInPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
-  const { next } = await searchParams;
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; stale?: string }>;
+}) {
+  const { next, stale } = await searchParams;
   const target = safeNext(next);
   const e = env();
   return (
@@ -24,7 +28,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
           projectId={e.NEXT_PUBLIC_DESCOPE_PROJECT_ID}
           baseUrl={e.NEXT_PUBLIC_DESCOPE_BASE_URL}
         >
-          <SignInFlow flowId={e.NEXT_PUBLIC_DESCOPE_SIGN_IN_FLOW_ID} next={target} />
+          <SignInFlow flowId={e.NEXT_PUBLIC_DESCOPE_SIGN_IN_FLOW_ID} next={target} stale={stale === '1'} />
         </DescopeProvider>
       ) : (
         <Alert tone="warning" title="Sign-in is not configured yet">
