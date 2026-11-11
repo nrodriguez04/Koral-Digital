@@ -9,7 +9,17 @@ export function redact(value: unknown, depth = 0): unknown {
   if (depth > 4) return '[depth]';
   if (Array.isArray(value)) return value.map((v) => redact(v, depth + 1));
   if (value && typeof value === 'object') {
-    if (value instanceof Error) return { name: value.name, message: value.message };
+    if (value instanceof Error) {
+      // Drizzle appends the query's bound parameters (emails, names) to its message; drop them.
+      // The cause carries what actually failed, such as a Postgres code or a refused connection.
+      const code = (value as { code?: unknown }).code;
+      return {
+        name: value.name,
+        message: value.message.replace(/\nparams:[\s\S]*$/, ''),
+        ...(typeof code === 'string' ? { code } : {}),
+        ...(value.cause !== undefined ? { cause: redact(value.cause, depth + 1) } : {}),
+      };
+    }
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>).map(([k, v]) => [
         k,

@@ -134,6 +134,25 @@ describe('helpers', () => {
       nested: { phone: '[redacted]', id: 'x' },
     });
   });
+  it('logs the cause of a failed query without its parameters', () => {
+    const cause = Object.assign(new Error('password authentication failed for user "postgres"'), {
+      code: '28P01',
+    });
+    const err = new Error('Failed query: select * from users where email = $1\nparams: jo@acme.com', {
+      cause,
+    });
+    expect(redact({ err })).toEqual({
+      err: {
+        name: 'Error',
+        message: 'Failed query: select * from users where email = $1',
+        cause: {
+          name: 'Error',
+          message: 'password authentication failed for user "postgres"',
+          code: '28P01',
+        },
+      },
+    });
+  });
   it('computes proposal deposit and balance', () => {
     expect(
       proposalTotals(
