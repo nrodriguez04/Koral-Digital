@@ -24,6 +24,7 @@ import { auditActor, requireStaff, runAction, type ActionResult } from '@/lib/au
 import { parseBusinessDate } from '@/lib/dates';
 import { DISCOVERY_QUESTIONS } from '@/lib/discovery';
 import { domainFromEmail, normalizeCompanyName, slugify } from '@/lib/utils';
+import { ensureOrgTenant } from '@/server/access';
 
 const uuid = z.string().uuid();
 const opt = (max: number) =>
@@ -472,6 +473,10 @@ export async function convertLeadToClient(
       });
       return org!.id;
     });
+    // The client's Descope tenant, where its people get their roles. If Descope is unreachable
+    // now, the first invitation creates it instead.
+    const created = await db.query.organizations.findFirst({ where: eq(organizations.id, orgId) });
+    if (created) await ensureOrgTenant(created);
     await recordAudit({
       actor: auditActor(actor),
       action: 'lead.converted',

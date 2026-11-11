@@ -9,7 +9,7 @@ systems-integration consultancy for home-service businesses worldwide.
 | Area                          | Path                                                                                                                                | Who                                                             |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | Public website (SSR/SSG, SEO) | `/`, `/services/*`, `/industries/*`, `/about`, `/koral-initiative`, `/contact`, `/book`, `/insights`, `/demo`, `/privacy`, `/terms` | Everyone                                                        |
-| Internal portal ("Koral Ops") | `/app/*`                                                                                                                            | Koral staff (superadmin / admin / sales / delivery)             |
+| Internal portal ("Koral Ops") | `/app/*`                                                                                                                            | Koral staff (owner / employee / contractor)                     |
 | Client portal                 | `/portal/[org]/*`                                                                                                                   | Invited client users (client_owner / client_member / read_only) |
 
 See [`IMPLEMENTATION_STATUS.md`](IMPLEMENTATION_STATUS.md) for what is done and what is
@@ -70,19 +70,19 @@ user with no access). The mock is hard-disabled in production builds.
 
 ## Scripts
 
-| Command                                                      | What it does                                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| `npm run dev` / `build` / `start`                            | Next.js dev server / production build / production server                            |
-| `npm run lint` / `typecheck` / `format`                      | ESLint, `tsc --noEmit`, Prettier                                                     |
-| `npm run db:generate`                                        | Generate a SQL migration after editing `src/db/schema.ts`                            |
-| `npm run db:migrate`                                         | Apply migrations (skips with a warning if `DATABASE_URL` is unset)                   |
-| `npm run db:bootstrap`                                       | **Production-safe**, idempotent: default site settings + editorial article drafts    |
-| `npm run db:seed:dev`                                        | **Development only** synthetic data (refuses non-local databases)                    |
-| `npm run admin:grant -- --email you@x.com --role superadmin` | Grant a staff role from a terminal                                                   |
-| `npm test`                                                   | Unit + integration tests (needs Postgres; uses `TEST_DATABASE_URL` or `koral_test`)  |
-| `npm run test:e2e`                                           | Playwright end-to-end tests (needs Postgres; uses `E2E_DATABASE_URL` or `koral_e2e`) |
-| `npm run preview`                                            | Build for Cloudflare and run it locally in the Workers runtime (port 8787)           |
-| `npm run cf:build` / `cf:deploy`                             | What Cloudflare Workers Builds runs: build, then migrate → bootstrap → deploy        |
+| Command                                 | What it does                                                                         |
+| --------------------------------------- | ------------------------------------------------------------------------------------ |
+| `npm run dev` / `build` / `start`       | Next.js dev server / production build / production server                            |
+| `npm run lint` / `typecheck` / `format` | ESLint, `tsc --noEmit`, Prettier                                                     |
+| `npm run db:generate`                   | Generate a SQL migration after editing `src/db/schema.ts`                            |
+| `npm run db:migrate`                    | Apply migrations (skips with a warning if `DATABASE_URL` is unset)                   |
+| `npm run db:bootstrap`                  | **Production-safe**, idempotent: default site settings + editorial article drafts    |
+| `npm run db:seed:dev`                   | **Development only** synthetic data (refuses non-local databases)                    |
+| `npm run descope:setup`                 | Create the Descope tenants and roles the app expects (idempotent)                    |
+| `npm test`                              | Unit + integration tests (needs Postgres; uses `TEST_DATABASE_URL` or `koral_test`)  |
+| `npm run test:e2e`                      | Playwright end-to-end tests (needs Postgres; uses `E2E_DATABASE_URL` or `koral_e2e`) |
+| `npm run preview`                       | Build for Cloudflare and run it locally in the Workers runtime (port 8787)           |
+| `npm run cf:build` / `cf:deploy`        | What Cloudflare Workers Builds runs: build, then migrate → bootstrap → deploy        |
 
 ## How it fits together
 
@@ -116,11 +116,12 @@ deposit/balance and a printable client document · convert to client workspace �
 templates (milestones + client checklist) · invoices (manual status + hosted payment links) ·
 files · tool metadata · client updates · support tickets.
 
-**Authorization:** Descope proves identity; the local database decides access. Staff roles
-live on `users.staff_role` and are granted only by an admin, the one-time `/setup` token, or
-the CLI — never by email domain or user-editable metadata. Client access is a `memberships`
-row created only by accepting an invitation. Every customer-owned table carries `org_id`, and
-portal queries resolve the org **only** from the caller's own memberships.
+**Authorization:** Descope decides who holds which role; the app decides what each role may do
+(`src/lib/auth/permissions.ts`). Staff roles are `Internal:*` roles in the `koral-digital-internal`
+tenant; each client company is its own tenant with `External:Client*` roles. The server reads
+them from the verified session token on every request and keeps a database copy for lists —
+never from email domains or user-editable metadata. Every customer-owned table carries `org_id`,
+and portal queries resolve the org **only** from the caller's own memberships.
 
 ## Content editing
 

@@ -21,12 +21,15 @@ import {
   projects,
   proposals,
   tasks,
+  users,
 } from '@/db/schema';
 import { recordAudit } from '@/lib/audit';
 import { auditActor, requireStaff, runAction, type ActionResult } from '@/lib/auth/guards';
 import { parseBusinessDate } from '@/lib/dates';
 import { PROJECT_TEMPLATES, type ProjectTemplateKey } from '@/lib/project-templates';
 import { deleteObject } from '@/lib/storage';
+import { setTenantRole } from '@/lib/auth/descope';
+import { setMemberRole } from '@/server/access';
 import { createInvitation } from '@/server/invitations';
 import { nextInvoiceNumber } from '@/server/clients';
 import { storeOrgFile } from '@/server/files';
@@ -110,6 +113,7 @@ export async function inviteClientMember(
       memberRole: parsed.data.role,
       name: parsed.data.name,
     });
+    if (!inv.ok) return inv;
     revalidatePath(`/app/clients/${org.id}`);
     return {
       ok: true,
@@ -117,7 +121,7 @@ export async function inviteClientMember(
       message:
         inv.delivery === 'descope_email'
           ? `Invitation emailed by Descope to ${parsed.data.email}. Backup link (single use, expires in 7 days): ${inv.link}`
-          : `Descope email delivery is not configured (${inv.deliveryNote}). Send this single-use link to ${parsed.data.email} yourself — it expires in 7 days and is shown only once: ${inv.link}`,
+          : `${inv.deliveryNote ? `${inv.deliveryNote} ` : ''}Send this single-use link to ${parsed.data.email} yourself — it expires in 7 days and is shown only once: ${inv.link}`,
     };
   });
 }
@@ -130,10 +134,24 @@ export async function revokeInvitation(
     const actor = await requireStaff('members:manage');
     const parsed = z.object({ orgId: uuid, invitationId: uuid }).safeParse(Object.fromEntries(fd));
     if (!parsed.success) return fe(parsed.error);
-    await getDb()
+    const db = getDb();
+    const [revoked] = await db
       .update(invitations)
       .set({ status: 'revoked' })
-      .where(and(eq(invitations.id, parsed.data.invitationId), eq(invitations.orgId, parsed.data.orgId)));
+      .where(
+        and(
+          eq(invitations.id, parsed.data.invitationId),
+          eq(invitations.orgId, parsed.data.orgId),
+          eq(invitations.status, 'pending'),
+        ),
+      )
+      .returning();
+    // The invitation granted the role in Descope when it was sent; take it back.
+    const org = revoked?.descopeUserId ? await orgExists(parsed.data.orgId) : null;
+    if (revoked?.descopeUserId && org?.descopeTenantId) {
+      const removed = await setTenantRole(revoked.descopeUserId, org.descopeTenantId, null);
+      if (!removed.ok) return { ok: false, error: `Invitation revoked, but Descope: ${removed.reason}` };
+    }
     await recordAudit({
       actor: auditActor(actor),
       action: 'invitation.revoked',
@@ -166,8 +184,13 @@ export async function changeMemberRole(
       where: and(eq(memberships.id, membershipId), eq(memberships.orgId, orgId)),
     });
     if (!m) return { ok: false, error: 'Member not found.' };
-    if (role === 'remove') await db.delete(memberships).where(eq(memberships.id, m.id));
-    else await db.update(memberships).set({ role }).where(eq(memberships.id, m.id));
+    const [org, target] = await Promise.all([
+      orgExists(orgId),
+      db.query.users.findFirst({ where: eq(users.id, m.userId) }),
+    ]);
+    if (!org || !target) return { ok: false, error: 'Member not found.' };
+    const changed = await setMemberRole(org, target, role === 'remove' ? null : role);
+    if (!changed.ok) return { ok: false, error: `Descope: ${changed.reason}` };
     await recordAudit({
       actor: auditActor(actor),
       action: role === 'remove' ? 'membership.removed' : 'membership.role_changed',

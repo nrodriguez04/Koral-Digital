@@ -1,24 +1,30 @@
 import type { MemberRole, StaffRole } from '@/db/schema';
 
+/**
+ * What each staff role may do. Who holds which role is decided in Descope (see descope-roles.ts);
+ * this table is the app's rule for what that role means. Owner: everything. Employee: everything
+ * except staff, site settings and the audit log. Contractor: delivery work on client accounts,
+ * with no access to leads, proposals, invoices or analytics.
+ */
 export const STAFF_PERMISSIONS = {
-  'leads:read': ['superadmin', 'admin', 'sales', 'delivery'],
-  'leads:write': ['superadmin', 'admin', 'sales'],
-  'leads:export': ['superadmin', 'admin', 'sales'],
-  'proposals:write': ['superadmin', 'admin', 'sales'],
-  'clients:read': ['superadmin', 'admin', 'sales', 'delivery'],
-  'clients:write': ['superadmin', 'admin', 'delivery'],
-  'clients:convert': ['superadmin', 'admin', 'sales'],
-  'members:manage': ['superadmin', 'admin', 'delivery'],
-  'projects:write': ['superadmin', 'admin', 'delivery'],
-  'tickets:write': ['superadmin', 'admin', 'delivery', 'sales'],
-  'files:write': ['superadmin', 'admin', 'delivery'],
-  'invoices:write': ['superadmin', 'admin', 'sales'],
-  'tasks:write': ['superadmin', 'admin', 'sales', 'delivery'],
-  'content:write': ['superadmin', 'admin'],
-  'settings:write': ['superadmin', 'admin'],
-  'staff:manage': ['superadmin', 'admin'],
-  'audit:read': ['superadmin', 'admin'],
-  'analytics:read': ['superadmin', 'admin', 'sales'],
+  'leads:read': ['owner', 'employee'],
+  'leads:write': ['owner', 'employee'],
+  'leads:export': ['owner', 'employee'],
+  'proposals:write': ['owner', 'employee'],
+  'clients:read': ['owner', 'employee', 'contractor'],
+  'clients:write': ['owner', 'employee', 'contractor'],
+  'clients:convert': ['owner', 'employee'],
+  'members:manage': ['owner', 'employee'],
+  'projects:write': ['owner', 'employee', 'contractor'],
+  'tickets:write': ['owner', 'employee', 'contractor'],
+  'files:write': ['owner', 'employee', 'contractor'],
+  'invoices:write': ['owner', 'employee'],
+  'tasks:write': ['owner', 'employee'],
+  'content:write': ['owner', 'employee'],
+  'settings:write': ['owner'],
+  'staff:manage': ['owner'],
+  'audit:read': ['owner'],
+  'analytics:read': ['owner', 'employee'],
 } as const satisfies Record<string, readonly StaffRole[]>;
 
 export type StaffPermission = keyof typeof STAFF_PERMISSIONS;
@@ -46,9 +52,8 @@ export function memberCan(role: MemberRole | null | undefined, permission: Clien
 /** Roles a client_owner may assign. Never staff roles, never client_owner (prevents silent elevation). */
 export const CLIENT_ASSIGNABLE_ROLES: MemberRole[] = ['client_member', 'read_only'];
 
-/** Which staff roles an admin may grant. Only superadmin can grant admin/superadmin. */
+/** Which staff roles someone may grant from the app. Only an owner manages staff. */
 export function grantableStaffRoles(granter: StaffRole | null): StaffRole[] {
-  if (granter === 'superadmin') return ['superadmin', 'admin', 'sales', 'delivery'];
-  if (granter === 'admin') return ['sales', 'delivery'];
+  if (granter === 'owner') return ['owner', 'employee', 'contractor'];
   return [];
 }

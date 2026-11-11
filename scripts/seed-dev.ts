@@ -56,14 +56,14 @@ async function main() {
       devKey: string,
       name: string,
       email: string,
-      staffRole: 'superadmin' | 'admin' | 'sales' | 'delivery' | null,
+      staffRole: 'owner' | 'employee' | 'contractor' | null,
     ) => ({ devKey, name, email, emailVerified: true, staffRole });
     const [admin, sales, delivery, ownerA, memberA, readOnlyA, ownerB, noAccess] = await db
       .insert(users)
       .values([
-        mk('dev-admin', 'Dev Admin (synthetic)', 'admin@example.com', 'superadmin'),
-        mk('dev-sales', 'Dev Sales (synthetic)', 'sales@example.com', 'sales'),
-        mk('dev-delivery', 'Dev Delivery (synthetic)', 'delivery@example.com', 'delivery'),
+        mk('dev-admin', 'Dev Owner (synthetic)', 'admin@example.com', 'owner'),
+        mk('dev-sales', 'Dev Employee (synthetic)', 'sales@example.com', 'employee'),
+        mk('dev-delivery', 'Dev Contractor (synthetic)', 'delivery@example.com', 'contractor'),
         mk('dev-client-a-owner', 'Avery Owner (synthetic, Org A)', 'owner@acme-roofing.example', null),
         mk('dev-client-a-member', 'Alex Member (synthetic, Org A)', 'member@acme-roofing.example', null),
         mk('dev-client-a-readonly', 'Riley Viewer (synthetic, Org A)', 'viewer@acme-roofing.example', null),

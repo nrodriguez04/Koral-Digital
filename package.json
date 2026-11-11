@@ -18,7 +18,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:bootstrap": "tsx scripts/bootstrap.ts",
     "db:seed:dev": "tsx scripts/seed-dev.ts",
-    "admin:grant": "tsx scripts/grant-role.ts",
+    "descope:setup": "tsx scripts/descope-setup.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "node scripts/e2e.mjs",

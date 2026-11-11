@@ -33,8 +33,7 @@ one of two places:
 | `DATABASE_URL`                                                                                                               | Runtime secret **and** build variable | Postgres provider (pooled URL)                        | Supabase: _Transaction pooler_, port 6543                           |
 | `DATABASE_URL_UNPOOLED`                                                                                                      | Build variable                        | Postgres provider (direct URL)                        | Used only by migrations                                             |
 | `APP_SECRET`                                                                                                                 | Runtime secret                        | `openssl rand -base64 48`                             | Signs rate-limit fingerprints; 32+ chars                            |
-| `DESCOPE_MANAGEMENT_KEY`                                                                                                     | Runtime secret                        | Descope → Company → Management keys                   | Needed with the sign-in-only flow, see step 2                       |
-| `SETUP_TOKEN`                                                                                                                | Runtime secret (first deploy only)    | `openssl rand -base64 32`                             | Lets you claim the first superadmin at `/setup`; delete afterwards  |
+| `DESCOPE_MANAGEMENT_KEY`                                                                                                     | Runtime secret                        | Descope → Company → Management keys                   | Required: invitations and role changes go through it, see step 2    |
 | `RESEND_API_KEY`                                                                                                             | Runtime secret                        | resend.com → API keys                                 | Staff notifications for new inquiries/tickets                       |
 | `EMAIL_FROM`, `LEAD_NOTIFICATION_EMAILS`                                                                                     | Runtime secret                        | e.g. `Koral Digital <notifications@koraldigital.com>` | Domain must be verified in Resend                                   |
 | `STORAGE_DRIVER`, `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_FORCE_PATH_STYLE` | Runtime secret                        | Cloudflare R2 / Supabase Storage / AWS                | `s3` or `none`; `local` is development-only                         |
@@ -51,11 +50,15 @@ one of two places:
 1. Create a project named `koral-digital`, region **US East (N. Virginia)**, close to most of
    the traffic. Choose a strong database password and keep it in a password manager.
 2. Project → **Connect** → copy the **Transaction pooler** URI (port 6543) → `DATABASE_URL`, and
-   the **Direct connection** / session URI (port 5432) → `DATABASE_URL_UNPOOLED`.
-3. Recommended: Project Settings → **Data API** → disable it (this app does not use it).
+   the **Session pooler** URI (port 5432) → `DATABASE_URL_UNPOOLED`. The username must include
+   the project ref (`postgres.<ref>`). Avoid the **Direct connection** host: it is IPv6-only, and
+   neither the Worker nor the build can count on reaching it.
+3. Set both as **build variables** too: every production deploy runs the migrations first and
+   stops if `DATABASE_URL` is missing, rather than ship code the database can't serve.
+4. Recommended: Project Settings → **Data API** → disable it (this app does not use it).
    Migration `0001_enable_rls` also enables row-level security on every table and revokes
    `anon`/`authenticated` access, so the public anon key cannot read data even if the API is on.
-4. Backups: daily backups require a paid plan; enable Point-in-Time Recovery when you have
+5. Backups: daily backups require a paid plan; enable Point-in-Time Recovery when you have
    paying clients. Until then, schedule a weekly `pg_dump` to secure storage.
 
 On Workers, each request opens its own connection (a socket cannot outlive the request that
@@ -86,30 +89,35 @@ and the server sees no valid session. Through `auth.koraldigital.com` it is firs
 
 1. **Authentication methods:** the flow offers email, passkeys, Google, Microsoft and Apple.
    Each social provider must be enabled under Authentication Methods for its button to work.
-2. **The flow is sign-in only** ("Don't have an account? Contact your administrator"). Nobody
-   can create their own account. So that invitations work:
-   - **Recommended:** create a Management Key (Company settings → Management Keys) and set
-     `DESCOPE_MANAGEMENT_KEY`. Invitations you send from the portals then create the user in
-     Descope, and Descope emails them a sign-in link.
-   - **Without a management key:** create every invited user yourself in the Descope console
-     → Users before they try to sign in.
+2. **Management key (required):** Company settings → Management Keys → create one, and set it
+   as the `DESCOPE_MANAGEMENT_KEY` secret. The app uses it to invite people, assign and remove
+   roles, create each client's tenant and read profiles (email).
 3. **Project → Approved domains:** add `koraldigital.com`, `www.koraldigital.com` and `localhost`.
 4. **Session:** keep the default (the SDK stores the session token in the `DS` cookie, which the
-   server validates on every request). Session timeout of 1–7 days is reasonable.
-5. Optional: JWT template adding `email` and `email_verified` claims (lets invitations match
-   verified emails without the management key).
+   server validates on every request). Session timeout of 1–7 days is reasonable. Keep the
+   `tenants` claim in the session token (it is there by default): roles are read from it.
+5. **Roles and tenants:** with the key in `.env.local`, run `npm run descope:setup`. It creates
+   what is missing and leaves the rest alone.
 
-**First administrator:**
+**Roles live in Descope.** Who holds which role is decided in Descope and read from the
+session token on every request; what each role may do is the app's rule
+(`src/lib/auth/permissions.ts`). The database keeps a copy for staff and member lists, refreshed
+at each sign-in.
 
-1. Create your own user in the Descope console → Users.
-2. Set the `SETUP_TOKEN` secret and let the Worker redeploy.
-3. Visit `https://koraldigital.com/sign-in` and sign in with your own email.
-4. You will land on "nothing to show yet". Go to `/setup`, paste the setup token → you become
-   **superadmin**. This only works while no staff account exists.
-5. Delete the `SETUP_TOKEN` secret.
+| Who               | Descope tenant                                                         | Roles                                                                      |
+| ----------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Koral staff       | `koral-digital-internal`                                               | `Internal:Owner`, `Internal:Employee`, `Internal:Contractor`               |
+| A client's people | one tenant per client, `client-<slug>`, under `koral-digital-external` | `External:ClientOwner`, `External:ClientMember`, `External:ClientReadOnly` |
 
-Alternative from a terminal with database access: sign in once, then
-`npm run admin:grant -- --email you@koraldigital.com --role superadmin`.
+- **Owner:** everything. **Employee:** everything except staff, site settings and the audit log.
+  **Contractor:** clients, projects, support and files; no leads, proposals, invoices or analytics.
+- A client's tenant is created when a lead is converted to a client (or at its first invitation).
+- Invitations, role changes and removals made in the app go to Descope first. Changes made in
+  the Descope console apply at that person's next request; they show in the app's lists after
+  their next sign-in.
+
+**First administrator:** in the Descope console → Users, add yourself to the
+`koral-digital-internal` tenant with the `Internal:Owner` role, then sign in.
 
 ## 3. Email notifications — Resend (≈15 minutes + DNS propagation)
 

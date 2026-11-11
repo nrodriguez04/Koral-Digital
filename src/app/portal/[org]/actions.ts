@@ -5,10 +5,11 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getDb } from '@/db';
-import { memberships, projects, proposals, tasks } from '@/db/schema';
+import { memberships, projects, proposals, tasks, users } from '@/db/schema';
 import { recordAudit } from '@/lib/audit';
 import { auditActor, requireOrgMember, runAction, type ActionResult } from '@/lib/auth/guards';
 import { CLIENT_ASSIGNABLE_ROLES } from '@/lib/auth/permissions';
+import { setMemberRole } from '@/server/access';
 import { createInvitation } from '@/server/invitations';
 import { storeOrgFile } from '@/server/files';
 import { addTicketMessage, createTicket } from '@/server/tickets';
@@ -192,6 +193,8 @@ export async function portalInviteTeammate(
       memberRole: parsed.data.role,
       name: parsed.data.name,
     });
+    if (!inv.ok)
+      return { ok: false, error: 'The invitation could not be sent. Please try again or contact us.' };
     revalidatePath(`/portal/${org.slug}/team`);
     return {
       ok: true,
@@ -219,7 +222,11 @@ export async function portalRemoveTeammate(
     if (m.userId === actor.user.id) return { ok: false, error: 'You cannot remove yourself.' };
     if (m.role === 'client_owner')
       return { ok: false, error: 'Owners can only be removed by Koral Digital. Contact us.' };
-    await db.delete(memberships).where(eq(memberships.id, m.id));
+    const target = await db.query.users.findFirst({ where: eq(users.id, m.userId) });
+    if (!target) return { ok: false, error: 'Not found.' };
+    const removed = await setMemberRole(org, target, null);
+    if (!removed.ok)
+      return { ok: false, error: 'Access could not be removed. Please try again or contact us.' };
     await recordAudit({
       actor: auditActor(actor),
       action: 'membership.removed_by_client_owner',

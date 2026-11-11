@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createElement, Fragment } from 'react';
 import { safeNext } from '@/lib/auth/redirects';
+import { clientRolesFromClaims, staffRoleFromClaims } from '@/lib/auth/descope-roles';
 import { CLIENT_ASSIGNABLE_ROLES, grantableStaffRoles, memberCan, staffCan } from '@/lib/auth/permissions';
 import { csvCell } from '@/lib/csv';
 import { parseBusinessDate, toBusinessInput } from '@/lib/dates';
@@ -26,23 +27,65 @@ describe('open-redirect protection', () => {
 
 describe('role permissions', () => {
   it('limits staff capabilities by role', () => {
-    expect(staffCan('sales', 'leads:write')).toBe(true);
-    expect(staffCan('sales', 'settings:write')).toBe(false);
-    expect(staffCan('delivery', 'leads:write')).toBe(false);
-    expect(staffCan('delivery', 'projects:write')).toBe(true);
+    expect(staffCan('employee', 'leads:write')).toBe(true);
+    expect(staffCan('employee', 'settings:write')).toBe(false);
+    expect(staffCan('employee', 'audit:read')).toBe(false);
+    expect(staffCan('contractor', 'leads:read')).toBe(false);
+    expect(staffCan('contractor', 'invoices:write')).toBe(false);
+    expect(staffCan('contractor', 'projects:write')).toBe(true);
     expect(staffCan(null, 'leads:read')).toBe(false);
-    expect(staffCan('admin', 'staff:manage')).toBe(true);
+    expect(staffCan('owner', 'staff:manage')).toBe(true);
   });
-  it('never lets admins mint superadmins or clients mint staff', () => {
-    expect(grantableStaffRoles('admin')).toEqual(['sales', 'delivery']);
-    expect(grantableStaffRoles('sales')).toEqual([]);
-    expect(grantableStaffRoles('superadmin')).toContain('superadmin');
+  it('lets only owners grant staff roles, and clients never mint owners', () => {
+    expect(grantableStaffRoles('owner')).toEqual(['owner', 'employee', 'contractor']);
+    expect(grantableStaffRoles('employee')).toEqual([]);
+    expect(grantableStaffRoles('contractor')).toEqual([]);
     expect(CLIENT_ASSIGNABLE_ROLES).not.toContain('client_owner');
   });
   it('limits client roles', () => {
     expect(memberCan('read_only', 'tickets:create')).toBe(false);
     expect(memberCan('client_member', 'team:manage')).toBe(false);
     expect(memberCan('client_owner', 'team:manage')).toBe(true);
+  });
+});
+
+describe('roles from the Descope session', () => {
+  const session = (tenants: Record<string, string[]>, roles: string[] = []) => ({
+    sub: 'U1',
+    roles,
+    tenants: Object.fromEntries(
+      Object.entries(tenants).map(([id, r]) => [id, { roles: r, permissions: [] }]),
+    ),
+  });
+  it('reads the staff role from the internal tenant, highest first', () => {
+    expect(staffRoleFromClaims(session({ 'koral-digital-internal': ['Internal:Owner'] }))).toBe('owner');
+    expect(
+      staffRoleFromClaims(
+        session({ 'koral-digital-internal': ['Internal:Contractor', 'Internal:Employee'] }),
+      ),
+    ).toBe('employee');
+    expect(staffRoleFromClaims(session({}, ['Internal:Contractor']))).toBe('contractor');
+  });
+  it('grants no staff role from another tenant or an unknown role', () => {
+    expect(staffRoleFromClaims(session({ 'client-acme': ['Internal:Owner'] }))).toBeNull();
+    expect(staffRoleFromClaims(session({ 'koral-digital-internal': ['Tenant Admin'] }))).toBeNull();
+    expect(staffRoleFromClaims({ sub: 'U1' })).toBeNull();
+  });
+  it('reads client roles per company tenant only', () => {
+    const roles = clientRolesFromClaims(
+      session(
+        {
+          'client-acme': ['External:ClientMember', 'External:ClientOwner'],
+          'client-birch': ['External:ClientReadOnly'],
+          'koral-digital-external': ['External:ClientOwner'],
+          'koral-digital-internal': ['Internal:Owner'],
+          'client-cedar': ['Internal:Owner'],
+        },
+        // A project-wide client role names no company, so it grants nothing.
+        ['External:ClientOwner'],
+      ),
+    );
+    expect(Object.fromEntries(roles)).toEqual({ 'client-acme': 'client_owner', 'client-birch': 'read_only' });
   });
 });
 

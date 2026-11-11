@@ -16,7 +16,6 @@ const schema = z.object({
   NEXT_PUBLIC_DESCOPE_BASE_URL: z.string().url().optional(),
   NEXT_PUBLIC_DESCOPE_SIGN_IN_FLOW_ID: z.string().default('sign-in'),
   DESCOPE_MANAGEMENT_KEY: z.string().optional(),
-  SETUP_TOKEN: z.string().min(24).optional(),
   AUTH_DEV_MOCK: z.string().optional(),
 
   RESEND_API_KEY: z.string().optional(),

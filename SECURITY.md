@@ -17,16 +17,21 @@ public issue).
   `NODE_ENV !== 'production'` **and** not running on Vercel. In production builds the page
   returns 404, the server action throws, and the session reader ignores the cookie.
 
-## Authorization (database-backed)
+## Authorization (roles in Descope)
 
-- Internal roles (`superadmin`, `admin`, `sales`, `delivery`) live in `users.staff_role`. They are
-  granted only by: an admin through the Team settings (admins cannot mint admins/superadmins), the
-  one-time `/setup` token while no staff exists, a staff invitation accepted with a **verified**
-  matching email, or the `admin:grant` CLI. Never from email domains, Descope custom attributes or
-  anything a user can edit.
-- Client roles (`client_owner`, `client_member`, `read_only`) live in `memberships`, created only
-  by accepting an invitation. Client owners can invite `client_member`/`read_only` only and cannot
-  remove owners.
+- Who holds which role is decided in Descope and read from the **signed session token** on every
+  request (`src/lib/auth/descope-roles.ts`): staff roles (`Internal:Owner`, `Internal:Employee`,
+  `Internal:Contractor`) from the `koral-digital-internal` tenant, client roles
+  (`External:ClientOwner`, `External:ClientMember`, `External:ClientReadOnly`) from each client
+  company's own tenant. A client role outside a company tenant grants nothing. Never from email
+  domains, custom attributes or anything a user can edit.
+- `users.staff_role` and `memberships` are a copy of Descope for lists and joins, overwritten at
+  each sign-in; they never grant access to a Descope user on their own.
+- Roles change only through Descope: the Descope console, or the app's Team settings, client
+  member management and invitations, which call the Descope Management API first and update the
+  copy only if Descope accepts. Only an Owner manages staff; client owners can invite
+  `client_member`/`read_only` only and cannot remove owners.
+- Staff invitations still require a **verified** matching email at acceptance.
 - Permission matrix: `src/lib/auth/permissions.ts`. Guards: `src/lib/auth/guards.ts`
   (`requireStaff(permission)`, `requireOrgMember(slug, permission)` and page variants).
 

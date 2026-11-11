@@ -47,7 +47,7 @@ credential to activate · ⛔ not built yet.
 | Fail-closed when Descope is missing                                                                                                           | ✅      | Private areas locked; public site unaffected                                                             |
 | Database-backed staff roles & client memberships, permission matrix                                                                           | ✅      |                                                                                                          |
 | Invitation flow (token links; Descope-emailed when management key set)                                                                        | ✅ / 🟡 | Token flow tested end-to-end; Descope email delivery needs the management key                            |
-| First-admin bootstrap (`/setup` + `SETUP_TOKEN`, CLI `admin:grant`)                                                                           | ✅      |                                                                                                          |
+| Roles from Descope (staff tenant + one tenant per client; `npm run descope:setup`)                                                            | ✅      |                                                                                                          |
 | Client portal: overview, projects & milestones, checklist, updates, support, documents, proposals (acknowledgment), invoices, team management | ✅      |                                                                                                          |
 | Tenant isolation (404 on cross-org IDs/slugs; client-visibility filters)                                                                      | ✅      | Integration + browser tests                                                                              |
 | File storage with expiring signed URLs                                                                                                        | 🟡      | S3-compatible driver implemented and signing verified against the AWS test vector; needs a bucket + keys |
@@ -74,15 +74,15 @@ credential to activate · ⛔ not built yet.
 
 ## Test results (November 9, 2026, local PostgreSQL 16)
 
-| Check | Command | Result |
-| --- | --- | --- |
-| Type check | `npm run typecheck` | ✅ 0 errors |
-| Lint | `npm run lint` | ✅ 0 problems |
-| Formatting | `npx prettier --check "src/**/*.{ts,tsx,css}"` | ✅ |
-| Unit + integration (real Postgres) | `npm test` | ✅ **38 / 38** passed |
-| End-to-end (Playwright, Chromium) | `npm run test:e2e` | ✅ **21 / 21** passed (2.7 min) |
-| Production build | `npm run build` | ✅ 70+ routes; public pages static/ISR |
-| Migrations on a non-superuser owner + RLS denial for other roles | manual psql check | ✅ owner reads rows; API-style role with SELECT grant sees 0 rows |
+| Check                                                            | Command                                        | Result                                                            |
+| ---------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------- |
+| Type check                                                       | `npm run typecheck`                            | ✅ 0 errors                                                       |
+| Lint                                                             | `npm run lint`                                 | ✅ 0 problems                                                     |
+| Formatting                                                       | `npx prettier --check "src/**/*.{ts,tsx,css}"` | ✅                                                                |
+| Unit + integration (real Postgres)                               | `npm test`                                     | ✅ **38 / 38** passed                                             |
+| End-to-end (Playwright, Chromium)                                | `npm run test:e2e`                             | ✅ **21 / 21** passed (2.7 min)                                   |
+| Production build                                                 | `npm run build`                                | ✅ 70+ routes; public pages static/ISR                            |
+| Migrations on a non-superuser owner + RLS denial for other roles | manual psql check                              | ✅ owner reads rows; API-style role with SELECT grant sees 0 rows |
 
 **Unit / integration coverage:** open-redirect guard; staff/client permission matrix and
 non-escalation; CSV formula neutralization; markdown XSS safety; AWS SigV4 official test vector;

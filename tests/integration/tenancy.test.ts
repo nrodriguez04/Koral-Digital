@@ -17,6 +17,32 @@ import type { Actor } from '@/lib/auth/session';
 import { resetDb } from '../support/db';
 
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn(), revalidateTag: vi.fn() }));
+// Descope holds every role. This stand-in records each management call; `failNext` makes the
+// next one fail, as Descope would on an outage or a rejected request.
+const descope = vi.hoisted(() => ({ calls: [] as string[], failNext: false }));
+vi.mock('@/lib/auth/descope', async (orig) => {
+  const answer = <T extends object>(call: string, ok: T) => {
+    descope.calls.push(call);
+    if (!descope.failNext) return { ok: true as const, ...ok };
+    descope.failNext = false;
+    return { ok: false as const, reason: 'Descope is unavailable.' };
+  };
+  return {
+    ...(await orig<typeof import('@/lib/auth/descope')>()),
+    ensureTenant: vi.fn(async (i: { tenantId: string; parentTenantId: string }) =>
+      answer(`tenant ${i.tenantId} under ${i.parentTenantId}`, {}),
+    ),
+    inviteToTenant: vi.fn(async (i: { email: string; tenantId: string; roleName: string }) =>
+      answer(`invite ${i.email} ${i.tenantId} ${i.roleName}`, {
+        descopeUserId: `U-${i.email}`,
+        emailed: true,
+      }),
+    ),
+    setTenantRole: vi.fn(async (userId: string, tenantId: string, roleName: string | null) =>
+      answer(`role ${userId} ${tenantId} ${roleName}`, {}),
+    ),
+  };
+});
 const current: { actor: Actor | null } = { actor: null };
 vi.mock('@/lib/auth/session', async (orig) => ({
   ...(await orig<typeof import('@/lib/auth/session')>()),
@@ -45,15 +71,21 @@ async function seed() {
         .values({ email, emailVerified, staffRole, descopeUserId: `U-${email}` })
         .returning()
     )[0]!;
-  const admin = await mkUser('admin@koral.test', 'superadmin');
-  const sales = await mkUser('sales@koral.test', 'sales');
-  const delivery = await mkUser('delivery@koral.test', 'delivery');
+  const owner = await mkUser('owner@koral.test', 'owner');
+  const employee = await mkUser('employee@koral.test', 'employee');
+  const contractor = await mkUser('contractor@koral.test', 'contractor');
   const ownerA = await mkUser('owner@a.test');
   const readerA = await mkUser('reader@a.test');
   const ownerB = await mkUser('owner@b.test');
   const outsider = await mkUser('outsider@c.test');
-  const [orgA] = await db.insert(organizations).values({ name: 'Org A', slug: 'org-a' }).returning();
-  const [orgB] = await db.insert(organizations).values({ name: 'Org B', slug: 'org-b' }).returning();
+  const [orgA] = await db
+    .insert(organizations)
+    .values({ name: 'Org A', slug: 'org-a', descopeTenantId: 'client-org-a' })
+    .returning();
+  const [orgB] = await db
+    .insert(organizations)
+    .values({ name: 'Org B', slug: 'org-b', descopeTenantId: 'client-org-b' })
+    .returning();
   await db.insert(memberships).values([
     { orgId: orgA!.id, userId: ownerA.id, role: 'client_owner' },
     { orgId: orgA!.id, userId: readerA.id, role: 'read_only' },
@@ -116,9 +148,9 @@ async function seed() {
     .returning();
   const [leadX] = await db.insert(leads).values({ title: 'Lead X' }).returning();
   return {
-    admin,
-    sales,
-    delivery,
+    owner,
+    employee,
+    contractor,
     ownerA,
     readerA,
     ownerB,
@@ -165,6 +197,8 @@ describe('multi-tenant isolation', () => {
   beforeEach(async () => {
     await resetDb();
     f = await seed();
+    descope.calls = [];
+    descope.failNext = false;
   });
 
   it('rejects anonymous access', async () => {
@@ -245,8 +279,8 @@ describe('multi-tenant isolation', () => {
     expect(await authorizeFileDownload(ownerA, f.fileA.id)).not.toBeNull();
     expect(await authorizeFileDownload(ownerA, f.fileB.id)).toBeNull();
     expect(await authorizeFileDownload(ownerA, f.fileAInternal.id)).toBeNull();
-    const delivery = await actorFor(f.delivery);
-    expect(await authorizeFileDownload(delivery, f.fileB.id)).not.toBeNull();
+    const contractor = await actorFor(f.contractor);
+    expect(await authorizeFileDownload(contractor, f.fileB.id)).not.toBeNull();
   });
 });
 
@@ -255,6 +289,8 @@ describe('staff authorization on server actions', () => {
   beforeEach(async () => {
     await resetDb();
     f = await seed();
+    descope.calls = [];
+    descope.failNext = false;
   });
 
   it('clients cannot call internal actions', async () => {
@@ -264,27 +300,60 @@ describe('staff authorization on server actions', () => {
     expect((await getDb().query.leads.findFirst({ where: eq(leads.id, f.leadX.id) }))!.stage).toBe('new');
   });
 
-  it('delivery cannot change the sales pipeline; sales can', async () => {
-    await as(f.delivery);
+  it('contractors cannot touch the sales pipeline; employees can', async () => {
+    await as(f.contractor);
     expect((await leadActions.updateLeadStage(ok, fd({ leadId: f.leadX.id, stage: 'qualified' }))).ok).toBe(
       false,
     );
-    await as(f.sales);
+    await as(f.employee);
     expect(
       await leadActions.updateLeadStage(ok, fd({ leadId: f.leadX.id, stage: 'qualified' })),
     ).toMatchObject({ ok: true });
   });
 
-  it('sales cannot edit site settings or grant roles', async () => {
-    await as(f.sales);
+  it('employees cannot edit site settings or grant roles, and Descope is never asked', async () => {
+    await as(f.employee);
     expect((await settingsActions.saveSiteSettings(ok, fd({ businessName: 'Hacked' }))).ok).toBe(false);
     expect(
-      (await settingsActions.changeStaffRole(ok, fd({ userId: f.delivery.id, role: 'superadmin' }))).ok,
+      (await settingsActions.changeStaffRole(ok, fd({ userId: f.contractor.id, role: 'owner' }))).ok,
     ).toBe(false);
+    expect(descope.calls).toEqual([]);
+  });
+
+  it('changes a staff role in Descope first, then in the database', async () => {
+    await as(f.owner);
+    expect(
+      await settingsActions.changeStaffRole(ok, fd({ userId: f.contractor.id, role: 'employee' })),
+    ).toMatchObject({ ok: true });
+    expect(descope.calls).toEqual(['role U-contractor@koral.test koral-digital-internal Internal:Employee']);
+    const db = getDb();
+    expect((await db.query.users.findFirst({ where: eq(users.id, f.contractor.id) }))!.staffRole).toBe(
+      'employee',
+    );
+
+    // When Descope refuses, the database keeps what Descope still says.
+    descope.failNext = true;
+    expect(
+      (await settingsActions.changeStaffRole(ok, fd({ userId: f.contractor.id, role: 'none' }))).ok,
+    ).toBe(false);
+    expect((await db.query.users.findFirst({ where: eq(users.id, f.contractor.id) }))!.staffRole).toBe(
+      'employee',
+    );
+  });
+
+  it('removes a client member in Descope and in the database', async () => {
+    await as(f.owner);
+    const db = getDb();
+    const m = (await db.query.memberships.findFirst({ where: eq(memberships.userId, f.readerA.id) }))!;
+    expect(
+      await clientActions.changeMemberRole(ok, fd({ orgId: f.orgA.id, membershipId: m.id, role: 'remove' })),
+    ).toMatchObject({ ok: true });
+    expect(descope.calls).toEqual(['role U-reader@a.test client-org-a null']);
+    expect(await db.$count(memberships, eq(memberships.userId, f.readerA.id))).toBe(0);
   });
 
   it('requires a lost reason and records stage history', async () => {
-    await as(f.sales);
+    await as(f.employee);
     expect(await leadActions.updateLeadStage(ok, fd({ leadId: f.leadX.id, stage: 'lost' }))).toMatchObject({
       ok: false,
     });
@@ -297,7 +366,7 @@ describe('staff authorization on server actions', () => {
   });
 
   it('rejects linking another org’s proposal or project', async () => {
-    await as(f.admin);
+    await as(f.owner);
     const r = await clientActions.postClientUpdate(
       ok,
       fd({ orgId: f.orgA.id, projectId: f.projB.id, kind: 'update', title: 'Hello', body: 'Body text' }),
@@ -306,7 +375,7 @@ describe('staff authorization on server actions', () => {
   });
 
   it('refuses to store credentials in integration notes', async () => {
-    await as(f.admin);
+    await as(f.owner);
     const r = await clientActions.saveIntegration(
       ok,
       fd({
@@ -326,16 +395,21 @@ describe('invitations', () => {
   beforeEach(async () => {
     await resetDb();
     f = await seed();
+    descope.calls = [];
+    descope.failNext = false;
   });
 
   it('accepts a valid token once, for the matching verified email only', async () => {
-    const admin = await actorFor(f.admin);
-    const inv = await createInvitation(admin, {
+    const owner = await actorFor(f.owner);
+    const inv = await createInvitation(owner, {
       email: 'outsider@c.test',
       orgId: f.orgB.id,
       memberRole: 'client_member',
     });
-    expect(inv.delivery).toBe('manual_link');
+    if (!inv.ok) throw new Error(inv.error);
+    // Descope grants the role and emails the sign-in link.
+    expect(descope.calls).toEqual(['invite outsider@c.test client-org-b External:ClientMember']);
+    expect(inv.delivery).toBe('descope_email');
     const token = inv.link.split('/invite/')[1]!;
 
     // Wrong person (verified email mismatch) is refused.
@@ -344,28 +418,65 @@ describe('invitations', () => {
 
     const right = await acceptInvitationByToken(await actorFor(f.outsider), token);
     expect(right).toMatchObject({ ok: true, redirectTo: '/portal/org-b' });
-    expect(await getDb().$count(memberships, eq(memberships.userId, f.outsider.id))).toBe(1);
+    // Accepting grants nothing locally: the role reaches the app from Descope at sign-in.
+    expect(await getDb().$count(memberships, eq(memberships.userId, f.outsider.id))).toBe(0);
+    expect((await getDb().query.invitations.findFirst({ where: eq(invitations.id, inv.id) }))!.status).toBe(
+      'accepted',
+    );
 
     // Single use.
     expect((await acceptInvitationByToken(await actorFor(f.outsider), token)).ok).toBe(false);
   });
 
   it('requires a verified email for staff invitations', async () => {
-    const admin = await actorFor(f.admin);
+    const owner = await actorFor(f.owner);
     const db = getDb();
     const [unverified] = await db
       .insert(users)
       .values({ email: null, emailVerified: false, descopeUserId: 'U-unverified' })
       .returning();
-    const inv = await createInvitation(admin, {
+    const inv = await createInvitation(owner, {
       email: 'new.staff@koral.test',
       orgId: null,
-      staffRole: 'sales',
+      staffRole: 'employee',
     });
+    if (!inv.ok) throw new Error(inv.error);
+    expect(descope.calls).toEqual(['invite new.staff@koral.test koral-digital-internal Internal:Employee']);
     const token = inv.link.split('/invite/')[1]!;
     const r = await acceptInvitationByToken(await actorFor(unverified!), token);
     expect(r.ok).toBe(false);
     expect((await db.query.users.findFirst({ where: eq(users.id, unverified!.id) }))!.staffRole).toBeNull();
+  });
+
+  it('records no invitation when Descope refuses it', async () => {
+    const owner = await actorFor(f.owner);
+    descope.failNext = true;
+    const inv = await createInvitation(owner, {
+      email: 'new@a.test',
+      orgId: f.orgA.id,
+      memberRole: 'client_member',
+    });
+    expect(inv).toMatchObject({ ok: false });
+    expect(await getDb().$count(invitations)).toBe(0);
+  });
+
+  it('creates the client tenant under the external tenant on first use', async () => {
+    const owner = await actorFor(f.owner);
+    const db = getDb();
+    const [orgC] = await db.insert(organizations).values({ name: 'Org C', slug: 'org-c' }).returning();
+    const inv = await createInvitation(owner, {
+      email: 'c@c.test',
+      orgId: orgC!.id,
+      memberRole: 'client_owner',
+    });
+    expect(inv.ok).toBe(true);
+    expect(descope.calls).toEqual([
+      'tenant client-org-c under koral-digital-external',
+      'invite c@c.test client-org-c External:ClientOwner',
+    ]);
+    expect(
+      (await db.query.organizations.findFirst({ where: eq(organizations.id, orgC!.id) }))!.descopeTenantId,
+    ).toBe('client-org-c');
   });
 
   it('rejects malformed and unknown tokens', async () => {

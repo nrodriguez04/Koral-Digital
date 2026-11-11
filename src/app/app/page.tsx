@@ -14,8 +14,10 @@ import {
   supportTickets,
   tasks,
 } from '@/db/schema';
+import { redirect } from 'next/navigation';
 import { pageRequireStaff } from '@/lib/auth/guards';
 import { isDescopeManagementConfigured } from '@/lib/auth/descope';
+import { staffCan } from '@/lib/auth/permissions';
 import { isEmailConfigured } from '@/lib/env';
 import { LEAD_STAGES } from '@/lib/labels';
 import { getSiteSettings } from '@/lib/settings';
@@ -26,7 +28,10 @@ import { stageCounts } from '@/server/leads';
 export const metadata = { title: 'Overview' };
 
 export default async function OverviewPage({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
-  const actor = await pageRequireStaff('leads:read', '/app');
+  const actor = await pageRequireStaff(undefined, '/app');
+  // This overview is built on leads. Staff without lead access (contractors) start at projects;
+  // sending them back here with ?denied would loop.
+  if (!staffCan(actor.staffRole, 'leads:read')) redirect('/app/projects');
   const { denied } = await searchParams;
   const db = getDb();
   const now = new Date();
@@ -109,7 +114,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
       'Public contact email is hidden until you confirm the mailbox receives mail (Settings).',
     !storage.ready && `File sharing is unavailable: ${storage.reason}`,
     !isDescopeManagementConfigured() &&
-      'Descope management key not set: client invitations use copy-and-send links.',
+      'Descope management key not set (DESCOPE_MANAGEMENT_KEY): roles live in Descope, so nobody can be invited or have their role changed from here.',
   ].filter(Boolean) as string[];
 
   return (
