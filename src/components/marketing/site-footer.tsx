@@ -13,11 +13,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           <Logo inverse />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
             Founder-led operations, automation and systems-integration partner for home-service businesses.
-            Based in {settings.city}, {settings.region}, serving North Dallas–Fort Worth in person and clients
-            elsewhere remotely.
-          </p>
-          <p className="mt-4 text-sm text-white/70">
-            Service area: {settings.serviceAreas.join(', ')} and the wider DFW metroplex.
+            Remote-first, working with clients worldwide from our base in {settings.city}, {settings.region}.
           </p>
           {settings.contactEmailVerified ? (
             <p className="mt-4 text-sm">

@@ -36,7 +36,6 @@ export async function saveSiteSettings(
       phoneVerified: bool(fd.get('phoneVerified')),
       city: String(fd.get('city') ?? ''),
       region: String(fd.get('region') ?? ''),
-      serviceAreas: lines(fd.get('serviceAreas')),
       bookingUrl: String(fd.get('bookingUrl') ?? ''),
       bookingUrlVerified: bool(fd.get('bookingUrlVerified')),
       linkedinUrl: String(fd.get('linkedinUrl') ?? ''),

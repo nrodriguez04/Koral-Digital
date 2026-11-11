@@ -9,12 +9,9 @@ export const siteSettingsSchema = z.object({
   contactEmailVerified: z.boolean().default(false),
   phone: z.string().max(40).default(''),
   phoneVerified: z.boolean().default(false),
+  /** Headquarters, stated as a fact. Koral works with clients worldwide, so there is no service-area list. */
   city: z.string().max(80).default('Frisco'),
   region: z.string().max(40).default('TX'),
-  serviceAreas: z
-    .array(z.string().max(60))
-    .max(20)
-    .default(['Frisco', 'Plano', 'McKinney', 'Prosper', 'Celina', 'Allen', 'Little Elm', 'The Colony']),
   /** Calendly or other scheduler. Embedded only once verified. */
   bookingUrl: z.string().url().or(z.literal('')).default('https://calendly.com/contact-koraldigital'),
   bookingUrlVerified: z.boolean().default(false),
@@ -70,13 +67,13 @@ export const siteSettingsSchema = z.object({
         .string()
         .max(170)
         .default(
-          'Founder-led operations and automation partner in Frisco, TX. We help DFW roofing, remodeling and home-service teams turn more inquiries into booked jobs.',
+          'Founder-led operations and automation partner for roofing, remodeling and home-service businesses worldwide. We help teams turn more inquiries into booked jobs.',
         ),
     })
     .default({
       defaultTitle: 'Koral Digital | Lead response & CRM automation for contractors',
       defaultDescription:
-        'Founder-led operations and automation partner in Frisco, TX. We help DFW roofing, remodeling and home-service teams turn more inquiries into booked jobs.',
+        'Founder-led operations and automation partner for roofing, remodeling and home-service businesses worldwide. We help teams turn more inquiries into booked jobs.',
     }),
 });
 

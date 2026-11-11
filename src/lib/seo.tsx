@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { services } from '@/content/services';
 import type { SiteSettings } from './settings-schema';
 
 export const SITE_NAME = 'Koral Digital';
@@ -54,7 +55,8 @@ export function JsonLd({ data }: { data: Record<string, unknown> | Record<string
 
 /**
  * Organization + ProfessionalService. Only verifiable facts: name, URL, logo,
- * city/region, areas served. No street address, hours, ratings or prices.
+ * headquarters city/region, a worldwide service area and the service catalog.
+ * No street address, hours, ratings or prices.
  * Email/phone are included only when an admin has verified them.
  */
 export function organizationJsonLd(base: string, s: SiteSettings) {
@@ -64,7 +66,7 @@ export function organizationJsonLd(base: string, s: SiteSettings) {
           {
             '@type': 'ContactPoint',
             contactType: 'sales',
-            areaServed: 'US',
+            areaServed: 'Worldwide',
             availableLanguage: ['English'],
             ...(s.contactEmailVerified ? { email: s.contactEmail } : {}),
             ...(s.phoneVerified && s.phone ? { telephone: s.phone } : {}),
@@ -104,7 +106,21 @@ export function organizationJsonLd(base: string, s: SiteSettings) {
           addressRegion: s.region,
           addressCountry: 'US',
         },
-        areaServed: s.serviceAreas.map((name) => ({ '@type': 'City', name: `${name}, TX` })),
+        description: s.seo.defaultDescription,
+        areaServed: 'Worldwide',
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: 'Services',
+          itemListElement: services.map((svc) => ({
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: svc.name,
+              description: svc.metaDescription,
+              url: `${base}/services/${svc.slug}`,
+            },
+          })),
+        },
         knowsAbout: [
           'CRM implementation',
           'Lead response automation',
@@ -141,10 +157,7 @@ export function breadcrumbJsonLd(base: string, items: { name: string; path: stri
   };
 }
 
-export function serviceJsonLd(
-  base: string,
-  s: { name: string; description: string; path: string; areas: string[] },
-) {
+export function serviceJsonLd(base: string, s: { name: string; description: string; path: string }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -153,7 +166,7 @@ export function serviceJsonLd(
     url: `${base}${s.path}`,
     serviceType: s.name,
     provider: { '@id': `${base}/#organization` },
-    areaServed: s.areas.map((name) => ({ '@type': 'City', name: `${name}, TX` })),
+    areaServed: 'Worldwide',
     audience: { '@type': 'BusinessAudience', audienceType: 'Home-service and construction businesses' },
   };
 }
