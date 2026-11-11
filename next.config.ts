@@ -1,16 +1,33 @@
 import type { NextConfig } from 'next';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'X-Frame-Options', value: 'DENY' },
+  // Anti-framing and HSTS apply to production builds only, so local/cloud dev
+  // servers can be shown inside an editor or app preview pane over plain HTTP.
+  ...(isDev
+    ? []
+    : [
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+      ]),
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
-  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
   { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
 ];
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Extra hostnames allowed to load dev-only assets (e.g. a preview proxy or tunnel).
+  // Comma-separated, wildcards per Next docs: DEV_ALLOWED_ORIGINS="*.example.dev,preview.host"
+  ...(process.env.DEV_ALLOWED_ORIGINS
+    ? {
+        allowedDevOrigins: process.env.DEV_ALLOWED_ORIGINS.split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+      }
+    : {}),
   reactStrictMode: true,
   images: { formats: ['image/avif', 'image/webp'] },
   serverExternalPackages: ['postgres'],
