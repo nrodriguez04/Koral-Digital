@@ -27,7 +27,7 @@ one of two places:
 | `NEXT_PUBLIC_SITE_URL`                                                                                                       | Runtime variable                      | `https://koraldigital.com`                            | Canonical URLs, sitemap, invitation links; this is also the default |
 | `NEXT_PUBLIC_DESCOPE_PROJECT_ID`                                                                                             | Runtime variable                      | Descope console → Project settings                    | Public by design (it ships to the browser)                          |
 | `NEXT_PUBLIC_DESCOPE_SIGN_IN_FLOW_ID`                                                                                        | Runtime variable                      | Descope flow ID                                       | `koral-digital-sign-in` — a sign-in-only flow, see step 2           |
-| `NEXT_PUBLIC_DESCOPE_BASE_URL`                                                                                               | Runtime variable                      | Descope custom domain                                 | Optional; leave unset by default                                    |
+| `NEXT_PUBLIC_DESCOPE_BASE_URL`                                                                                               | Runtime variable                      | Descope custom domain                                 | `https://auth.koraldigital.com` — required, see step 2              |
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, `NEXT_PUBLIC_BING_SITE_VERIFICATION`                                                 | Build variable                        | Search Console / Bing Webmaster Tools                 | Optional; or verify via DNS instead                                 |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`                                                                                               | Build variable                        | `koraldigital.com`                                    | Optional cookieless analytics                                       |
 | `DATABASE_URL`                                                                                                               | Runtime secret **and** build variable | Postgres provider (pooled URL)                        | Supabase: _Transaction pooler_, port 6543                           |
@@ -78,7 +78,11 @@ Never run `db:seed:dev` against production — it refuses non-local databases.
 
 ## 2. Descope (≈15 minutes)
 
-Set the project ID and the flow ID (`koral-digital-sign-in`) as runtime variables (step 0).
+Set the project ID and the flow ID (`koral-digital-sign-in`) as runtime variables (step 0), and
+set `NEXT_PUBLIC_DESCOPE_BASE_URL` to the project's custom domain, `https://auth.koraldigital.com`.
+Descope keeps the refresh token in a cookie on whichever host the site calls. On the default
+`api.descope.com` that cookie is third-party, browsers block it, the session can't be renewed,
+and the server sees no valid session. Through `auth.koraldigital.com` it is first-party.
 
 1. **Authentication methods:** the flow offers email, passkeys, Google, Microsoft and Apple.
    Each social provider must be enabled under Authentication Methods for its button to work.

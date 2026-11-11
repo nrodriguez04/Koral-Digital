@@ -22,7 +22,9 @@ export default async function ContinuePage({ searchParams }: { searchParams: Pro
     // deactivated). /sign-in would see the Descope session and send the browser straight back
     // here, so stop and say so instead of looping.
     if (await getDescopeSession()) return <AccountUnavailable next={target} />;
-    redirect('/sign-in');
+    // No session the server accepts. The browser may still hold one it believes in (expired and
+    // not refreshable), so tell /sign-in to discard it rather than send the browser back here.
+    redirect(`/sign-in?stale=1${target ? `&next=${encodeURIComponent(target)}` : ''}`);
   }
   if (target) {
     const isApp = target.startsWith('/app');
